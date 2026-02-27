@@ -103,6 +103,7 @@ export default function SurfboardSearch() {
                     accessories={[
                         { text: tool.tags.join(", "), icon: Icon.Tag },
                         { text: `by ${tool.saved_by}`, icon: Icon.Person },
+                        { text: "⌘E", icon: Icon.Pencil, tooltip: "Press Cmd + E to Edit" },
                         { text: `${tool.times_opened}×`, icon: Icon.Eye },
                     ]}
                     actions={

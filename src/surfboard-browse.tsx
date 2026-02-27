@@ -75,6 +75,7 @@ export default function SurfboardBrowse() {
                             subtitle={tool.description || ""}
                             accessories={[
                                 { text: `by ${tool.saved_by}` },
+                                { text: "⌘E", icon: Icon.Pencil, tooltip: "Press Cmd + E to Edit" },
                                 { text: `${tool.times_opened}×`, icon: Icon.Eye },
                             ]}
                             actions={
