@@ -13,6 +13,7 @@ Ever found an amazing design tool, bookmarked it, and completely forgot it exist
 - **Save** tools with intent-based tags like "Backgrounds & Textures" or "Animation & Motion"
 - **Search** by typing what you need — "background", "icons", "fonts" — and your team's saved tools appear
 - **Browse** your entire shared toolkit organized by tag
+- **Bulk Import** a list of URLs at once when you're moving from another system
 - **See who saved what** and how popular each tool is across the team
 
 Everything is shared. When one person saves a tool, everyone on the team can find it.
@@ -80,6 +81,13 @@ That's it. You're on the team.
 
 1. Open Raycast → type **"Surfboard Browse"**
 2. Scroll through tools organized by tag
+
+### Bulk import tools
+
+1. Open Raycast → type **"Surfboard Import"**
+2. Paste multiple URLs (one per line)
+3. Pick tags that will apply to all of them
+4. Press Enter to save them all at once (names will be auto-generated from the link)
 
 ### Pro tip
 
