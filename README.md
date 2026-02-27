@@ -125,6 +125,7 @@ These are the built-in tags. You can also add custom tags when saving.
 | CSS & Code Tools | CSS generators, code utilities |
 | Web Inspo | Marketing sites, landing pages, web galleries |
 | Product Inspo | UI patterns, app designs, dashboard ideas |
+| App Inspo | Mobile and desktop app interactions, flows |
 | Bento & Illustrations | Grid systems, bento-style layouts, illustrations |
 | Brand & Logos | Branding guidelines, logo inspirations, assets |
 | Other | Everything else |

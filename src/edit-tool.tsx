@@ -27,6 +27,7 @@ const TAGS = [
     "CSS & Code Tools",
     "Web Inspo",
     "Product Inspo",
+    "App Inspo",
     "Bento & Illustrations",
     "Brand & Logos",
 ];
