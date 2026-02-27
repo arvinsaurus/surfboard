@@ -9,9 +9,11 @@ import {
     ActionPanel,
     Icon,
     List,
+    useNavigation,
 } from "@raycast/api";
 import { useEffect, useState } from "react";
 import { supabase } from "./supabase";
+import { EditTool } from "./edit-tool";
 
 interface Tool {
     id: string;
@@ -28,18 +30,20 @@ export default function SurfboardBrowse() {
     const [tools, setTools] = useState<Tool[]>([]);
     const [isLoading, setIsLoading] = useState(true);
 
+    async function fetchTools() {
+        setIsLoading(true);
+        const { data } = await supabase
+            .from("tools")
+            .select("*")
+            .order("times_opened", { ascending: false });
+
+        if (data) setTools(data as Tool[]);
+        setIsLoading(false);
+    }
+
     // Fetch all tools on load, sorted by most popular first
     useEffect(() => {
-        async function fetch() {
-            const { data } = await supabase
-                .from("tools")
-                .select("*")
-                .order("times_opened", { ascending: false });
-
-            if (data) setTools(data as Tool[]);
-            setIsLoading(false);
-        }
-        fetch();
+        fetchTools();
     }, []);
 
     // Group tools by each tag
@@ -76,6 +80,12 @@ export default function SurfboardBrowse() {
                             actions={
                                 <ActionPanel>
                                     <Action.OpenInBrowser url={tool.url} />
+                                    <Action.Push
+                                        title="Edit Tool"
+                                        icon={Icon.Pencil}
+                                        target={<EditTool tool={tool} onEdit={fetchTools} />}
+                                        shortcut={{ modifiers: ["cmd"], key: "e" }}
+                                    />
                                     <Action.CopyToClipboard content={tool.url} />
                                 </ActionPanel>
                             }

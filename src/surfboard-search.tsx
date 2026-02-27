@@ -7,9 +7,11 @@ import {
     ActionPanel,
     Icon,
     List,
+    useNavigation,
 } from "@raycast/api";
 import { useEffect, useState } from "react";
 import { supabase } from "./supabase";
+import { EditTool } from "./edit-tool";
 
 // TypeScript type — describes what a "tool" looks like
 interface Tool {
@@ -108,6 +110,12 @@ export default function SurfboardSearch() {
                             <Action.OpenInBrowser
                                 url={tool.url}
                                 onOpen={() => trackOpen(tool)}
+                            />
+                            <Action.Push
+                                title="Edit Tool"
+                                icon={Icon.Pencil}
+                                target={<EditTool tool={tool} onEdit={fetchTools} />}
+                                shortcut={{ modifiers: ["cmd"], key: "e" }}
                             />
                             <Action.CopyToClipboard
                                 content={tool.url}
