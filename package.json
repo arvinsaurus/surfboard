@@ -16,15 +16,58 @@
   "license": "MIT",
   "commands": [
     {
-      "name": "surfboard",
-      "title": "Surfboard",
-      "description": "",
-      "mode": "no-view"
+      "name": "surfboard-save",
+      "title": "Surfboard Save",
+      "subtitle": "Save a tool to your team's toolkit",
+      "description": "Save a new tool or resource to your shared Surfboard",
+      "mode": "view"
+    },
+    {
+      "name": "surfboard-search",
+      "title": "Surfboard Search",
+      "subtitle": "Find a tool from your team's toolkit",
+      "description": "Search your team's shared Surfboard by keyword or tag",
+      "mode": "view",
+      "keywords": [
+        "background",
+        "icons",
+        "fonts",
+        "tools",
+        "design",
+        "search",
+        "find",
+        "surf"
+      ]
+    },
+    {
+      "name": "surfboard-browse",
+      "title": "Surfboard Browse",
+      "subtitle": "Browse your toolkit by tag",
+      "description": "Browse all tools organized by intent tags",
+      "mode": "view"
+    },
+    {
+      "name": "surfboard-import",
+      "title": "Surfboard Import",
+      "subtitle": "Bulk import tools",
+      "description": "Import multiple URLs at once with shared tags",
+      "mode": "view"
+    }
+  ],
+  "preferences": [
+    {
+      "name": "memberName",
+      "title": "Your Name",
+      "description": "How your team sees you in Surfboard",
+      "type": "textfield",
+      "required": true,
+      "placeholder": "e.g. Alex"
     }
   ],
   "dependencies": {
     "@raycast/api": "^1.104.6",
-    "@raycast/utils": "^1.17.0"
+    "@raycast/utils": "^1.17.0",
+    "@supabase/supabase-js": "^2.98.0"
   },
   "devDependencies": {
     "@raycast/eslint-config": "^2.0.4",
