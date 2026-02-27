@@ -45,20 +45,10 @@ export default function SurfboardSearch() {
         setIsLoading(true);
 
         // Fetch all tools from Supabase, newest first
-        let query = supabase
+        const { data, error } = await supabase
             .from("tools")
             .select("*")
             .order("created_at", { ascending: false });
-
-        // If the user typed something, filter by name and description on the server
-        if (searchText) {
-            query = query.or(
-                `name.ilike.%${searchText}%,` +
-                `description.ilike.%${searchText}%`
-            );
-        }
-
-        const { data, error } = await query;
 
         if (!error && data) {
             let results = data as Tool[];
