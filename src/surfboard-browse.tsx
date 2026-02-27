@@ -10,6 +10,10 @@ import {
     Icon,
     List,
     useNavigation,
+    confirmAlert,
+    Alert,
+    showToast,
+    Toast,
 } from "@raycast/api";
 import { useEffect, useState } from "react";
 import { supabase } from "./supabase";
@@ -45,6 +49,28 @@ export default function SurfboardBrowse() {
     useEffect(() => {
         fetchTools();
     }, []);
+
+    async function handleDelete(tool: Tool) {
+        if (
+            await confirmAlert({
+                title: "Delete Tool",
+                message: `Are you sure you want to delete "${tool.name}"?`,
+                primaryAction: {
+                    title: "Delete",
+                    style: Alert.ActionStyle.Destructive,
+                },
+            })
+        ) {
+            try {
+                const { error } = await supabase.from("tools").delete().eq("id", tool.id);
+                if (error) throw error;
+                await showToast({ style: Toast.Style.Success, title: "Deleted 🏄" });
+                fetchTools();
+            } catch (e) {
+                await showToast({ style: Toast.Style.Failure, title: "Failed to delete" });
+            }
+        }
+    }
 
     // Group tools by each tag
     // A tool with tags ["Backgrounds", "Animation"] will appear in both groups
@@ -87,6 +113,13 @@ export default function SurfboardBrowse() {
                                         shortcut={{ modifiers: ["cmd"], key: "e" }}
                                     />
                                     <Action.CopyToClipboard content={tool.url} />
+                                    <Action
+                                        title="Delete Tool"
+                                        icon={Icon.Trash}
+                                        style={Action.Style.Destructive}
+                                        shortcut={{ modifiers: ["ctrl"], key: "x" }}
+                                        onAction={() => handleDelete(tool)}
+                                    />
                                 </ActionPanel>
                             }
                         />

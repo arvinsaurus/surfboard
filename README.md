@@ -92,7 +92,8 @@ That's it. You're on the team.
 ### Pro tips
 
 - **Quick Search**: Set a hotkey for Surfboard Search so it's truly one keystroke away. Go to Raycast Settings (Cmd + ,) → Extensions → Surfboard → Surfboard Search → set a Hotkey.
-- **Edit on the fly**: You can edit any tool in the Search or Browse list by highlighting it and pressing **`Cmd + E`**.
+- **Edit & Delete**: You can edit or delete any tool in the **Browse** list. Highlight an item and press **`Cmd + E`** to edit, or use the action menu (Cmd + K) to delete.
+- **Delete from Search**: You can delete bookmarks directly from the Search list using the action menu.
 
 ---
 

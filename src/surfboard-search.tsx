@@ -8,10 +8,13 @@ import {
     Icon,
     List,
     useNavigation,
+    confirmAlert,
+    Alert,
+    showToast,
+    Toast,
 } from "@raycast/api";
 import { useEffect, useState } from "react";
 import { supabase } from "./supabase";
-import { EditTool } from "./edit-tool";
 
 // TypeScript type — describes what a "tool" looks like
 interface Tool {
@@ -86,6 +89,28 @@ export default function SurfboardSearch() {
             .eq("id", tool.id);
     }
 
+    async function handleDelete(tool: Tool) {
+        if (
+            await confirmAlert({
+                title: "Delete Tool",
+                message: `Are you sure you want to delete "${tool.name}"?`,
+                primaryAction: {
+                    title: "Delete",
+                    style: Alert.ActionStyle.Destructive,
+                },
+            })
+        ) {
+            try {
+                const { error } = await supabase.from("tools").delete().eq("id", tool.id);
+                if (error) throw error;
+                await showToast({ style: Toast.Style.Success, title: "Deleted 🏄" });
+                fetchTools();
+            } catch (e) {
+                await showToast({ style: Toast.Style.Failure, title: "Failed to delete" });
+            }
+        }
+    }
+
     // The list UI
     return (
         <List
@@ -103,7 +128,6 @@ export default function SurfboardSearch() {
                     accessories={[
                         { text: tool.tags.join(", "), icon: Icon.Tag },
                         { text: `by ${tool.saved_by}`, icon: Icon.Person },
-                        { text: "⌘E", icon: Icon.Pencil, tooltip: "Press Cmd + E to Edit" },
                     ]}
                     actions={
                         <ActionPanel>
@@ -111,15 +135,16 @@ export default function SurfboardSearch() {
                                 url={tool.url}
                                 onOpen={() => trackOpen(tool)}
                             />
-                            <Action.Push
-                                title="Edit Tool"
-                                icon={Icon.Pencil}
-                                target={<EditTool tool={tool} onEdit={fetchTools} />}
-                                shortcut={{ modifiers: ["cmd"], key: "e" }}
-                            />
                             <Action.CopyToClipboard
                                 content={tool.url}
                                 shortcut={{ modifiers: ["cmd"], key: "c" }}
+                            />
+                            <Action
+                                title="Delete Tool"
+                                icon={Icon.Trash}
+                                style={Action.Style.Destructive}
+                                shortcut={{ modifiers: ["ctrl"], key: "x" }}
+                                onAction={() => handleDelete(tool)}
                             />
                         </ActionPanel>
                     }
