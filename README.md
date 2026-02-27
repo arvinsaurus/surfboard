@@ -89,10 +89,10 @@ That's it. You're on the team.
 3. Pick tags that will apply to all of them
 4. Press Enter to save them all at once (names will be auto-generated from the link)
 
-### Pro tip
+### Pro tips
 
-Set a hotkey for Surfboard Search so it's truly one keystroke away:
-Raycast Settings (Cmd + ,) → Extensions → Surfboard → Surfboard Search → set a Hotkey
+- **Quick Search**: Set a hotkey for Surfboard Search so it's truly one keystroke away. Go to Raycast Settings (Cmd + ,) → Extensions → Surfboard → Surfboard Search → set a Hotkey.
+- **Edit on the fly**: You can edit any tool in the Search or Browse list by highlighting it and pressing **`Cmd + E`**.
 
 ---
 
