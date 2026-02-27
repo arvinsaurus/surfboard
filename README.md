@@ -64,7 +64,7 @@ That's it. You're on the team.
 
 ### Save a tool
 
-1. Open Raycast → type **"Surfboard Save"**
+1. Open Raycast → type **"Add to Surfboard"**
 2. Paste the URL
 3. Give it a name
 4. Pick one or more tags (and add custom tags if you want)

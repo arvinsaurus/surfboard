@@ -17,7 +17,7 @@
   "commands": [
     {
       "name": "surfboard-save",
-      "title": "Surfboard Save",
+      "title": "Add to Surfboard",
       "subtitle": "Save a tool to your team's toolkit",
       "description": "Save a new tool or resource to your shared Surfboard",
       "mode": "view"
