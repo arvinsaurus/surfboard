@@ -26,7 +26,7 @@ const TAGS = [
   "Web Inspo",
   "Product Inspo",
   "Bento & Illustrations",
-  "Brand Inspo",
+  "Brand & Logos",
 ];
 
 export default function SurfboardImport() {

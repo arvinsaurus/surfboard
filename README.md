@@ -107,12 +107,15 @@ These are the built-in tags. You can also add custom tags when saving.
 | Tag | Use it when you need... |
 |-----|------------------------|
 | Backgrounds & Textures | Background patterns, gradients, textures |
-| Icons & Illustrations | Icon sets, illustration libraries |
+| Icons | Icon sets, illustration libraries, svgs |
 | Fonts & Typography | Font tools, type pairings, font libraries |
 | Color Tools | Color palettes, gradient generators |
 | Mockups & Prototyping | Mockup generators, prototyping tools |
 | Animation & Motion | Animation libraries, motion tools |
 | Stock Photos & Video | Free/paid stock media |
 | CSS & Code Tools | CSS generators, code utilities |
-| Inspiration & References | Design galleries, inspiration sites |
+| Web Inspo | Marketing sites, landing pages, web galleries |
+| Product Inspo | UI patterns, app designs, dashboard ideas |
+| Bento & Illustrations | Grid systems, bento-style layouts, illustrations |
+| Brand & Logos | Branding guidelines, logo inspirations, assets |
 | Other | Everything else |
