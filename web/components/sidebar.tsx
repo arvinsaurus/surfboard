@@ -111,7 +111,7 @@ export function Sidebar({
         justifyContent: 'space-between',
         background: isMobile ? 'transparent' : '#fff',
         zIndex: 10,
-        padding: isMobile ? '32px 20px calc(32px + env(safe-area-inset-bottom, 0px))' : 16,
+        padding: isMobile ? '32px 20px calc(64px + env(safe-area-inset-bottom, 0px))' : 16,
         overflowY: 'auto',
         scrollbarWidth: 'none',
         msOverflowStyle: 'none',
