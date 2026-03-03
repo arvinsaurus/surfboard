@@ -161,6 +161,18 @@ textarea:focus {
     overflow: visible !important;
   }
 
+  .desktop-sidebar {
+    display: none !important;
+  }
+
+  .main-content {
+    margin-left: 0 !important;
+  }
+
+  .main-blur-bottom {
+    left: 0 !important;
+  }
+
   .mobile-header {
     display: flex;
     align-items: center;
