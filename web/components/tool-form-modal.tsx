@@ -122,23 +122,6 @@ export function ToolFormModal({ tool, onClose, onSaved }: ToolFormModalProps) {
         onClick={(e) => e.stopPropagation()}
       >
         <div className="modal-handle" />
-        {/* Header Overlay (ESC) */}
-        <div style={{ position: 'absolute', top: 16, right: 16 }}>
-          <div
-            style={{
-              fontSize: 10,
-              fontWeight: 600,
-              color: SUBTLE,
-              background: '#f2f2f2',
-              border: '1px solid rgba(0,0,0,0.05)',
-              padding: '2px 6px',
-              borderRadius: 4,
-              letterSpacing: '0.02em',
-            }}
-          >
-            ESC
-          </div>
-        </div>
 
         {/* Centered Header */}
         <div
@@ -351,16 +334,15 @@ export function ToolFormModal({ tool, onClose, onSaved }: ToolFormModalProps) {
         <div
           style={{
             display: 'flex',
-            justifyContent: 'flex-end',
             alignItems: 'center',
-            gap: 12,
+            gap: 8,
             padding: '16px 12px 12px',
           }}
         >
           <button
             onClick={onClose}
             className="modal-action-btn"
-            style={cancelBtnStyle}
+            style={{ ...cancelBtnStyle, flex: 1, justifyContent: 'center' }}
             onMouseEnter={e => e.currentTarget.style.background = '#EEEEEE'}
             onMouseLeave={e => e.currentTarget.style.background = '#f5f5f5'}
           >
@@ -372,6 +354,8 @@ export function ToolFormModal({ tool, onClose, onSaved }: ToolFormModalProps) {
             className="modal-action-btn"
             style={{
               ...saveBtnStyle,
+              flex: 1,
+              justifyContent: 'center',
               opacity: saving ? 0.6 : 1,
             }}
             onMouseEnter={e => {
