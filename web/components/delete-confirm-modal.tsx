@@ -21,11 +21,6 @@ export function DeleteConfirmModal({ toolName, onClose, onConfirm, deleting }: D
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.15 }}
-            style={{
-                position: 'fixed',
-                inset: 0,
-                zIndex: 1100,
-            }}
             onClick={onClose}
         >
             <motion.div
@@ -41,14 +36,7 @@ export function DeleteConfirmModal({ toolName, onClose, onConfirm, deleting }: D
                 exit={{ opacity: 0, scale: 0.98, y: 300 }}
                 transition={{ duration: 0.25, ease: [0.23, 1, 0.32, 1] }}
                 style={{
-                    background: 'rgba(255, 255, 255, 0.90)',
-                    backdropFilter: 'blur(10px)',
-                    WebkitBackdropFilter: 'blur(10px)',
-                    borderRadius: 12,
-                    width: '100%',
                     maxWidth: 360,
-                    boxShadow: '0 16px 48px 0 rgba(0, 0, 0, 0.10)',
-                    position: 'relative',
                     padding: '8px 20px 20px',
                     textAlign: 'center',
                 }}

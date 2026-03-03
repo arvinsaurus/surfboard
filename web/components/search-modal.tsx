@@ -44,11 +44,6 @@ export function SearchModal({ tools, search, onSearchChange, onClose, onOpen }: 
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.15 }}
-      style={{
-        position: 'fixed',
-        inset: 0,
-        zIndex: 1000,
-      }}
       onClick={onClose}
     >
       <motion.div
@@ -63,17 +58,7 @@ export function SearchModal({ tools, search, onSearchChange, onClose, onOpen }: 
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.98, y: 300 }}
         transition={{ duration: 0.2, ease: 'easeOut' }}
-        style={{
-          background: 'rgba(245, 245, 245, 0.90)',
-          backdropFilter: 'blur(10px)',
-          WebkitBackdropFilter: 'blur(10px)',
-          borderRadius: 12,
-          width: '100%',
-          maxWidth: 480,
-          boxShadow: '0 16px 48px 0 rgba(0, 0, 0, 0.10)',
-          overflow: 'hidden',
-          marginTop: '14vh'
-        }}
+        style={{ maxWidth: 480, overflow: 'hidden' }}
         onClick={(e) => e.stopPropagation()}
       >
         <div className="modal-handle" />
@@ -124,111 +109,109 @@ export function SearchModal({ tools, search, onSearchChange, onClose, onOpen }: 
         </div>
 
         {/* Results */}
-        {search && (
-          <div style={{ maxHeight: 320, overflowY: 'auto' }}>
-            {tools.length === 0 ? (
-              <p
-                style={{
-                  padding: '20px 16px',
-                  color: SUBTLE,
-                  fontSize: 13,
-                  textAlign: 'center',
-                }}
-              >
-                No results for &ldquo;{search}&rdquo;
-              </p>
-            ) : (
-              tools.slice(0, 8).map((tool) => {
-                const domain = getDomain(tool.url)
-                return (
-                  <a
-                    key={tool.id}
-                    href={tool.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: 9,
-                      padding: '8px 15px',
-                      textDecoration: 'none',
-                      color: 'inherit',
-                      cursor: 'pointer',
-                      transition: 'background 0.1s',
+        <div style={{ maxHeight: 320, overflowY: 'auto', paddingBottom: 10 }}>
+          {tools.length === 0 ? (
+            <p
+              style={{
+                padding: '20px 16px',
+                color: SUBTLE,
+                fontSize: 13,
+                textAlign: 'center',
+              }}
+            >
+              {search ? `No results for "${search}"` : 'No tools found'}
+            </p>
+          ) : (
+            tools.slice(0, 8).map((tool) => {
+              const domain = getDomain(tool.url)
+              return (
+                <a
+                  key={tool.id}
+                  href={tool.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 9,
+                    padding: '8px 15px',
+                    textDecoration: 'none',
+                    color: 'inherit',
+                    cursor: 'pointer',
+                    transition: 'background 0.1s',
+                  }}
+                  onClick={() => {
+                    onOpen(tool)
+                    onClose()
+                  }}
+                  onMouseEnter={(e) => {
+                    ; (e.currentTarget as HTMLElement).style.background = '#EEEEEE'
+                  }}
+                  onMouseLeave={(e) => {
+                    ; (e.currentTarget as HTMLElement).style.background = 'transparent'
+                  }}
+                >
+                  <img
+                    src={
+                      tool.favicon_url ||
+                      `https://www.google.com/s2/favicons?domain=${domain}&sz=64`
+                    }
+                    alt=""
+                    style={{ width: 17, height: 17, borderRadius: 4 }}
+                    onError={(e) => {
+                      ; (e.target as HTMLImageElement).style.display = 'none'
                     }}
-                    onClick={() => {
-                      onOpen(tool)
-                      onClose()
-                    }}
-                    onMouseEnter={(e) => {
-                      ; (e.currentTarget as HTMLElement).style.background = '#EEEEEE'
-                    }}
-                    onMouseLeave={(e) => {
-                      ; (e.currentTarget as HTMLElement).style.background = 'transparent'
-                    }}
-                  >
-                    <img
-                      src={
-                        tool.favicon_url ||
-                        `https://www.google.com/s2/favicons?domain=${domain}&sz=64`
-                      }
-                      alt=""
-                      style={{ width: 17, height: 17, borderRadius: 4 }}
-                      onError={(e) => {
-                        ; (e.target as HTMLImageElement).style.display = 'none'
+                  />
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <div style={{ fontSize: 13, fontWeight: 500, color: FG }}>
+                      {tool.name}
+                    </div>
+                    <div
+                      style={{
+                        fontSize: 13,
+                        color: SUBTLE,
+                        whiteSpace: 'nowrap',
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
                       }}
-                    />
-                    <div style={{ flex: 1, minWidth: 0 }}>
-                      <div style={{ fontSize: 13, fontWeight: 500, color: FG }}>
-                        {tool.name}
-                      </div>
-                      <div
+                    >
+                      {domain}
+                    </div>
+                  </div>
+                  <div style={{ display: 'flex', gap: 6, flexShrink: 0 }}>
+                    {tool.tags?.slice(0, 2).map((tag) => (
+                      <span
+                        key={tag}
                         style={{
-                          fontSize: 13,
+                          fontSize: 12,
                           color: SUBTLE,
-                          whiteSpace: 'nowrap',
-                          overflow: 'hidden',
-                          textOverflow: 'ellipsis',
+                          background: '#f4f4f4',
+                          borderRadius: 4,
+                          padding: '2px 7px',
                         }}
                       >
-                        {domain}
-                      </div>
-                    </div>
-                    <div style={{ display: 'flex', gap: 6, flexShrink: 0 }}>
-                      {tool.tags?.slice(0, 2).map((tag) => (
-                        <span
-                          key={tag}
-                          style={{
-                            fontSize: 12,
-                            color: SUBTLE,
-                            background: '#f4f4f4',
-                            borderRadius: 4,
-                            padding: '2px 7px',
-                          }}
-                        >
-                          {tag}
-                        </span>
-                      ))}
-                      {tool.tags && tool.tags.length > 2 && (
-                        <span
-                          style={{
-                            fontSize: 12,
-                            color: SUBTLE,
-                            background: '#f4f4f4',
-                            borderRadius: 4,
-                            padding: '2px 7px',
-                          }}
-                        >
-                          +{tool.tags.length - 2}
-                        </span>
-                      )}
-                    </div>
-                  </a>
-                )
-              })
-            )}
-          </div>
-        )}
+                        {tag}
+                      </span>
+                    ))}
+                    {tool.tags && tool.tags.length > 2 && (
+                      <span
+                        style={{
+                          fontSize: 12,
+                          color: SUBTLE,
+                          background: '#f4f4f4',
+                          borderRadius: 4,
+                          padding: '2px 7px',
+                        }}
+                      >
+                        +{tool.tags.length - 2}
+                      </span>
+                    )}
+                  </div>
+                </a>
+              )
+            })
+          )}
+        </div>
       </motion.div>
     </motion.div>
   )

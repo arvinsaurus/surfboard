@@ -147,6 +147,29 @@ textarea:focus {
   padding: 32px 40px 72px;
 }
 
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  display: flex !important;
+  align-items: flex-start;
+  justify-content: center;
+  padding-top: 14vh;
+}
+
+.modal-content {
+  background: rgba(255, 255, 255, 0.90);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-radius: 12px;
+  width: 100%;
+  box-shadow: 0 16px 48px 0 rgba(0, 0, 0, 0.10);
+  position: relative;
+}
+
 /* ── Grid ── */
 .card-grid {
   display: grid;
@@ -258,13 +281,9 @@ textarea:focus {
 
   /* ── Bottom Sheet Modals ── */
   .modal-backdrop {
-    display: flex !important;
     align-items: flex-end !important;
-    justify-content: center !important;
-    padding: 0 !important;
+    padding-top: 0 !important;
     z-index: 2000 !important;
-    background: rgba(0, 0, 0, 0.4) !important;
-    backdrop-filter: blur(8px) !important;
   }
 
   .modal-content {
