@@ -143,6 +143,24 @@ textarea:focus {
   color: rgba(0, 0, 0, 0.7) !important;
 }
 
+.main-inner {
+  padding: 32px 40px 72px;
+}
+
+/* ── Grid ── */
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 64px;
+}
+
+@media (max-width: 1024px) {
+  .card-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 48px;
+  }
+}
+
 /* ── Mobile Header ── */
 .mobile-header {
   display: none;
@@ -188,6 +206,15 @@ textarea:focus {
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
     border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+  }
+
+  .card-grid {
+    grid-template-columns: 1fr !important;
+    gap: 32px !important;
+  }
+
+  .main-inner {
+    padding: 16px 16px 72px !important;
   }
 
   /* ── Sidebar drawer elements to hide on mobile ── */

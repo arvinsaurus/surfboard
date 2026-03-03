@@ -319,7 +319,7 @@ export function SurfboardShell() {
           }}
         />
 
-        <div className="main-inner" style={{ padding: '32px 40px 72px' }}>
+        <div className="main-inner">
           {/* Active Search Hint */}
           <AnimatePresence>
             {search && !searchOpen && (
@@ -402,14 +402,7 @@ export function SurfboardShell() {
               )}
             </div>
           ) : (
-            <div
-              className="card-grid"
-              style={{
-                display: 'grid',
-                gridTemplateColumns: 'repeat(3, 1fr)',
-                gap: 64,
-              }}
-            >
+            <div className="card-grid">
               {filtered.map((tool, i) => (
                 <ToolCard
                   key={tool.id}
