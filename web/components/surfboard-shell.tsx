@@ -151,6 +151,7 @@ export function SurfboardShell() {
   }
 
   return (
+    <>
     <div className="shell-root" style={{ display: 'flex', height: '100vh', overflow: 'hidden' }}>
       {/* ── Mobile Bottom Bar ── */}
       <div className="mobile-bottom-bar">
@@ -398,47 +399,49 @@ export function SurfboardShell() {
 
 
 
-      {/* Search Overlay */}
-      <AnimatePresence>
-        {searchOpen && (
-          <SearchModal
-            tools={filtered}
-            search={search}
-            onSearchChange={setSearch}
-            onClose={() => setSearchOpen(false)}
-            onOpen={trackOpen}
-          />
-        )}
-      </AnimatePresence>
-
-      {/* Add / Edit */}
-      <AnimatePresence>
-        {(showAdd || editTool) && (
-          <ToolFormModal
-            tool={editTool}
-            onClose={() => {
-              setShowAdd(false)
-              setEditTool(null)
-            }}
-            onSaved={() => {
-              setShowAdd(false)
-              setEditTool(null)
-              fetchTools()
-            }}
-          />
-        )}
-      </AnimatePresence>
-      <AnimatePresence>
-        {deleteTool && (
-          <DeleteConfirmModal
-            toolName={deleteTool.name}
-            onClose={() => setDeleteTool(null)}
-            onConfirm={confirmDelete}
-            deleting={deleting}
-          />
-        )}
-      </AnimatePresence>
     </div>
+
+    {/* Search Overlay */}
+    <AnimatePresence>
+      {searchOpen && (
+        <SearchModal
+          tools={filtered}
+          search={search}
+          onSearchChange={setSearch}
+          onClose={() => setSearchOpen(false)}
+          onOpen={trackOpen}
+        />
+      )}
+    </AnimatePresence>
+
+    {/* Add / Edit */}
+    <AnimatePresence>
+      {(showAdd || editTool) && (
+        <ToolFormModal
+          tool={editTool}
+          onClose={() => {
+            setShowAdd(false)
+            setEditTool(null)
+          }}
+          onSaved={() => {
+            setShowAdd(false)
+            setEditTool(null)
+            fetchTools()
+          }}
+        />
+      )}
+    </AnimatePresence>
+    <AnimatePresence>
+      {deleteTool && (
+        <DeleteConfirmModal
+          toolName={deleteTool.name}
+          onClose={() => setDeleteTool(null)}
+          onConfirm={confirmDelete}
+          deleting={deleting}
+        />
+      )}
+    </AnimatePresence>
+    </>
   )
 }
 
