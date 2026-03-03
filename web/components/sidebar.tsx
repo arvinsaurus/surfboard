@@ -260,7 +260,7 @@ export function Sidebar({
           display: 'flex',
           flexDirection: 'column',
           gap: isMobile ? 4 : 12,
-          paddingBottom: isMobile ? 'calc(48px + env(safe-area-inset-bottom, 24px))' : undefined,
+          paddingBottom: isMobile ? 'calc(16px + env(safe-area-inset-bottom, 0px))' : undefined,
         }}
       >
         {isMobile && (
