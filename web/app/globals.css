@@ -269,6 +269,8 @@ textarea:focus {
 
   .list-row-mobile-sub {
     display: flex !important;
+    flex-direction: column !important;
+    align-items: flex-start !important;
   }
 
   .list-swipe-actions {

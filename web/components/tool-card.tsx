@@ -35,7 +35,7 @@ export function ToolCard({ tool, index, onDelete, onEdit, onOpen, viewMode = 'gr
   const domain = getDomain(tool.url)
 
   useEffect(() => {
-    setIsMobile(window.innerWidth < 768)
+    setIsMobile(window.matchMedia('(hover: none)').matches)
   }, [])
 
   const screenshotUrl = tool.image_url || `https://api.microlink.io/?url=${encodeURIComponent(tool.url)}&screenshot=true&meta=false&embed=screenshot.url`
@@ -98,7 +98,7 @@ export function ToolCard({ tool, index, onDelete, onEdit, onOpen, viewMode = 'gr
             }
             onOpen(tool)
           }}
-          drag={isMobile ? 'x' : false}
+          drag="x"
           dragConstraints={{ right: 0, left: -144 }}
           dragElastic={{ left: 0.18, right: 0.05 }}
           dragMomentum={false}
@@ -119,7 +119,7 @@ export function ToolCard({ tool, index, onDelete, onEdit, onOpen, viewMode = 'gr
             display: 'flex',
             alignItems: 'center',
             gap: 12,
-            padding: '9px 8px',
+            padding: '8px 8px',
             borderBottom: '1px solid rgba(0,0,0,0.04)',
             textDecoration: 'none',
             color: 'inherit',
