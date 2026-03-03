@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { motion } from 'motion/react'
-import { Search, Plus, ArrowRight, Github, LayoutGrid, List } from 'lucide-react'
+import { Search, Plus, ArrowRight, Github, LayoutGrid, List, X } from 'lucide-react'
 
 const FG = 'rgba(0,0,0,0.70)'
 const SUBTLE = 'rgba(0,0,0,0.50)'
@@ -77,6 +77,8 @@ interface SidebarProps {
   viewMode: 'grid' | 'list'
   onViewModeChange: (mode: 'grid' | 'list') => void
   showViewToggleInFooter?: boolean
+  isMobile?: boolean
+  onClose?: () => void
 }
 
 export function Sidebar({
@@ -91,23 +93,25 @@ export function Sidebar({
   viewMode,
   onViewModeChange,
   showViewToggleInFooter = false,
+  isMobile = false,
+  onClose,
 }: SidebarProps) {
   const [hoveredNav, setHoveredNav] = useState<string | null>(null)
 
   return (
     <aside
       style={{
-        width: 256,
+        width: isMobile ? '100%' : 256,
         height: '100vh',
-        position: 'fixed',
+        position: isMobile ? 'relative' : 'fixed',
         top: 0,
         left: 0,
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'space-between',
-        background: '#fff',
+        background: isMobile ? 'transparent' : '#fff',
         zIndex: 10,
-        padding: 16,
+        padding: isMobile ? '32px 20px 0' : 16,
         overflowY: 'auto',
         scrollbarWidth: 'none',
         msOverflowStyle: 'none',
@@ -115,7 +119,32 @@ export function Sidebar({
       className="sidebar-hidden-scrollbar"
     >
       <div>
+        {/* ── Mobile close button ── */}
+        {isMobile && (
+          <button
+            onClick={onClose}
+            style={{
+              position: 'absolute',
+              top: 20,
+              right: 20,
+              width: 32,
+              height: 32,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              background: 'rgba(0,0,0,0.06)',
+              border: 'none',
+              borderRadius: '50%',
+              cursor: 'pointer',
+              color: FG,
+            }}
+          >
+            <X size={16} strokeWidth={2} />
+          </button>
+        )}
+
         {/* ── App Icon + Title (stacked) ── */}
+        {!isMobile && (
         <div className="sidebar-branding" style={{ marginBottom: 20 }}>
           <div style={{ marginBottom: 14 }}>
             <img
@@ -148,8 +177,10 @@ export function Sidebar({
             </div>
           )}
         </div>
+        )}
 
         {/* ── Action Pills ── */}
+        {!isMobile && (
         <div className="sidebar-actions" style={{ display: 'flex', gap: 6, marginBottom: 24 }}>
           <motion.button
             whileHover={{ scale: 1.02, backgroundColor: '#EEEEEE' }}
@@ -173,6 +204,7 @@ export function Sidebar({
             <span style={{ fontSize: 11, color: SUBTLE }}>⌘S</span>
           </motion.button>
         </div>
+        )}
 
         {/* ── Navigation ── */}
         <div className="sidebar-nav-label" style={{ fontSize: 11, fontWeight: 600, color: SUBTLE, textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 12, paddingLeft: 4 }}>
