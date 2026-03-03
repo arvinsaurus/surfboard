@@ -46,7 +46,7 @@ export function SurfboardShell() {
         (e.target as HTMLElement).isContentEditable;
       if (isTyping) return;
 
-      if (e.key === 'f' || e.key === 'F') {
+      if ((e.metaKey || e.ctrlKey) && (e.key === 'f' || e.key === 'F')) {
         e.preventDefault()
         setSearchOpen(true)
       }
