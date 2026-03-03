@@ -41,7 +41,6 @@ export function ToolCard({ tool, index, onDelete, onEdit, onOpen, viewMode = 'gr
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.25, ease: 'easeOut', delay: hasEntered ? 0 : index * 0.02 }}
         onAnimationComplete={() => setHasEntered(true)}
-        style={{ position: 'relative' }}
         onMouseEnter={() => setHovered(true)}
         onMouseLeave={() => setHovered(false)}
       >
@@ -62,9 +61,23 @@ export function ToolCard({ tool, index, onDelete, onEdit, onOpen, viewMode = 'gr
             color: 'inherit',
             borderRadius: 6,
             cursor: 'pointer',
-            position: 'relative',
           }}
         >
+          {/* Index */}
+          <span
+            style={{
+              fontSize: 11,
+              color: 'rgba(0,0,0,0.25)',
+              fontVariantNumeric: 'tabular-nums',
+              minWidth: 18,
+              textAlign: 'right',
+              flexShrink: 0,
+              lineHeight: 1,
+            }}
+          >
+            {index + 1}
+          </span>
+
           {/* Favicon */}
           <img
             src={faviconUrl}
@@ -92,92 +105,85 @@ export function ToolCard({ tool, index, onDelete, onEdit, onOpen, viewMode = 'gr
             {tool.name}
           </span>
 
-          {/* Dot separator */}
-          {tool.description && (
-            <span style={{ fontSize: 13, color: SUBTLE, flexShrink: 0 }}>·</span>
-          )}
-
-          {/* Description */}
-          {tool.description && (
-            <span
-              style={{
-                fontSize: 11.5,
-                color: SUBTLE,
-                flex: 1,
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
-                whiteSpace: 'nowrap',
-                lineHeight: 1.4,
-              }}
-            >
-              {tool.description}
-            </span>
-          )}
-          {!tool.description && <span style={{ flex: 1 }} />}
-
-          {/* Tags (first 2) */}
-          <div style={{ display: 'flex', gap: 4, flexShrink: 0 }}>
-            {(tool.tags || []).slice(0, 2).map((tag) => (
-              <span
-                key={tag}
-                style={{
-                  fontSize: 10.5,
-                  fontWeight: 500,
-                  padding: '2px 7px',
-                  background: '#f2f2f2',
-                  borderRadius: 6,
-                  color: SUBTLE,
-                  whiteSpace: 'nowrap',
-                }}
-              >
-                {tag}
-              </span>
-            ))}
+          {/* Description area — hidden on mobile */}
+          <div
+            className="list-row-desc"
+            style={{ flex: 1, display: 'flex', alignItems: 'center', gap: 8, overflow: 'hidden', minWidth: 0 }}
+          >
+            {tool.description && (
+              <>
+                <span style={{ fontSize: 13, color: SUBTLE, flexShrink: 0 }}>·</span>
+                <span
+                  style={{
+                    fontSize: 11.5,
+                    color: SUBTLE,
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                    whiteSpace: 'nowrap',
+                    lineHeight: 1.4,
+                  }}
+                >
+                  {tool.description}
+                </span>
+              </>
+            )}
           </div>
 
-          {/* Spacer for hover actions */}
-          <div style={{ width: 58, flexShrink: 0 }} />
+          {/* Tags → replaced by edit/delete on hover — hidden on mobile */}
+          <div className="list-row-right" style={{ display: 'flex', flexShrink: 0 }}>
+            {hovered ? (
+              <motion.div
+                key="actions"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.12 }}
+                style={{ display: 'flex', gap: 3 }}
+              >
+                <button
+                  onClick={(e) => {
+                    e.preventDefault()
+                    e.stopPropagation()
+                    onEdit(tool)
+                  }}
+                  style={listActionBtnStyle}
+                  title="Edit"
+                >
+                  <Pencil size={12} strokeWidth={2.2} />
+                </button>
+                <button
+                  onClick={(e) => {
+                    e.preventDefault()
+                    e.stopPropagation()
+                    onDelete(tool)
+                  }}
+                  style={{ ...listActionBtnStyle, color: '#d44' }}
+                  title="Delete"
+                >
+                  <Trash2 size={12} strokeWidth={2.2} />
+                </button>
+              </motion.div>
+            ) : (
+              <div style={{ display: 'flex', gap: 4 }}>
+                {(tool.tags || []).slice(0, 2).map((tag) => (
+                  <span
+                    key={tag}
+                    style={{
+                      fontSize: 10.5,
+                      fontWeight: 500,
+                      padding: '2px 7px',
+                      background: '#f2f2f2',
+                      borderRadius: 6,
+                      color: SUBTLE,
+                      whiteSpace: 'nowrap',
+                    }}
+                  >
+                    {tag}
+                  </span>
+                ))}
+              </div>
+            )}
+          </div>
         </motion.a>
-
-        {/* Hover actions */}
-        {hovered && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.12 }}
-            style={{
-              position: 'absolute',
-              top: '50%',
-              right: 8,
-              transform: 'translateY(-50%)',
-              display: 'flex',
-              gap: 3,
-            }}
-          >
-            <button
-              onClick={(e) => {
-                e.preventDefault()
-                e.stopPropagation()
-                onEdit(tool)
-              }}
-              style={actionBtnStyle}
-              title="Edit"
-            >
-              <Pencil size={12} strokeWidth={2.2} />
-            </button>
-            <button
-              onClick={(e) => {
-                e.preventDefault()
-                e.stopPropagation()
-                onDelete(tool)
-              }}
-              style={{ ...actionBtnStyle, color: '#d44' }}
-              title="Delete"
-            >
-              <Trash2 size={12} strokeWidth={2.2} />
-            </button>
-          </motion.div>
-        )}
       </motion.div>
     )
   }
@@ -365,6 +371,20 @@ const actionBtnStyle: React.CSSProperties = {
   background: 'rgba(255,255,255,0.9)',
   backdropFilter: 'blur(6px)',
   border: '1px solid rgba(0,0,0,0.05)',
+  color: SUBTLE,
+  cursor: 'pointer',
+  padding: 0,
+}
+
+const listActionBtnStyle: React.CSSProperties = {
+  width: 25,
+  height: 25,
+  borderRadius: 6,
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  background: 'rgba(0,0,0,0.06)',
+  border: 'none',
   color: SUBTLE,
   cursor: 'pointer',
   padding: 0,
