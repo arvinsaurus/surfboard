@@ -247,6 +247,7 @@ export function SurfboardShell() {
           flex: 1,
           height: '100vh',
           overflowY: 'auto',
+          overflowX: 'hidden',
           position: 'relative',
         }}
       >
@@ -289,7 +290,7 @@ export function SurfboardShell() {
           }}
         />
 
-        <div className="main-inner" style={{ padding: '32px 40px 72px' }}>
+        <div className="main-inner" style={{ padding: viewMode === 'list' ? '32px 180px 72px' : '32px 40px 72px' }}>
           {/* Active Search Hint */}
           <AnimatePresence>
             {search && !searchOpen && (
@@ -375,7 +376,7 @@ export function SurfboardShell() {
             <div
               className="card-grid"
               style={viewMode === 'list'
-                ? { display: 'flex', flexDirection: 'column' }
+                ? { display: 'flex', flexDirection: 'column', gap: 0 }
                 : { display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 64 }
               }
             >
