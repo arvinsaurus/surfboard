@@ -88,28 +88,25 @@ export function ToolCard({ tool, index, onDelete, onEdit, onOpen, viewMode = 'gr
             onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }}
           />
 
-          {/* Name */}
-          <span
-            style={{
-              fontSize: 13,
-              fontWeight: 600,
-              color: FG,
-              whiteSpace: 'nowrap',
-              minWidth: 100,
-              maxWidth: 200,
-              overflow: 'hidden',
-              textOverflow: 'ellipsis',
-              flexShrink: 0,
-            }}
-          >
-            {tool.name}
-          </span>
-
-          {/* Description area — hidden on mobile */}
+          {/* Name + Description — hidden on mobile */}
           <div
             className="list-row-desc"
-            style={{ flex: 1, display: 'flex', alignItems: 'center', gap: 8, overflow: 'hidden', minWidth: 0 }}
+            style={{ flex: 1, display: 'flex', alignItems: 'center', gap: 6, overflow: 'hidden', minWidth: 0 }}
           >
+            <span
+              style={{
+                fontSize: 13,
+                fontWeight: 600,
+                color: FG,
+                whiteSpace: 'nowrap',
+                flexShrink: 0,
+                maxWidth: 200,
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+              }}
+            >
+              {tool.name}
+            </span>
             {tool.description && (
               <>
                 <span style={{ fontSize: 13, color: SUBTLE, flexShrink: 0 }}>·</span>
@@ -130,7 +127,7 @@ export function ToolCard({ tool, index, onDelete, onEdit, onOpen, viewMode = 'gr
           </div>
 
           {/* Tags → replaced by edit/delete on hover — hidden on mobile */}
-          <div className="list-row-right" style={{ display: 'flex', flexShrink: 0 }}>
+          <div className="list-row-right" style={{ display: 'flex', flexShrink: 0, height: 25, alignItems: 'center' }}>
             {hovered ? (
               <motion.div
                 key="actions"
