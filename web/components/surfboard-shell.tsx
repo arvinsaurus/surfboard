@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import { motion, AnimatePresence } from 'motion/react'
 import { SlidersHorizontal, Search, Plus } from 'lucide-react'
 import { supabase } from '@/lib/supabase'
@@ -24,7 +24,8 @@ export function SurfboardShell() {
   const [searchOpen, setSearchOpen] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid')
-  const [mainHovered, setMainHovered] = useState(false)
+  const [isScrolled, setIsScrolled] = useState(false)
+  const mainRef = useRef<HTMLElement>(null)
 
   const fetchTools = useCallback(async () => {
     const { data } = await supabase
@@ -38,6 +39,14 @@ export function SurfboardShell() {
   useEffect(() => {
     fetchTools()
   }, [fetchTools])
+
+  useEffect(() => {
+    const el = mainRef.current
+    if (!el) return
+    const onScroll = () => setIsScrolled(el.scrollTop > 0)
+    el.addEventListener('scroll', onScroll, { passive: true })
+    return () => el.removeEventListener('scroll', onScroll)
+  }, [])
 
   // Keyboard shortcuts
   useEffect(() => {
@@ -231,6 +240,7 @@ export function SurfboardShell() {
 
       {/* Scrollable main */}
       <main
+        ref={mainRef}
         className="main-content"
         style={{
           marginLeft: 256,
@@ -239,14 +249,12 @@ export function SurfboardShell() {
           overflowY: 'auto',
           position: 'relative',
         }}
-        onMouseEnter={() => setMainHovered(true)}
-        onMouseLeave={() => setMainHovered(false)}
       >
         {/* Top blur / fade edge */}
         <motion.div
           className="main-blur-top"
-          animate={{ opacity: mainHovered ? 1 : 0, y: mainHovered ? 0 : -12 }}
-          transition={{ duration: 0.35, ease: [0.23, 1, 0.32, 1] }}
+          animate={{ opacity: isScrolled ? 1 : 0, y: isScrolled ? 0 : -12 }}
+          transition={{ duration: 0.25, ease: [0.23, 1, 0.32, 1] }}
           style={{
             position: 'sticky',
             top: 0,
