@@ -396,7 +396,7 @@ function NavItem({
         display: 'flex',
         alignItems: 'center',
         gap: 0,
-        padding: isMobile ? '8px 0' : '5px 0',
+        padding: isMobile ? '4px 0' : '5px 0',
         background: 'none',
         border: 'none',
         cursor: 'pointer',
