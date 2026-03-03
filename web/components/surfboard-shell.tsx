@@ -247,6 +247,7 @@ export function SurfboardShell() {
               transition={{ duration: 0.25, ease: [0.23, 1, 0.32, 1] }}
             >
               <Sidebar
+                isMobile
                 toolCount={tools.length}
                 allTags={allPresetTags}
                 tagCounts={tagCounts}

@@ -74,6 +74,7 @@ interface SidebarProps {
   onSearchOpen: () => void
   onAddOpen: () => void
   othersCount: number
+  isMobile?: boolean
 }
 
 export function Sidebar({
@@ -85,15 +86,16 @@ export function Sidebar({
   onSearchOpen,
   onAddOpen,
   othersCount,
+  isMobile = false,
 }: SidebarProps) {
   const [hoveredNav, setHoveredNav] = useState<string | null>(null)
 
   return (
     <aside
       style={{
-        width: 256,
+        width: isMobile ? '100%' : 256,
         height: '100vh',
-        position: 'fixed',
+        position: isMobile ? 'relative' : 'fixed',
         top: 0,
         left: 0,
         display: 'flex',
@@ -110,56 +112,60 @@ export function Sidebar({
     >
       <div>
         {/* ── App Icon + Title (stacked) ── */}
-        <div className="sidebar-branding" style={{ marginBottom: 20 }}>
-          <div style={{ marginBottom: 14 }}>
-            <img
-              src="/icon.png"
-              alt="Surfboard"
-              width={32}
-              height={32}
-              style={{ borderRadius: 12, display: 'block' }}
-            />
+        {!isMobile && (
+          <div className="sidebar-branding" style={{ marginBottom: 20 }}>
+            <div style={{ marginBottom: 14 }}>
+              <img
+                src="/icon.png"
+                alt="Surfboard"
+                width={32}
+                height={32}
+                style={{ borderRadius: 12, display: 'block' }}
+              />
+            </div>
+            <h1
+              style={{
+                fontSize: 13,
+                fontWeight: 700,
+                color: FG,
+                letterSpacing: '-0.01em',
+                lineHeight: 1.2,
+              }}
+            >
+              Surfboard
+            </h1>
+            <p style={{ fontSize: 13, color: SUBTLE, marginTop: 3, lineHeight: 1.4 }}>
+              Curated bookmarks for Morva Labs
+            </p>
           </div>
-          <h1
-            style={{
-              fontSize: 13,
-              fontWeight: 700,
-              color: FG,
-              letterSpacing: '-0.01em',
-              lineHeight: 1.2,
-            }}
-          >
-            Surfboard
-          </h1>
-          <p style={{ fontSize: 13, color: SUBTLE, marginTop: 3, lineHeight: 1.4 }}>
-            Curated bookmarks for Morva Labs
-          </p>
-        </div>
+        )}
 
         {/* ── Action Pills ── */}
-        <div className="sidebar-actions" style={{ display: 'flex', gap: 6, marginBottom: 24 }}>
-          <motion.button
-            whileHover={{ scale: 1.02, backgroundColor: '#EEEEEE' }}
-            whileTap={{ scale: 0.98 }}
-            transition={{ duration: 0.1 }}
-            onClick={onSearchOpen}
-            style={searchBtnStyle}
-          >
-            <Search size={13} strokeWidth={2.4} />
-            <span style={{ fontSize: 11, color: SUBTLE }}>⌘F</span>
-          </motion.button>
-          <motion.button
-            whileHover={{ scale: 1.02, backgroundColor: '#EEEEEE' }}
-            whileTap={{ scale: 0.98 }}
-            transition={{ duration: 0.1 }}
-            onClick={onAddOpen}
-            style={addBtnStyle}
-          >
-            <Plus size={14} strokeWidth={2.2} />
-            <span>Add</span>
-            <span style={{ fontSize: 11, color: SUBTLE }}>⌘S</span>
-          </motion.button>
-        </div>
+        {!isMobile && (
+          <div className="sidebar-actions" style={{ display: 'flex', gap: 6, marginBottom: 24 }}>
+            <motion.button
+              whileHover={{ scale: 1.02, backgroundColor: '#EEEEEE' }}
+              whileTap={{ scale: 0.98 }}
+              transition={{ duration: 0.1 }}
+              onClick={onSearchOpen}
+              style={searchBtnStyle}
+            >
+              <Search size={13} strokeWidth={2.4} />
+              <span style={{ fontSize: 11, color: SUBTLE }}>⌘F</span>
+            </motion.button>
+            <motion.button
+              whileHover={{ scale: 1.02, backgroundColor: '#EEEEEE' }}
+              whileTap={{ scale: 0.98 }}
+              transition={{ duration: 0.1 }}
+              onClick={onAddOpen}
+              style={addBtnStyle}
+            >
+              <Plus size={14} strokeWidth={2.2} />
+              <span>Add</span>
+              <span style={{ fontSize: 11, color: SUBTLE }}>⌘S</span>
+            </motion.button>
+          </div>
+        )}
 
         {/* ── Navigation ── */}
         <div className="sidebar-nav-label" style={{ fontSize: 11, fontWeight: 600, color: SUBTLE, textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 12, paddingLeft: 4 }}>
@@ -219,21 +225,23 @@ export function Sidebar({
         </nav>
       </div>
 
-      <div className="sidebar-footer" style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-        <motion.a
-          href="https://github.com/arvinsaurus/surfboard"
-          target="_blank"
-          rel="noopener noreferrer"
-          whileHover={{ scale: 1.02, backgroundColor: '#EEEEEE' }}
-          whileTap={{ scale: 0.98 }}
-          transition={{ duration: 0.1 }}
-          style={raycastBtnStyle}
-        >
-          <Github size={14} strokeWidth={2.4} />
-          <span>Install on Raycast</span>
-        </motion.a>
-        <p style={{ fontSize: 11, color: SUBTLE }}>Made by Arvin in his free time</p>
-      </div>
+      {!isMobile && (
+        <div className="sidebar-footer" style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+          <motion.a
+            href="https://github.com/arvinsaurus/surfboard"
+            target="_blank"
+            rel="noopener noreferrer"
+            whileHover={{ scale: 1.02, backgroundColor: '#EEEEEE' }}
+            whileTap={{ scale: 0.98 }}
+            transition={{ duration: 0.1 }}
+            style={raycastBtnStyle}
+          >
+            <Github size={14} strokeWidth={2.4} />
+            <span>Install on Raycast</span>
+          </motion.a>
+          <p style={{ fontSize: 11, color: SUBTLE }}>Made by Arvin in his free time</p>
+        </div>
+      )}
     </aside>
   )
 }
