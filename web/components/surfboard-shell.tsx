@@ -245,8 +245,8 @@ export function SurfboardShell() {
         {/* Top blur / fade edge */}
         <motion.div
           className="main-blur-top"
-          animate={{ opacity: mainHovered ? 1 : 0 }}
-          transition={{ duration: 0.2, ease: 'easeOut' }}
+          animate={{ opacity: mainHovered ? 1 : 0, y: mainHovered ? 0 : -12 }}
+          transition={{ duration: 0.35, ease: [0.23, 1, 0.32, 1] }}
           style={{
             position: 'sticky',
             top: 0,
