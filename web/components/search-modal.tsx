@@ -45,7 +45,7 @@ export function SearchModal({ tools, search, onSearchChange, onClose, onOpen }: 
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      transition={{ duration: 0.15 }}
+      transition={{ duration: 0.25 }}
       onClick={onClose}
     >
       <motion.div
@@ -56,10 +56,15 @@ export function SearchModal({ tools, search, onSearchChange, onClose, onOpen }: 
         onDragEnd={(_, info) => {
           if (info.offset.y > 100) onClose()
         }}
-        initial={{ opacity: 0, scale: 0.98, y: 20 }}
+        initial={{ opacity: 0, scale: 0.98, y: 15 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.98, y: 300 }}
-        transition={{ duration: 0.2, ease: 'easeOut' }}
+        transition={{
+          type: 'spring',
+          damping: 30,
+          stiffness: 400,
+          mass: 0.8
+        }}
         style={{ maxWidth: 640, overflow: 'hidden' }}
         onClick={(e) => e.stopPropagation()}
       >

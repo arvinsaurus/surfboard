@@ -94,7 +94,7 @@ export function ToolFormModal({ tool, onClose, onSaved }: ToolFormModalProps) {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      transition={{ duration: 0.15 }}
+      transition={{ duration: 0.25 }}
       onClick={onClose}
     >
       <motion.div
@@ -105,10 +105,15 @@ export function ToolFormModal({ tool, onClose, onSaved }: ToolFormModalProps) {
         onDragEnd={(_, info) => {
           if (info.offset.y > 100) onClose()
         }}
-        initial={{ opacity: 0, scale: 0.98, y: 20 }}
+        initial={{ opacity: 0, scale: 0.98, y: 15 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.98, y: 300 }}
-        transition={{ duration: 0.25, ease: [0.23, 1, 0.32, 1] }}
+        transition={{
+          type: 'spring',
+          damping: 30,
+          stiffness: 400,
+          mass: 0.8
+        }}
         style={{
           maxWidth: 480,
           maxHeight: '90vh',
