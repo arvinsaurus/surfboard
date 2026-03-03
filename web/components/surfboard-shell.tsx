@@ -181,48 +181,50 @@ export function SurfboardShell() {
             <span style={{ fontSize: 14, fontWeight: 700, color: FG }}>Surfboard</span>
           </div>
         </div>
-        <div style={{ display: 'flex', gap: 6 }}>
-          <button
-            onClick={() => setSearchOpen(true)}
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              width: 34,
-              height: 34,
-              borderRadius: 99,
-              background: 'rgba(0,0,0,0.50)',
-              backdropFilter: 'blur(3px)',
-              WebkitBackdropFilter: 'blur(3px)',
-              border: 'none',
-              cursor: 'pointer',
-              color: '#fff',
-            }}
-            aria-label="Search"
-          >
-            <Search size={16} strokeWidth={2.2} />
-          </button>
-          <button
-            onClick={() => setShowAdd(true)}
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              width: 34,
-              height: 34,
-              borderRadius: 99,
-              background: 'rgba(0,0,0,0.50)',
-              backdropFilter: 'blur(3px)',
-              WebkitBackdropFilter: 'blur(3px)',
-              border: 'none',
-              cursor: 'pointer',
-              color: '#fff',
-            }}
-            aria-label="Add bookmark"
-          >
-            <Plus size={16} strokeWidth={2.2} />
-          </button>
-        </div>
+      </div>
+
+      {/* ── Mobile Bottom Bar ── */}
+      <div className="mobile-bottom-bar">
+        <button
+          onClick={() => setSearchOpen(true)}
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            width: 44,
+            height: 44,
+            borderRadius: 99,
+            background: 'rgba(0,0,0,0.50)',
+            backdropFilter: 'blur(3px)',
+            WebkitBackdropFilter: 'blur(3px)',
+            border: 'none',
+            cursor: 'pointer',
+            color: '#fff',
+          }}
+          aria-label="Search"
+        >
+          <Search size={18} strokeWidth={2.2} />
+        </button>
+        <button
+          onClick={() => setShowAdd(true)}
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            width: 44,
+            height: 44,
+            borderRadius: 99,
+            background: 'rgba(0,0,0,0.50)',
+            backdropFilter: 'blur(3px)',
+            WebkitBackdropFilter: 'blur(3px)',
+            border: 'none',
+            cursor: 'pointer',
+            color: '#fff',
+          }}
+          aria-label="Add bookmark"
+        >
+          <Plus size={18} strokeWidth={2.2} />
+        </button>
       </div>
 
       {/* ── Desktop Sidebar ── */}

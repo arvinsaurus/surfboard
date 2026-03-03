@@ -196,6 +196,11 @@ textarea:focus {
   display: none;
 }
 
+/* ── Mobile Bottom Bar ── */
+.mobile-bottom-bar {
+  display: none;
+}
+
 /* ── Responsive ── */
 @media (max-width: 768px) {
 
@@ -238,6 +243,16 @@ textarea:focus {
     border-bottom: none;
   }
 
+  .mobile-bottom-bar {
+    display: flex;
+    gap: 12px;
+    position: fixed;
+    bottom: 32px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 50;
+  }
+
   .card-grid {
     grid-template-columns: 1fr !important;
     gap: 32px !important;
@@ -264,7 +279,7 @@ textarea:focus {
     width: 100vw !important;
     height: 100vh !important;
     z-index: 120 !important;
-    background: rgba(238, 238, 238, 0.85) !important;
+    background: rgba(255, 255, 255, 0.60) !important;
     backdrop-filter: blur(24px) !important;
     -webkit-backdrop-filter: blur(24px) !important;
     box-shadow: none !important;
