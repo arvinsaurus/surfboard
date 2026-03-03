@@ -1,6 +1,6 @@
 'use client'
 
-import { useRef, useEffect } from 'react'
+import { useRef, useEffect, useState } from 'react'
 import { motion } from 'motion/react'
 import { Search } from 'lucide-react'
 import { Tool } from '@/lib/types'
@@ -26,6 +26,7 @@ function getDomain(url: string) {
 
 export function SearchModal({ tools, search, onSearchChange, onClose, onOpen }: SearchModalProps) {
   const inputRef = useRef<HTMLInputElement>(null)
+  const [isMobile, setIsMobile] = useState(false)
 
   useEffect(() => {
     setTimeout(() => inputRef.current?.focus(), 60)
@@ -34,6 +35,7 @@ export function SearchModal({ tools, search, onSearchChange, onClose, onOpen }: 
       if (e.key === 'Escape') onClose()
     }
     window.addEventListener('keydown', handleKeyDown)
+    setIsMobile(window.innerWidth < 768)
     return () => window.removeEventListener('keydown', handleKeyDown)
   }, [onClose])
 
@@ -58,7 +60,7 @@ export function SearchModal({ tools, search, onSearchChange, onClose, onOpen }: 
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.98, y: 300 }}
         transition={{ duration: 0.2, ease: 'easeOut' }}
-        style={{ maxWidth: 480, overflow: 'hidden' }}
+        style={{ maxWidth: 640, overflow: 'hidden' }}
         onClick={(e) => e.stopPropagation()}
       >
         <div className="modal-handle" />
@@ -179,7 +181,7 @@ export function SearchModal({ tools, search, onSearchChange, onClose, onOpen }: 
                     </div>
                   </div>
                   <div style={{ display: 'flex', gap: 6, flexShrink: 0 }}>
-                    {tool.tags?.slice(0, 2).map((tag) => (
+                    {tool.tags?.slice(0, isMobile ? 1 : 2).map((tag) => (
                       <span
                         key={tag}
                         style={{
@@ -193,7 +195,7 @@ export function SearchModal({ tools, search, onSearchChange, onClose, onOpen }: 
                         {tag}
                       </span>
                     ))}
-                    {tool.tags && tool.tags.length > 2 && (
+                    {tool.tags && tool.tags.length > (isMobile ? 1 : 2) && (
                       <span
                         style={{
                           fontSize: 12,
@@ -203,7 +205,7 @@ export function SearchModal({ tools, search, onSearchChange, onClose, onOpen }: 
                           padding: '2px 7px',
                         }}
                       >
-                        +{tool.tags.length - 2}
+                        +{tool.tags.length - (isMobile ? 1 : 2)}
                       </span>
                     )}
                   </div>
