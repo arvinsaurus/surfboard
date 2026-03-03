@@ -1,7 +1,7 @@
 'use client'
 
-import { useState } from 'react'
-import { motion } from 'motion/react'
+import { useState, useEffect } from 'react'
+import { motion, useMotionValue, animate } from 'motion/react'
 import { Pencil, Trash2 } from 'lucide-react'
 import { Tool } from '@/lib/types'
 
@@ -29,7 +29,14 @@ export function ToolCard({ tool, index, onDelete, onEdit, onOpen, viewMode = 'gr
   const [hovered, setHovered] = useState(false)
   const [imgOk, setImgOk] = useState(true)
   const [hasEntered, setHasEntered] = useState(false)
+  const [isMobile, setIsMobile] = useState(false)
+  const [swiped, setSwiped] = useState(false)
+  const swipeX = useMotionValue(0)
   const domain = getDomain(tool.url)
+
+  useEffect(() => {
+    setIsMobile(window.innerWidth < 768)
+  }, [])
 
   const screenshotUrl = tool.image_url || `https://api.microlink.io/?url=${encodeURIComponent(tool.url)}&screenshot=true&meta=false&embed=screenshot.url`
   const faviconUrl = tool.favicon_url || `https://www.google.com/s2/favicons?domain=${domain}&sz=64`
@@ -43,15 +50,71 @@ export function ToolCard({ tool, index, onDelete, onEdit, onOpen, viewMode = 'gr
         onAnimationComplete={() => setHasEntered(true)}
         onMouseEnter={() => setHovered(true)}
         onMouseLeave={() => setHovered(false)}
+        style={{ position: 'relative', overflow: 'hidden' }}
       >
+        {/* Swipe-to-reveal actions — mobile only */}
+        <div
+          className="list-swipe-actions"
+          style={{ position: 'absolute', right: 0, top: 0, bottom: 0, display: 'none', zIndex: 0 }}
+        >
+          <button
+            onClick={(e) => {
+              e.preventDefault()
+              e.stopPropagation()
+              animate(swipeX, 0, { type: 'spring', stiffness: 300, damping: 30 })
+              setSwiped(false)
+              onEdit(tool)
+            }}
+            style={swipeEditBtnStyle}
+          >
+            <Pencil size={15} strokeWidth={2} />
+            <span style={{ fontSize: 11, fontWeight: 600 }}>Edit</span>
+          </button>
+          <button
+            onClick={(e) => {
+              e.preventDefault()
+              e.stopPropagation()
+              animate(swipeX, 0, { type: 'spring', stiffness: 300, damping: 30 })
+              setSwiped(false)
+              onDelete(tool)
+            }}
+            style={swipeDeleteBtnStyle}
+          >
+            <Trash2 size={15} strokeWidth={2} />
+            <span style={{ fontSize: 11, fontWeight: 600 }}>Delete</span>
+          </button>
+        </div>
+
         <motion.a
           href={tool.url}
           target="_blank"
           rel="noopener noreferrer"
-          onClick={() => onOpen(tool)}
+          onClick={(e) => {
+            if (swiped) {
+              e.preventDefault()
+              animate(swipeX, 0, { type: 'spring', stiffness: 300, damping: 30 })
+              setSwiped(false)
+              return
+            }
+            onOpen(tool)
+          }}
+          drag={isMobile ? 'x' : false}
+          dragConstraints={{ right: 0, left: -144 }}
+          dragElastic={{ left: 0.05, right: 0 }}
+          dragMomentum={false}
+          onDragEnd={(_, info) => {
+            if (info.offset.x < -60) {
+              animate(swipeX, -144, { type: 'spring', stiffness: 300, damping: 30 })
+              setSwiped(true)
+            } else {
+              animate(swipeX, 0, { type: 'spring', stiffness: 300, damping: 30 })
+              setSwiped(false)
+            }
+          }}
           animate={{ backgroundColor: hovered ? '#f6f6f6' : '#ffffff' }}
           transition={{ duration: 0.12 }}
           style={{
+            x: swipeX,
             display: 'flex',
             alignItems: 'center',
             gap: 12,
@@ -60,6 +123,8 @@ export function ToolCard({ tool, index, onDelete, onEdit, onOpen, viewMode = 'gr
             textDecoration: 'none',
             color: 'inherit',
             cursor: 'pointer',
+            position: 'relative',
+            zIndex: 1,
           }}
         >
           {/* Index */}
@@ -395,4 +460,32 @@ const listActionBtnStyle: React.CSSProperties = {
   color: SUBTLE,
   cursor: 'pointer',
   padding: 0,
+}
+
+const swipeEditBtnStyle: React.CSSProperties = {
+  width: 72,
+  height: '100%',
+  background: '#ebebeb',
+  border: 'none',
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center',
+  justifyContent: 'center',
+  gap: 4,
+  color: FG,
+  cursor: 'pointer',
+}
+
+const swipeDeleteBtnStyle: React.CSSProperties = {
+  width: 72,
+  height: '100%',
+  background: '#ff3b30',
+  border: 'none',
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center',
+  justifyContent: 'center',
+  gap: 4,
+  color: '#fff',
+  cursor: 'pointer',
 }
