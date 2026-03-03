@@ -1,7 +1,6 @@
 'use client'
 
 import { useState, useEffect, useCallback, useRef } from 'react'
-import { createPortal } from 'react-dom'
 import { motion, AnimatePresence } from 'motion/react'
 import { SlidersHorizontal, Search, Plus } from 'lucide-react'
 import { supabase } from '@/lib/supabase'
@@ -26,10 +25,7 @@ export function SurfboardShell() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid')
   const [isScrolled, setIsScrolled] = useState(false)
-  const [mounted, setMounted] = useState(false)
   const mainRef = useRef<HTMLElement>(null)
-
-  useEffect(() => { setMounted(true) }, [])
 
   const fetchTools = useCallback(async () => {
     const { data } = await supabase
@@ -59,9 +55,7 @@ export function SurfboardShell() {
         e.preventDefault()
         setSearchOpen(true)
       }
-      const isTyping = (e.target as HTMLElement).tagName === 'INPUT' ||
-        (e.target as HTMLElement).tagName === 'TEXTAREA' ||
-        (e.target as HTMLElement).isContentEditable
+      const isTyping = (e.target as HTMLElement).tagName === 'INPUT' || (e.target as HTMLElement).tagName === 'TEXTAREA' || (e.target as HTMLElement).isContentEditable
       if ((e.key === 's' || e.key === 'S') && !showAdd && !editTool && !isTyping) {
         e.preventDefault()
         setShowAdd(true)
@@ -158,7 +152,6 @@ export function SurfboardShell() {
   }
 
   return (
-    <>
     <div className="shell-root" style={{ display: 'flex', height: '100vh', overflow: 'hidden' }}>
       {/* ── Mobile Bottom Bar ── */}
       <div className="mobile-bottom-bar">
@@ -406,56 +399,47 @@ export function SurfboardShell() {
 
 
 
+      {/* Search Overlay */}
+      <AnimatePresence>
+        {searchOpen && (
+          <SearchModal
+            tools={filtered}
+            search={search}
+            onSearchChange={setSearch}
+            onClose={() => setSearchOpen(false)}
+            onOpen={trackOpen}
+          />
+        )}
+      </AnimatePresence>
+
+      {/* Add / Edit */}
+      <AnimatePresence>
+        {(showAdd || editTool) && (
+          <ToolFormModal
+            tool={editTool}
+            onClose={() => {
+              setShowAdd(false)
+              setEditTool(null)
+            }}
+            onSaved={() => {
+              setShowAdd(false)
+              setEditTool(null)
+              fetchTools()
+            }}
+          />
+        )}
+      </AnimatePresence>
+      <AnimatePresence>
+        {deleteTool && (
+          <DeleteConfirmModal
+            toolName={deleteTool.name}
+            onClose={() => setDeleteTool(null)}
+            onConfirm={confirmDelete}
+            deleting={deleting}
+          />
+        )}
+      </AnimatePresence>
     </div>
-
-    {mounted && createPortal(
-      <>
-        {/* Search Overlay */}
-        <AnimatePresence>
-          {searchOpen && (
-            <SearchModal
-              tools={filtered}
-              search={search}
-              onSearchChange={setSearch}
-              onClose={() => setSearchOpen(false)}
-              onOpen={trackOpen}
-            />
-          )}
-        </AnimatePresence>
-
-        {/* Add / Edit */}
-        <AnimatePresence>
-          {(showAdd || editTool) && (
-            <ToolFormModal
-              tool={editTool}
-              onClose={() => {
-                setShowAdd(false)
-                setEditTool(null)
-              }}
-              onSaved={() => {
-                setShowAdd(false)
-                setEditTool(null)
-                fetchTools()
-              }}
-            />
-          )}
-        </AnimatePresence>
-
-        {/* Delete */}
-        <AnimatePresence>
-          {deleteTool && (
-            <DeleteConfirmModal
-              toolName={deleteTool.name}
-              onClose={() => setDeleteTool(null)}
-              onConfirm={confirmDelete}
-              deleting={deleting}
-            />
-          )}
-        </AnimatePresence>
-      </>,
-      document.body
-    )}
-</>
   )
 }
 

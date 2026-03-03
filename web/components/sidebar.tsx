@@ -205,7 +205,6 @@ export function Sidebar({
           </motion.button>
         </div>
         )}
-
         {/* ── Navigation ── */}
         <nav style={{ display: 'flex', flexDirection: 'column' }}>
           <motion.div
