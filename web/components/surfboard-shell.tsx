@@ -375,7 +375,7 @@ export function SurfboardShell() {
             </div>
           ) : (
             <div
-              className="card-grid"
+              className={viewMode === 'list' ? 'card-grid card-grid--list' : 'card-grid'}
               style={viewMode === 'list'
                 ? { display: 'flex', flexDirection: 'column', gap: 0 }
                 : { display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 64 }

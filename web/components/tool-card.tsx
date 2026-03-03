@@ -87,42 +87,53 @@ export function ToolCard({ tool, index, onDelete, onEdit, onOpen, viewMode = 'gr
             onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }}
           />
 
-          {/* Name + Description — hidden on mobile */}
-          <div
-            className="list-row-desc"
-            style={{ flex: 1, display: 'flex', alignItems: 'center', gap: 6, overflow: 'hidden', minWidth: 0 }}
-          >
-            <span
-              style={{
-                fontSize: 13,
-                fontWeight: 600,
-                color: FG,
-                whiteSpace: 'nowrap',
-                flexShrink: 0,
-                maxWidth: 200,
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
-              }}
-            >
-              {tool.name}
-            </span>
-            {tool.description && (
-              <>
-                <span style={{ fontSize: 13, color: SUBTLE, flexShrink: 0 }}>·</span>
+          {/* Content */}
+          <div style={{ flex: 1, overflow: 'hidden', minWidth: 0 }}>
+            {/* Name + Description — inline on desktop */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: 6, overflow: 'hidden' }}>
+              <span
+                style={{
+                  fontSize: 13,
+                  fontWeight: 600,
+                  color: FG,
+                  whiteSpace: 'nowrap',
+                  flexShrink: 0,
+                }}
+              >
+                {tool.name}
+              </span>
+              {tool.description && (
                 <span
+                  className="list-row-desc"
                   style={{
                     fontSize: 11.5,
                     color: SUBTLE,
                     overflow: 'hidden',
                     textOverflow: 'ellipsis',
                     whiteSpace: 'nowrap',
-                    lineHeight: 1.4,
+                    flexShrink: 1,
                   }}
                 >
+                  · {tool.description}
+                </span>
+              )}
+            </div>
+            {/* Description + Tags — only on mobile */}
+            <div className="list-row-mobile-sub" style={{ display: 'none', flexWrap: 'wrap', alignItems: 'center', gap: 4, marginTop: 3 }}>
+              {tool.description && (
+                <span style={{ fontSize: 11.5, color: SUBTLE, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '100%' }}>
                   {tool.description}
                 </span>
-              </>
-            )}
+              )}
+              {(tool.tags || []).slice(0, 3).map((tag) => (
+                <span
+                  key={tag}
+                  style={{ fontSize: 10, padding: '1px 6px', background: '#f2f2f2', borderRadius: 4, color: SUBTLE, whiteSpace: 'nowrap' }}
+                >
+                  {tag}
+                </span>
+              ))}
+            </div>
           </div>
 
           {/* Tags → replaced by edit/delete on hover — hidden on mobile */}
