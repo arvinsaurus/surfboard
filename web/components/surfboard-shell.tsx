@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect, useCallback, useRef } from 'react'
+import { createPortal } from 'react-dom'
 import { motion, AnimatePresence } from 'motion/react'
 import { SlidersHorizontal, Search, Plus } from 'lucide-react'
 import { supabase } from '@/lib/supabase'
@@ -25,7 +26,10 @@ export function SurfboardShell() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid')
   const [isScrolled, setIsScrolled] = useState(false)
+  const [mounted, setMounted] = useState(false)
   const mainRef = useRef<HTMLElement>(null)
+
+  useEffect(() => { setMounted(true) }, [])
 
   const fetchTools = useCallback(async () => {
     const { data } = await supabase
@@ -404,47 +408,54 @@ export function SurfboardShell() {
 
     </div>
 
-    {/* Search Overlay */}
-    <AnimatePresence>
-      {searchOpen && (
-        <SearchModal
-          tools={filtered}
-          search={search}
-          onSearchChange={setSearch}
-          onClose={() => setSearchOpen(false)}
-          onOpen={trackOpen}
-        />
-      )}
-    </AnimatePresence>
+    {mounted && createPortal(
+      <>
+        {/* Search Overlay */}
+        <AnimatePresence>
+          {searchOpen && (
+            <SearchModal
+              tools={filtered}
+              search={search}
+              onSearchChange={setSearch}
+              onClose={() => setSearchOpen(false)}
+              onOpen={trackOpen}
+            />
+          )}
+        </AnimatePresence>
 
-    {/* Add / Edit */}
-    <AnimatePresence>
-      {(showAdd || editTool) && (
-        <ToolFormModal
-          tool={editTool}
-          onClose={() => {
-            setShowAdd(false)
-            setEditTool(null)
-          }}
-          onSaved={() => {
-            setShowAdd(false)
-            setEditTool(null)
-            fetchTools()
-          }}
-        />
-      )}
-    </AnimatePresence>
-    <AnimatePresence>
-      {deleteTool && (
-        <DeleteConfirmModal
-          toolName={deleteTool.name}
-          onClose={() => setDeleteTool(null)}
-          onConfirm={confirmDelete}
-          deleting={deleting}
-        />
-      )}
-    </AnimatePresence>
-    </>
+        {/* Add / Edit */}
+        <AnimatePresence>
+          {(showAdd || editTool) && (
+            <ToolFormModal
+              tool={editTool}
+              onClose={() => {
+                setShowAdd(false)
+                setEditTool(null)
+              }}
+              onSaved={() => {
+                setShowAdd(false)
+                setEditTool(null)
+                fetchTools()
+              }}
+            />
+          )}
+        </AnimatePresence>
+
+        {/* Delete */}
+        <AnimatePresence>
+          {deleteTool && (
+            <DeleteConfirmModal
+              toolName={deleteTool.name}
+              onClose={() => setDeleteTool(null)}
+              onConfirm={confirmDelete}
+              deleting={deleting}
+            />
+          )}
+        </AnimatePresence>
+      </>,
+      document.body
+    )}
+</>
   )
 }
 
