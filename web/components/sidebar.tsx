@@ -260,11 +260,11 @@ export function Sidebar({
           display: 'flex',
           flexDirection: 'column',
           gap: isMobile ? 4 : 12,
-          padding: isMobile ? '0 20px calc(48px + env(safe-area-inset-bottom, 24px))' : undefined,
+          paddingBottom: isMobile ? 'calc(48px + env(safe-area-inset-bottom, 24px))' : undefined,
         }}
       >
         {isMobile && (
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
             <img src="/icon.png" alt="Surfboard" width={20} height={20} style={{ borderRadius: 6 }} />
             <span style={{ fontSize: 14, fontWeight: 700, color: FG }}>Surfboard</span>
           </div>
