@@ -1,16 +1,13 @@
-import type { Metadata, Viewport } from 'next'
+import type { Metadata } from 'next'
 import './globals.css'
-
-export const viewport: Viewport = {
-  width: 'device-width',
-  initialScale: 1,
-  viewportFit: 'cover',
-}
 
 export const metadata: Metadata = {
   title: 'Surfboard — Curated bookmarks for Morva Labs',
   description: 'A shared collection of design tools, resources, and inspiration curated by the Morva Labs team.',
   icons: { icon: '/icon.png' },
+  openGraph: {
+    images: ['/og-image.png'],
+  },
 }
 
 import { Toaster } from 'sonner'
