@@ -58,9 +58,16 @@ body {
   color: #111111;
 }
 
-/* Hide sidebar scrollbar */
+/* Hide scrollbars */
+.no-scrollbar::-webkit-scrollbar,
 .sidebar-hidden-scrollbar::-webkit-scrollbar {
   display: none;
+}
+
+.no-scrollbar,
+.sidebar-hidden-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
 
 /* Scrollbar */

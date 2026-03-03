@@ -80,7 +80,7 @@ export function SearchModal({ tools, search, onSearchChange, onClose, onOpen }: 
           <input
             ref={inputRef}
             type="text"
-            placeholder="what do you need?"
+            placeholder="What are you looking for?"
             value={search}
             onChange={(e) => onSearchChange(e.target.value)}
             style={{
@@ -111,7 +111,7 @@ export function SearchModal({ tools, search, onSearchChange, onClose, onOpen }: 
         </div>
 
         {/* Results */}
-        <div style={{ maxHeight: 320, overflowY: 'auto', paddingBottom: 10 }}>
+        <div className="no-scrollbar" style={{ maxHeight: 320, overflowY: 'auto', paddingBottom: 10 }}>
           {tools.length === 0 ? (
             <p
               style={{
