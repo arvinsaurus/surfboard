@@ -40,11 +40,17 @@ export function SurfboardShell() {
   // Keyboard shortcuts
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
-      if ((e.metaKey || e.ctrlKey) && e.key === 'f') {
+      // Ignore shortcuts if user is typing in an input or textarea
+      const isTyping = (e.target as HTMLElement).tagName === 'INPUT' ||
+        (e.target as HTMLElement).tagName === 'TEXTAREA' ||
+        (e.target as HTMLElement).isContentEditable;
+      if (isTyping) return;
+
+      if (e.key === 'f' || e.key === 'F') {
         e.preventDefault()
         setSearchOpen(true)
       }
-      if ((e.metaKey || e.ctrlKey) && e.key === 's' && !showAdd && !editTool) {
+      if ((e.key === 's' || e.key === 'S') && !showAdd && !editTool) {
         e.preventDefault()
         setShowAdd(true)
       }

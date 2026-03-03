@@ -151,7 +151,7 @@ export function Sidebar({
               style={searchBtnStyle}
             >
               <Search size={13} strokeWidth={2.4} />
-              <span style={{ fontSize: 11, color: SUBTLE }}>⌘F</span>
+              <span style={{ fontSize: 11, color: SUBTLE }}>F</span>
             </motion.button>
             <motion.button
               whileHover={{ scale: 1.02, backgroundColor: '#EEEEEE' }}
@@ -162,7 +162,7 @@ export function Sidebar({
             >
               <Plus size={14} strokeWidth={2.2} />
               <span>Add</span>
-              <span style={{ fontSize: 11, color: SUBTLE }}>⌘S</span>
+              <span style={{ fontSize: 11, color: SUBTLE }}>S</span>
             </motion.button>
           </div>
         )}
