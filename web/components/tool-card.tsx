@@ -100,18 +100,19 @@ export function ToolCard({ tool, index, onDelete, onEdit, onOpen, viewMode = 'gr
           }}
           drag={isMobile ? 'x' : false}
           dragConstraints={{ right: 0, left: -144 }}
-          dragElastic={{ left: 0.05, right: 0 }}
+          dragElastic={{ left: 0.18, right: 0.05 }}
           dragMomentum={false}
+          dragTransition={{ bounceStiffness: 500, bounceDamping: 28 }}
           onDragEnd={(_, info) => {
             if (info.offset.x < -60) {
-              animate(swipeX, -144, { type: 'spring', stiffness: 300, damping: 30 })
+              animate(swipeX, -144, { type: 'spring', stiffness: 500, damping: 32, mass: 0.6 })
               setSwiped(true)
             } else {
-              animate(swipeX, 0, { type: 'spring', stiffness: 300, damping: 30 })
+              animate(swipeX, 0, { type: 'spring', stiffness: 500, damping: 32, mass: 0.6 })
               setSwiped(false)
             }
           }}
-          animate={{ backgroundColor: hovered ? '#f6f6f6' : '#ffffff' }}
+          animate={{ backgroundColor: hovered && !isMobile ? '#f6f6f6' : '#ffffff' }}
           transition={{ duration: 0.12 }}
           style={{
             x: swipeX,
@@ -183,21 +184,25 @@ export function ToolCard({ tool, index, onDelete, onEdit, onOpen, viewMode = 'gr
                 </span>
               )}
             </div>
-            {/* Description + Tags — only on mobile */}
-            <div className="list-row-mobile-sub" style={{ display: 'none', flexWrap: 'wrap', alignItems: 'center', gap: 4, marginTop: 3 }}>
+            {/* Description + Tags — only on mobile, stacked vertically */}
+            <div className="list-row-mobile-sub" style={{ display: 'none', flexDirection: 'column', alignItems: 'flex-start', gap: 3, marginTop: 3 }}>
               {tool.description && (
-                <span style={{ fontSize: 11.5, color: SUBTLE, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '100%' }}>
+                <span style={{ fontSize: 11.5, color: SUBTLE, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '100%' }}>
                   {tool.description}
                 </span>
               )}
-              {(tool.tags || []).slice(0, 3).map((tag) => (
-                <span
-                  key={tag}
-                  style={{ fontSize: 10, padding: '1px 6px', background: '#f2f2f2', borderRadius: 4, color: SUBTLE, whiteSpace: 'nowrap' }}
-                >
-                  {tag}
-                </span>
-              ))}
+              {(tool.tags || []).length > 0 && (
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: 3 }}>
+                  {(tool.tags || []).slice(0, 3).map((tag) => (
+                    <span
+                      key={tag}
+                      style={{ fontSize: 10, padding: '1px 6px', background: '#f2f2f2', borderRadius: 4, color: SUBTLE, whiteSpace: 'nowrap' }}
+                    >
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
 

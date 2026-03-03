@@ -157,14 +157,14 @@ export function SurfboardShell() {
       <div className="mobile-bottom-bar">
         <button
           onClick={() => setMobileMenuOpen(true)}
-          style={{ ...mobileBarBtnStyle, width: 'auto', padding: '0 14px', gap: 7, flexShrink: 0 }}
+          style={{ ...mobileBarBtnStyle, width: 'auto', maxWidth: 160, padding: '0 14px', gap: 7, flexShrink: 0 }}
           aria-label="Open menu"
         >
-          <SlidersHorizontal size={14} strokeWidth={2} />
-          <span style={{ fontSize: 15, fontWeight: 600 }}>
+          <SlidersHorizontal size={14} strokeWidth={2} style={{ flexShrink: 0 }} />
+          <span style={{ fontSize: 15, fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
             {activeTag === null ? 'All' : activeTag === '__others' ? 'Others' : activeTag}
           </span>
-          <span style={{ fontSize: 13, opacity: 0.7 }}>{filtered.length}</span>
+          <span style={{ fontSize: 13, opacity: 0.7, flexShrink: 0 }}>{filtered.length}</span>
         </button>
         <button
           onClick={() => setSearchOpen(true)}
