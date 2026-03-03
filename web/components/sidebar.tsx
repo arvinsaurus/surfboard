@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { motion } from 'motion/react'
-import { Search, Plus, ArrowRight, Github, X } from 'lucide-react'
+import { Search, Plus, ArrowRight, Github, LayoutGrid, List } from 'lucide-react'
 
 const FG = 'rgba(0,0,0,0.70)'
 const SUBTLE = 'rgba(0,0,0,0.50)'
@@ -73,9 +73,10 @@ interface SidebarProps {
   onTagChange: (tag: string | null) => void
   onSearchOpen: () => void
   onAddOpen: () => void
-  onClose?: () => void
   othersCount: number
-  isMobile?: boolean
+  viewMode: 'grid' | 'list'
+  onViewModeChange: (mode: 'grid' | 'list') => void
+  showViewToggleInFooter?: boolean
 }
 
 export function Sidebar({
@@ -86,26 +87,27 @@ export function Sidebar({
   onTagChange,
   onSearchOpen,
   onAddOpen,
-  onClose,
   othersCount,
-  isMobile = false,
+  viewMode,
+  onViewModeChange,
+  showViewToggleInFooter = false,
 }: SidebarProps) {
   const [hoveredNav, setHoveredNav] = useState<string | null>(null)
 
   return (
     <aside
       style={{
-        width: isMobile ? '100%' : 256,
-        height: isMobile ? '100dvh' : '100vh',
-        position: isMobile ? 'relative' : 'fixed',
+        width: 256,
+        height: '100vh',
+        position: 'fixed',
         top: 0,
         left: 0,
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'space-between',
-        background: isMobile ? 'transparent' : '#fff',
+        background: '#fff',
         zIndex: 10,
-        padding: isMobile ? '16px 20px 0' : 16,
+        padding: 16,
         overflowY: 'auto',
         scrollbarWidth: 'none',
         msOverflowStyle: 'none',
@@ -113,87 +115,69 @@ export function Sidebar({
       className="sidebar-hidden-scrollbar"
     >
       <div>
-        {/* ── Mobile close button ── */}
-        {isMobile && (
-          <button
-            onClick={onClose}
+        {/* ── App Icon + Title (stacked) ── */}
+        <div className="sidebar-branding" style={{ marginBottom: 20 }}>
+          <div style={{ marginBottom: 14 }}>
+            <img
+              src="/icon.png"
+              alt="Surfboard"
+              width={32}
+              height={32}
+              style={{ borderRadius: 12, display: 'block' }}
+            />
+          </div>
+          <h1
             style={{
-              position: 'absolute',
-              top: 20,
-              right: 20,
-              width: 32,
-              height: 32,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              background: 'rgba(0,0,0,0.06)',
-              border: 'none',
-              borderRadius: '50%',
-              cursor: 'pointer',
+              fontSize: 13,
+              fontWeight: 700,
               color: FG,
+              letterSpacing: '-0.01em',
+              lineHeight: 1.2,
             }}
           >
-            <X size={16} strokeWidth={2} />
-          </button>
-        )}
+            Surfboard
+          </h1>
+          <p style={{ fontSize: 13, color: SUBTLE, marginTop: 3, lineHeight: 1.4 }}>
+            Curated bookmarks for Morva Labs
+          </p>
 
-        {/* ── App Icon + Title (stacked) ── */}
-        {!isMobile && (
-          <div className="sidebar-branding" style={{ marginBottom: 20 }}>
-            <div style={{ marginBottom: 14 }}>
-              <img
-                src="/icon.png"
-                alt="Surfboard"
-                width={32}
-                height={32}
-                style={{ borderRadius: 12, display: 'block' }}
-              />
+          {/* ── View Toggle (desktop: below branding) ── */}
+          {!showViewToggleInFooter && (
+            <div style={{ marginTop: 14 }}>
+              <ViewToggle viewMode={viewMode} onChange={onViewModeChange} />
             </div>
-            <h1
-              style={{
-                fontSize: 13,
-                fontWeight: 700,
-                color: FG,
-                letterSpacing: '-0.01em',
-                lineHeight: 1.2,
-              }}
-            >
-              Surfboard
-            </h1>
-            <p style={{ fontSize: 13, color: SUBTLE, marginTop: 3, lineHeight: 1.4 }}>
-              Curated bookmarks for Morva Labs
-            </p>
-          </div>
-        )}
+          )}
+        </div>
 
         {/* ── Action Pills ── */}
-        {!isMobile && (
-          <div className="sidebar-actions" style={{ display: 'flex', gap: 6, marginBottom: 24 }}>
-            <motion.button
-              whileHover={{ scale: 1.02, backgroundColor: '#EEEEEE' }}
-              whileTap={{ scale: 0.98 }}
-              transition={{ duration: 0.1 }}
-              onClick={onSearchOpen}
-              style={searchBtnStyle}
-            >
-              <Search size={13} strokeWidth={2.4} />
-              <span style={{ fontSize: 11, color: SUBTLE }}>⌘F</span>
-            </motion.button>
-            <motion.button
-              whileHover={{ scale: 1.02, backgroundColor: '#EEEEEE' }}
-              whileTap={{ scale: 0.98 }}
-              transition={{ duration: 0.1 }}
-              onClick={onAddOpen}
-              style={addBtnStyle}
-            >
-              <Plus size={14} strokeWidth={2.2} />
-              <span>Add</span>
-              <span style={{ fontSize: 11, color: SUBTLE }}>S</span>
-            </motion.button>
-          </div>
-        )}
+        <div className="sidebar-actions" style={{ display: 'flex', gap: 6, marginBottom: 24 }}>
+          <motion.button
+            whileHover={{ scale: 1.02, backgroundColor: '#EEEEEE' }}
+            whileTap={{ scale: 0.98 }}
+            transition={{ duration: 0.1 }}
+            onClick={onSearchOpen}
+            style={searchBtnStyle}
+          >
+            <Search size={13} strokeWidth={2.4} />
+            <span style={{ fontSize: 11, color: SUBTLE }}>⌘F</span>
+          </motion.button>
+          <motion.button
+            whileHover={{ scale: 1.02, backgroundColor: '#EEEEEE' }}
+            whileTap={{ scale: 0.98 }}
+            transition={{ duration: 0.1 }}
+            onClick={onAddOpen}
+            style={addBtnStyle}
+          >
+            <Plus size={14} strokeWidth={2.2} />
+            <span>Add</span>
+            <span style={{ fontSize: 11, color: SUBTLE }}>⌘S</span>
+          </motion.button>
+        </div>
 
         {/* ── Navigation ── */}
+        <div className="sidebar-nav-label" style={{ fontSize: 11, fontWeight: 600, color: SUBTLE, textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 12, paddingLeft: 4 }}>
+          Categories
+        </div>
         <nav style={{ display: 'flex', flexDirection: 'column' }}>
           <motion.div
             initial={{ opacity: 0, x: -4 }}
@@ -208,7 +192,6 @@ export function Sidebar({
               onMouseEnter={() => setHoveredNav('__all')}
               onMouseLeave={() => setHoveredNav(null)}
               onClick={() => onTagChange(null)}
-              isMobile={isMobile}
             />
           </motion.div>
           {allTags.map((tag, i) => (
@@ -226,7 +209,6 @@ export function Sidebar({
                 onMouseEnter={() => setHoveredNav(tag)}
                 onMouseLeave={() => setHoveredNav(null)}
                 onClick={() => onTagChange(activeTag === tag ? null : tag)}
-                isMobile={isMobile}
               />
             </motion.div>
           ))}
@@ -244,45 +226,93 @@ export function Sidebar({
                 onMouseEnter={() => setHoveredNav('__others')}
                 onMouseLeave={() => setHoveredNav(null)}
                 onClick={() => onTagChange(activeTag === '__others' ? null : '__others')}
-                isMobile={isMobile}
               />
             </motion.div>
           )}
         </nav>
       </div>
 
-      <div
-        className="sidebar-footer"
-        style={{
-          display: 'flex',
-          flexDirection: 'column',
-          gap: isMobile ? 4 : 12,
-          paddingBottom: isMobile ? 'calc(16px + env(safe-area-inset-bottom, 0px))' : undefined,
-        }}
-      >
-        {isMobile && (
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-            <img src="/icon.png" alt="Surfboard" width={20} height={20} style={{ borderRadius: 6 }} />
-            <span style={{ fontSize: 14, fontWeight: 700, color: FG }}>Surfboard</span>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
+        {/* ── View Toggle (mobile: above footer) ── */}
+        {showViewToggleInFooter && (
+          <div style={{ marginBottom: 16 }}>
+            <ViewToggle viewMode={viewMode} onChange={onViewModeChange} />
           </div>
         )}
-        {!isMobile && (
-          <motion.a
-            href="https://github.com/arvinsaurus/surfboard"
-            target="_blank"
-            rel="noopener noreferrer"
-            whileHover={{ scale: 1.02, backgroundColor: '#EEEEEE' }}
-            whileTap={{ scale: 0.98 }}
-            transition={{ duration: 0.1 }}
-            style={raycastBtnStyle}
-          >
-            <Github size={14} strokeWidth={2.4} />
-            <span>Install on Raycast</span>
-          </motion.a>
-        )}
-        <p style={{ fontSize: isMobile ? 12 : 11, color: SUBTLE }}>Made by Arvin in his free time</p>
+
+      <div className="sidebar-footer" style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+        <motion.a
+          href="https://github.com/arvinsaurus/surfboard"
+          target="_blank"
+          rel="noopener noreferrer"
+          whileHover={{ scale: 1.02, backgroundColor: '#EEEEEE' }}
+          whileTap={{ scale: 0.98 }}
+          transition={{ duration: 0.1 }}
+          style={raycastBtnStyle}
+        >
+          <Github size={14} strokeWidth={2.4} />
+          <span>Install on Raycast</span>
+        </motion.a>
+        <p style={{ fontSize: 11, color: SUBTLE }}>Made by Arvin in his free time</p>
+      </div>
       </div>
     </aside>
+  )
+}
+
+/* ── View Toggle ── */
+function ViewToggle({
+  viewMode,
+  onChange,
+}: {
+  viewMode: 'grid' | 'list'
+  onChange: (mode: 'grid' | 'list') => void
+}) {
+  return (
+    <div
+      style={{
+        display: 'inline-flex',
+        height: 30,
+        background: '#f2f2f2',
+        borderRadius: 8,
+        padding: 2,
+        gap: 2,
+      }}
+    >
+      {(['grid', 'list'] as const).map((mode) => {
+        const active = viewMode === mode
+        return (
+          <motion.button
+            key={mode}
+            onClick={() => onChange(mode)}
+            animate={{
+              backgroundColor: active ? '#ffffff' : 'transparent',
+              boxShadow: active ? '0 1px 2px rgba(0,0,0,0.08)' : 'none',
+            }}
+            transition={{ duration: 0.15, ease: 'easeOut' }}
+            style={{
+              width: 34,
+              height: 26,
+              borderRadius: 6,
+              border: 'none',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              color: active ? FG : SUBTLE,
+              padding: 0,
+              fontFamily: 'inherit',
+            }}
+            title={mode === 'grid' ? 'Grid view' : 'List view'}
+          >
+            {mode === 'grid'
+              ? <LayoutGrid size={13} strokeWidth={2} />
+              : <List size={13} strokeWidth={2} />
+            }
+          </motion.button>
+        )
+      })}
+    </div>
   )
 }
 
@@ -295,7 +325,6 @@ function NavItem({
   onMouseEnter,
   onMouseLeave,
   onClick,
-  isMobile = false,
 }: {
   label: string
   count: number
@@ -304,9 +333,8 @@ function NavItem({
   onMouseEnter: () => void
   onMouseLeave: () => void
   onClick: () => void
-  isMobile?: boolean
 }) {
-  const show = active || (!isMobile && hovered)
+  const show = active || hovered
   const textColor = active ? FG : SUBTLE
 
   return (
@@ -315,11 +343,11 @@ function NavItem({
         display: 'flex',
         alignItems: 'center',
         gap: 0,
-        padding: isMobile ? '5px 0' : '5px 0',
+        padding: '5px 0',
         background: 'none',
         border: 'none',
         cursor: 'pointer',
-        fontSize: isMobile ? 20 : 13,
+        fontSize: 13,
         lineHeight: 1.4,
         textAlign: 'left',
         width: '100%',
@@ -332,6 +360,7 @@ function NavItem({
       onMouseLeave={onMouseLeave}
       onClick={onClick}
     >
+      {/* Arrow: same color as the text so opacity matches */}
       <motion.span
         style={{
           display: 'inline-flex',
@@ -341,19 +370,19 @@ function NavItem({
           color: textColor,
         }}
         animate={{
-          width: show ? (isMobile ? 28 : 20) : 0,
+          width: show ? 20 : 0,
           opacity: show ? 1 : 0,
         }}
         transition={{ duration: 0.15, ease: 'easeOut' }}
       >
-        <ArrowRight size={isMobile ? 18 : 13} strokeWidth={2} style={{ flexShrink: 0 }} />
+        <ArrowRight size={13} strokeWidth={2} style={{ flexShrink: 0 }} />
       </motion.span>
       <span>{label}</span>
       <span
         style={{
-          fontSize: isMobile ? 16 : 13,
+          fontSize: 13,
           color: SUBTLE,
-          marginLeft: isMobile ? 8 : 6,
+          marginLeft: 6,
           fontVariantNumeric: 'tabular-nums',
           fontWeight: 400,
         }}
