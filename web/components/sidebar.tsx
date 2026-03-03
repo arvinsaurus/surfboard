@@ -224,6 +224,7 @@ export function Sidebar({
               onMouseEnter={() => setHoveredNav('__all')}
               onMouseLeave={() => setHoveredNav(null)}
               onClick={() => onTagChange(null)}
+              isMobile={isMobile}
             />
           </motion.div>
           {allTags.map((tag, i) => (
@@ -241,6 +242,7 @@ export function Sidebar({
                 onMouseEnter={() => setHoveredNav(tag)}
                 onMouseLeave={() => setHoveredNav(null)}
                 onClick={() => onTagChange(activeTag === tag ? null : tag)}
+                isMobile={isMobile}
               />
             </motion.div>
           ))}
@@ -258,6 +260,7 @@ export function Sidebar({
                 onMouseEnter={() => setHoveredNav('__others')}
                 onMouseLeave={() => setHoveredNav(null)}
                 onClick={() => onTagChange(activeTag === '__others' ? null : '__others')}
+                isMobile={isMobile}
               />
             </motion.div>
           )}
@@ -273,18 +276,34 @@ export function Sidebar({
         )}
 
       <div className="sidebar-footer" style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-        <motion.a
-          href="https://github.com/arvinsaurus/surfboard"
-          target="_blank"
-          rel="noopener noreferrer"
-          whileHover={{ scale: 1.02, backgroundColor: '#EEEEEE' }}
-          whileTap={{ scale: 0.98 }}
-          transition={{ duration: 0.1 }}
-          style={raycastBtnStyle}
-        >
-          <Github size={14} strokeWidth={2.4} />
-          <span>Install on Raycast</span>
-        </motion.a>
+        {isMobile && (
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 }}>
+            <img
+              src="/icon.png"
+              alt="Surfboard"
+              width={28}
+              height={28}
+              style={{ borderRadius: 8, display: 'block' }}
+            />
+            <span style={{ fontSize: 13, fontWeight: 700, color: FG, letterSpacing: '-0.01em' }}>
+              Surfboard
+            </span>
+          </div>
+        )}
+        {!isMobile && (
+          <motion.a
+            href="https://github.com/arvinsaurus/surfboard"
+            target="_blank"
+            rel="noopener noreferrer"
+            whileHover={{ scale: 1.02, backgroundColor: '#EEEEEE' }}
+            whileTap={{ scale: 0.98 }}
+            transition={{ duration: 0.1 }}
+            style={raycastBtnStyle}
+          >
+            <Github size={14} strokeWidth={2.4} />
+            <span>Install on Raycast</span>
+          </motion.a>
+        )}
         <p style={{ fontSize: 11, color: SUBTLE }}>Made by Arvin in his free time</p>
       </div>
       </div>
@@ -357,6 +376,7 @@ function NavItem({
   onMouseEnter,
   onMouseLeave,
   onClick,
+  isMobile = false,
 }: {
   label: string
   count: number
@@ -365,6 +385,7 @@ function NavItem({
   onMouseEnter: () => void
   onMouseLeave: () => void
   onClick: () => void
+  isMobile?: boolean
 }) {
   const show = active || hovered
   const textColor = active ? FG : SUBTLE
@@ -375,11 +396,11 @@ function NavItem({
         display: 'flex',
         alignItems: 'center',
         gap: 0,
-        padding: '5px 0',
+        padding: isMobile ? '8px 0' : '5px 0',
         background: 'none',
         border: 'none',
         cursor: 'pointer',
-        fontSize: 13,
+        fontSize: isMobile ? 20 : 13,
         lineHeight: 1.4,
         textAlign: 'left',
         width: '100%',
@@ -402,17 +423,17 @@ function NavItem({
           color: textColor,
         }}
         animate={{
-          width: show ? 20 : 0,
+          width: show ? (isMobile ? 26 : 20) : 0,
           opacity: show ? 1 : 0,
         }}
         transition={{ duration: 0.15, ease: 'easeOut' }}
       >
-        <ArrowRight size={13} strokeWidth={2} style={{ flexShrink: 0 }} />
+        <ArrowRight size={isMobile ? 16 : 13} strokeWidth={2} style={{ flexShrink: 0 }} />
       </motion.span>
       <span>{label}</span>
       <span
         style={{
-          fontSize: 13,
+          fontSize: isMobile ? 16 : 13,
           color: SUBTLE,
           marginLeft: 6,
           fontVariantNumeric: 'tabular-nums',
