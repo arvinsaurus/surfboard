@@ -39,6 +39,7 @@ export function SearchModal({ tools, search, onSearchChange, onClose, onOpen }: 
 
   return (
     <motion.div
+      className="modal-backdrop"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
@@ -46,20 +47,15 @@ export function SearchModal({ tools, search, onSearchChange, onClose, onOpen }: 
       style={{
         position: 'fixed',
         inset: 0,
-        background: 'rgba(238, 238, 238, 0.5)',
-        backdropFilter: 'blur(3px)',
-        display: 'flex',
-        alignItems: 'flex-start',
-        justifyContent: 'center',
-        paddingTop: '14vh',
         zIndex: 1000,
       }}
       onClick={onClose}
     >
       <motion.div
-        initial={{ opacity: 0, scale: 0.97, y: -8 }}
+        className="modal-content"
+        initial={{ opacity: 0, scale: 0.98, y: 20 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
-        exit={{ opacity: 0, scale: 0.97, y: -8 }}
+        exit={{ opacity: 0, scale: 0.98, y: 20 }}
         transition={{ duration: 0.2, ease: 'easeOut' }}
         style={{
           background: 'rgba(245, 245, 245, 0.90)',
@@ -70,9 +66,11 @@ export function SearchModal({ tools, search, onSearchChange, onClose, onOpen }: 
           maxWidth: 480,
           boxShadow: '0 16px 48px 0 rgba(0, 0, 0, 0.10)',
           overflow: 'hidden',
+          marginTop: '14vh'
         }}
         onClick={(e) => e.stopPropagation()}
       >
+        <div className="modal-handle" />
         <div
           style={{
             display: 'flex',

@@ -110,7 +110,7 @@ export function Sidebar({
     >
       <div>
         {/* ── App Icon + Title (stacked) ── */}
-        <div style={{ marginBottom: 20 }}>
+        <div className="sidebar-branding" style={{ marginBottom: 20 }}>
           <div style={{ marginBottom: 14 }}>
             <img
               src="/icon.png"
@@ -137,7 +137,7 @@ export function Sidebar({
         </div>
 
         {/* ── Action Pills ── */}
-        <div style={{ display: 'flex', gap: 6, marginBottom: 24 }}>
+        <div className="sidebar-actions" style={{ display: 'flex', gap: 6, marginBottom: 24 }}>
           <motion.button
             whileHover={{ scale: 1.02, backgroundColor: '#EEEEEE' }}
             whileTap={{ scale: 0.98 }}
@@ -162,6 +162,9 @@ export function Sidebar({
         </div>
 
         {/* ── Navigation ── */}
+        <div className="sidebar-nav-label" style={{ fontSize: 11, fontWeight: 600, color: SUBTLE, textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 12, paddingLeft: 4 }}>
+          Categories
+        </div>
         <nav style={{ display: 'flex', flexDirection: 'column' }}>
           <motion.div
             initial={{ opacity: 0, x: -4 }}
@@ -216,7 +219,7 @@ export function Sidebar({
         </nav>
       </div>
 
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+      <div className="sidebar-footer" style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
         <motion.a
           href="https://github.com/arvinsaurus/surfboard"
           target="_blank"

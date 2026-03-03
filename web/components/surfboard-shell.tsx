@@ -240,7 +240,7 @@ export function SurfboardShell() {
               onClick={() => setMobileMenuOpen(false)}
             />
             <motion.div
-              className="mobile-sidebar"
+              className="sidebar-drawer"
               initial={{ x: -280 }}
               animate={{ x: 0 }}
               exit={{ x: -280 }}

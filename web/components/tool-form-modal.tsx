@@ -90,6 +90,7 @@ export function ToolFormModal({ tool, onClose, onSaved }: ToolFormModalProps) {
 
   return (
     <motion.div
+      className="modal-backdrop"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
@@ -97,20 +98,15 @@ export function ToolFormModal({ tool, onClose, onSaved }: ToolFormModalProps) {
       style={{
         position: 'fixed',
         inset: 0,
-        background: 'rgba(238, 238, 238, 0.5)',
-        backdropFilter: 'blur(4px)',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
         zIndex: 1000,
-        padding: 20,
       }}
       onClick={onClose}
     >
       <motion.div
-        initial={{ opacity: 0, scale: 0.98, y: 12 }}
+        className="modal-content"
+        initial={{ opacity: 0, scale: 0.98, y: 20 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
-        exit={{ opacity: 0, scale: 0.98, y: 12 }}
+        exit={{ opacity: 0, scale: 0.98, y: 20 }}
         transition={{ duration: 0.25, ease: [0.23, 1, 0.32, 1] }}
         style={{
           background: 'rgba(255, 255, 255, 0.90)',
@@ -126,6 +122,7 @@ export function ToolFormModal({ tool, onClose, onSaved }: ToolFormModalProps) {
         }}
         onClick={(e) => e.stopPropagation()}
       >
+        <div className="modal-handle" />
         {/* Header Overlay (ESC) */}
         <div style={{ position: 'absolute', top: 16, right: 16 }}>
           <div

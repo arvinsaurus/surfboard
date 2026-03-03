@@ -148,11 +148,6 @@ textarea:focus {
   display: none;
 }
 
-/* ── Sidebar Overlay (mobile) ── */
-.sidebar-overlay {
-  display: none;
-}
-
 /* ── Responsive ── */
 @media (max-width: 768px) {
 
@@ -183,48 +178,77 @@ textarea:focus {
     border-bottom: 1px solid rgba(0, 0, 0, 0.06);
   }
 
-  .desktop-sidebar {
+  /* ── Sidebar drawer elements to hide on mobile ── */
+  .sidebar-branding,
+  .sidebar-actions,
+  .sidebar-footer {
     display: none !important;
   }
 
-  .sidebar-overlay {
-    display: block;
-    position: fixed;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.25);
-    z-index: 90;
+  .sidebar-nav-label {
+    display: block !important;
+    padding: 12px 16px 8px !important;
+    font-size: 11px;
+    font-weight: 600;
+    color: rgba(0, 0, 0, 0.35);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
   }
 
-  .mobile-sidebar {
+  .sidebar-drawer {
     position: fixed !important;
     top: 0 !important;
     left: 0 !important;
     width: 280px !important;
     height: 100vh !important;
-    z-index: 100 !important;
-    box-shadow: 8px 0 24px rgba(0, 0, 0, 0.08);
+    z-index: 120 !important;
+    background: #fff !important;
+    box-shadow: 20px 0 60px rgba(0, 0, 0, 0.1), 0 0 0 1px rgba(0, 0, 0, 0.05) !important;
+    overflow-y: auto !important;
   }
 
-  .main-content {
-    margin-left: 0 !important;
-    height: auto !important;
-    flex: 1 !important;
+  .sidebar-overlay {
+    background: rgba(0, 0, 0, 0.45) !important;
+    backdrop-filter: blur(4px) !important;
+    -webkit-backdrop-filter: blur(4px) !important;
+    position: fixed !important;
+    inset: 0 !important;
+    z-index: 110 !important;
+    display: block !important;
   }
 
-  .main-blur-top {
-    display: none !important;
+  /* ── Bottom Sheet Modals ── */
+  .modal-backdrop {
+    display: flex !important;
+    align-items: flex-end !important;
+    justify-content: center !important;
+    padding: 0 !important;
+    z-index: 2000 !important;
+    background: rgba(0, 0, 0, 0.4) !important;
+    backdrop-filter: blur(8px) !important;
   }
 
-  .main-blur-bottom {
-    left: 0 !important;
+  .modal-content {
+    max-width: 100% !important;
+    width: 100% !important;
+    border-radius: 20px 20px 0 0 !important;
+    max-height: 94vh !important;
+    overflow-y: auto !important;
+    padding-top: 0 !important;
+    box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.1) !important;
   }
 
-  .card-grid {
-    grid-template-columns: 1fr !important;
-    gap: 24px !important;
+  .modal-handle {
+    display: block !important;
+    width: 36px;
+    height: 5px;
+    background: rgba(0, 0, 0, 0.1);
+    border-radius: 99px;
+    margin: 12px auto 4px;
+    flex-shrink: 0;
   }
+}
 
-  .main-inner {
-    padding: 20px 16px 72px !important;
-  }
+.modal-handle {
+  display: none;
 }

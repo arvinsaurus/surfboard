@@ -16,6 +16,7 @@ interface DeleteConfirmModalProps {
 export function DeleteConfirmModal({ toolName, onClose, onConfirm, deleting }: DeleteConfirmModalProps) {
     return (
         <motion.div
+            className="modal-backdrop"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -23,20 +24,15 @@ export function DeleteConfirmModal({ toolName, onClose, onConfirm, deleting }: D
             style={{
                 position: 'fixed',
                 inset: 0,
-                background: 'rgba(238, 238, 238, 0.5)',
-                backdropFilter: 'blur(4px)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
                 zIndex: 1100,
-                padding: 20,
             }}
             onClick={onClose}
         >
             <motion.div
-                initial={{ opacity: 0, scale: 0.98, y: 12 }}
+                className="modal-content"
+                initial={{ opacity: 0, scale: 0.98, y: 20 }}
                 animate={{ opacity: 1, scale: 1, y: 0 }}
-                exit={{ opacity: 0, scale: 0.98, y: 12 }}
+                exit={{ opacity: 0, scale: 0.98, y: 20 }}
                 transition={{ duration: 0.25, ease: [0.23, 1, 0.32, 1] }}
                 style={{
                     background: 'rgba(255, 255, 255, 0.90)',
@@ -47,11 +43,12 @@ export function DeleteConfirmModal({ toolName, onClose, onConfirm, deleting }: D
                     maxWidth: 360,
                     boxShadow: '0 16px 48px 0 rgba(0, 0, 0, 0.10)',
                     position: 'relative',
-                    padding: '24px 20px 20px',
+                    padding: '8px 20px 20px',
                     textAlign: 'center',
                 }}
                 onClick={(e) => e.stopPropagation()}
             >
+                <div className="modal-handle" />
                 <div
                     style={{
                         width: 32,
