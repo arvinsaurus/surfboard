@@ -117,7 +117,14 @@ export default function SurfboardSearch() {
                     title={tool.name}
                     subtitle={tool.description || ""}
                     accessories={[
-                        { text: tool.tags.join(", "), icon: Icon.Tag },
+                        {
+                            text: tool.tags.length === 0
+                                ? undefined
+                                : tool.tags.length === 1
+                                    ? tool.tags[0]
+                                    : `${tool.tags[0]} +${tool.tags.length - 1}`,
+                            icon: Icon.Tag,
+                        },
                         { text: `by ${tool.saved_by}`, icon: Icon.Person },
                     ]}
                     actions={
