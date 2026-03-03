@@ -201,7 +201,7 @@ export function Sidebar({
           >
             <Plus size={14} strokeWidth={2.2} />
             <span>Add</span>
-            <span style={{ fontSize: 11, color: SUBTLE }}>⌘S</span>
+            <span style={{ fontSize: 11, color: SUBTLE }}>S</span>
           </motion.button>
         </div>
         )}
