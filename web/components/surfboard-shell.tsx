@@ -55,7 +55,10 @@ export function SurfboardShell() {
         e.preventDefault()
         setSearchOpen(true)
       }
-      if ((e.metaKey || e.ctrlKey) && e.key === 's' && !showAdd && !editTool) {
+      const isTyping = (e.target as HTMLElement).tagName === 'INPUT' ||
+        (e.target as HTMLElement).tagName === 'TEXTAREA' ||
+        (e.target as HTMLElement).isContentEditable
+      if ((e.key === 's' || e.key === 'S') && !showAdd && !editTool && !isTyping) {
         e.preventDefault()
         setShowAdd(true)
       }
