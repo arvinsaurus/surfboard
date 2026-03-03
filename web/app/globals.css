@@ -278,6 +278,7 @@ textarea:focus {
     left: 0 !important;
     width: 100vw !important;
     height: 100vh !important;
+    height: 100dvh !important;
     z-index: 120 !important;
     background: rgba(255, 255, 255, 0.60) !important;
     backdrop-filter: blur(24px) !important;

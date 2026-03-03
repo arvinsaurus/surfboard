@@ -96,7 +96,7 @@ export function Sidebar({
     <aside
       style={{
         width: isMobile ? '100%' : 256,
-        height: '100vh',
+        height: isMobile ? '100dvh' : '100vh',
         position: isMobile ? 'relative' : 'fixed',
         top: 0,
         left: 0,
@@ -105,7 +105,7 @@ export function Sidebar({
         justifyContent: 'space-between',
         background: isMobile ? 'transparent' : '#fff',
         zIndex: 10,
-        padding: isMobile ? '32px 20px 0' : 16,
+        padding: isMobile ? '16px 20px 0' : 16,
         overflowY: 'auto',
         scrollbarWidth: 'none',
         msOverflowStyle: 'none',
@@ -260,7 +260,7 @@ export function Sidebar({
           display: 'flex',
           flexDirection: 'column',
           gap: isMobile ? 4 : 12,
-          padding: isMobile ? '0 20px calc(28px + env(safe-area-inset-bottom, 16px))' : undefined,
+          padding: isMobile ? '0 20px calc(48px + env(safe-area-inset-bottom, 24px))' : undefined,
         }}
       >
         {isMobile && (
