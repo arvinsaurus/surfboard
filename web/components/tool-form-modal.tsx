@@ -94,34 +94,52 @@ export function ToolFormModal({ tool, onClose, onSaved }: ToolFormModalProps) {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      transition={{ duration: 0.25 }}
+      transition={{ duration: 0.15 }}
+      style={{
+        position: 'fixed',
+        inset: 0,
+        zIndex: 1000,
+      }}
       onClick={onClose}
     >
       <motion.div
         className="modal-content"
-        drag="y"
-        dragConstraints={{ top: 0 }}
-        dragElastic={0.2}
-        onDragEnd={(_, info) => {
-          if (info.offset.y > 100) onClose()
-        }}
-        initial={{ opacity: 0, scale: 0.98, y: 15 }}
+        initial={{ opacity: 0, scale: 0.98, y: 20 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
-        exit={{ opacity: 0, scale: 0.98, y: 300 }}
-        transition={{
-          type: 'spring',
-          damping: 30,
-          stiffness: 400,
-          mass: 0.8
-        }}
+        exit={{ opacity: 0, scale: 0.98, y: 20 }}
+        transition={{ duration: 0.25, ease: [0.23, 1, 0.32, 1] }}
         style={{
+          background: 'rgba(255, 255, 255, 0.90)',
+          backdropFilter: 'blur(2px)',
+          WebkitBackdropFilter: 'blur(2px)',
+          borderRadius: 12,
+          width: '100%',
           maxWidth: 480,
           maxHeight: '90vh',
           overflow: 'visible',
+          boxShadow: '0 16px 48px 0 rgba(0, 0, 0, 0.10)',
+          position: 'relative',
         }}
         onClick={(e) => e.stopPropagation()}
       >
         <div className="modal-handle" />
+        {/* Header Overlay (ESC) */}
+        <div style={{ position: 'absolute', top: 16, right: 16 }}>
+          <div
+            style={{
+              fontSize: 10,
+              fontWeight: 600,
+              color: SUBTLE,
+              background: '#f2f2f2',
+              border: '1px solid rgba(0,0,0,0.05)',
+              padding: '2px 6px',
+              borderRadius: 4,
+              letterSpacing: '0.02em',
+            }}
+          >
+            ESC
+          </div>
+        </div>
 
         {/* Centered Header */}
         <div
@@ -332,17 +350,19 @@ export function ToolFormModal({ tool, onClose, onSaved }: ToolFormModalProps) {
 
         {/* Footer */}
         <div
+          className="modal-footer"
           style={{
             display: 'flex',
+            justifyContent: 'flex-end',
             alignItems: 'center',
-            gap: 8,
+            gap: 12,
             padding: '16px 12px 12px',
           }}
         >
           <button
             onClick={onClose}
             className="modal-action-btn"
-            style={{ ...cancelBtnStyle, flex: 1, justifyContent: 'center' }}
+            style={cancelBtnStyle}
             onMouseEnter={e => e.currentTarget.style.background = '#EEEEEE'}
             onMouseLeave={e => e.currentTarget.style.background = '#f5f5f5'}
           >
@@ -354,8 +374,6 @@ export function ToolFormModal({ tool, onClose, onSaved }: ToolFormModalProps) {
             className="modal-action-btn"
             style={{
               ...saveBtnStyle,
-              flex: 1,
-              justifyContent: 'center',
               opacity: saving ? 0.6 : 1,
             }}
             onMouseEnter={e => {

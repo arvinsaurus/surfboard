@@ -348,9 +348,16 @@ textarea:focus {
     height: 44px !important;
   }
 
+  .modal-footer {
+    flex-direction: column !important;
+    gap: 8px !important;
+  }
+
   .modal-action-btn {
+    width: 100% !important;
     height: 44px !important;
     padding: 0 20px !important;
+    justify-content: center !important;
   }
 }
 
