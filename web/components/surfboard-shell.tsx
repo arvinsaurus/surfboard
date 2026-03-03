@@ -24,6 +24,7 @@ export function SurfboardShell() {
   const [searchOpen, setSearchOpen] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid')
+  const [mainHovered, setMainHovered] = useState(false)
 
   const fetchTools = useCallback(async () => {
     const { data } = await supabase
@@ -287,10 +288,14 @@ export function SurfboardShell() {
           overflowY: 'auto',
           position: 'relative',
         }}
+        onMouseEnter={() => setMainHovered(true)}
+        onMouseLeave={() => setMainHovered(false)}
       >
         {/* Top blur / fade edge */}
-        <div
+        <motion.div
           className="main-blur-top"
+          animate={{ opacity: mainHovered ? 1 : 0 }}
+          transition={{ duration: 0.2, ease: 'easeOut' }}
           style={{
             position: 'sticky',
             top: 0,
