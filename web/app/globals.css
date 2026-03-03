@@ -157,6 +157,16 @@ textarea:focus {
   display: none;
 }
 
+/* ── Modal backdrop (desktop) ── */
+.modal-backdrop {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  background: rgba(0, 0, 0, 0.18);
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+}
+
 /* ── Responsive ── */
 @media (max-width: 768px) {
 
@@ -274,6 +284,9 @@ textarea:focus {
 
   .main-content {
     margin-left: 0 !important;
+    height: auto !important;
+    overflow-y: visible !important;
+    overflow-x: hidden !important;
   }
 
   .main-inner {

@@ -207,9 +207,6 @@ export function Sidebar({
         )}
 
         {/* ── Navigation ── */}
-        <div className="sidebar-nav-label" style={{ fontSize: 11, fontWeight: 600, color: SUBTLE, textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 12, paddingLeft: 4 }}>
-          Categories
-        </div>
         <nav style={{ display: 'flex', flexDirection: 'column' }}>
           <motion.div
             initial={{ opacity: 0, x: -4 }}
