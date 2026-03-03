@@ -359,6 +359,7 @@ export function ToolFormModal({ tool, onClose, onSaved }: ToolFormModalProps) {
         >
           <button
             onClick={onClose}
+            className="modal-action-btn"
             style={cancelBtnStyle}
             onMouseEnter={e => e.currentTarget.style.background = '#EEEEEE'}
             onMouseLeave={e => e.currentTarget.style.background = '#f5f5f5'}
@@ -368,6 +369,7 @@ export function ToolFormModal({ tool, onClose, onSaved }: ToolFormModalProps) {
           <button
             onClick={handleSubmit}
             disabled={saving}
+            className="modal-action-btn"
             style={{
               ...saveBtnStyle,
               opacity: saving ? 0.6 : 1,

@@ -312,6 +312,22 @@ textarea:focus {
     margin: 12px auto 4px;
     flex-shrink: 0;
   }
+
+  /* Prevent iOS Safari from zooming on input focus */
+  input,
+  textarea {
+    font-size: 16px !important;
+  }
+
+  /* 44px touch targets */
+  input.form-input {
+    height: 44px !important;
+  }
+
+  .modal-action-btn {
+    height: 44px !important;
+    padding: 0 20px !important;
+  }
 }
 
 .modal-handle {
