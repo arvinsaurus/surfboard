@@ -220,6 +220,7 @@ textarea:focus {
 
   .main-content {
     margin-left: 0 !important;
+    padding-top: env(safe-area-inset-top) !important;
   }
 
   .main-blur-bottom {
@@ -259,7 +260,7 @@ textarea:focus {
   }
 
   .main-inner {
-    padding: 16px 16px 72px !important;
+    padding: 16px 16px calc(72px + env(safe-area-inset-bottom, 0px)) !important;
   }
 
   /* ── Sidebar drawer elements to hide on mobile ── */
