@@ -2,15 +2,7 @@
 // Bulk import multiple URLs at once with shared tags.
 // Paste URLs (one per line), pick tags, hit Enter — all saved.
 
-import {
-  Action,
-  ActionPanel,
-  Form,
-  showToast,
-  Toast,
-  popToRoot,
-  getPreferenceValues,
-} from "@raycast/api";
+import { Action, ActionPanel, Form, showToast, Toast, popToRoot, getPreferenceValues } from "@raycast/api";
 import { useState } from "react";
 import { supabase } from "./supabase";
 
@@ -34,17 +26,15 @@ export default function SurfboardImport() {
   const { memberName } = getPreferenceValues<{ memberName: string }>();
   const [isLoading, setIsLoading] = useState(false);
 
-  async function handleSubmit(values: {
-    urls: string;
-    tags: string[];
-    customTags: string;
-    description: string;
-  }) {
+  async function handleSubmit(values: { urls: string; tags: string[]; customTags: string; description: string }) {
     try {
       // Combine preset tags + custom tags
       const presetTags = values.tags || [];
       const extraTags = values.customTags
-        ? values.customTags.split(",").map((t) => t.trim()).filter(Boolean)
+        ? values.customTags
+            .split(",")
+            .map((t) => t.trim())
+            .filter(Boolean)
         : [];
       const allTags = [...presetTags, ...extraTags];
 
@@ -144,16 +134,8 @@ export default function SurfboardImport() {
           <Form.TagPicker.Item key={tag} value={tag} title={tag} />
         ))}
       </Form.TagPicker>
-      <Form.TextField
-        id="customTags"
-        title="Custom Tags (optional)"
-        placeholder="e.g. Gradients, Hero Sections"
-      />
-      <Form.TextField
-        id="description"
-        title="Note for all (optional)"
-        placeholder="e.g. Found these on Twitter"
-      />
+      <Form.TextField id="customTags" title="Custom Tags (optional)" placeholder="e.g. Gradients, Hero Sections" />
+      <Form.TextField id="description" title="Note for all (optional)" placeholder="e.g. Found these on Twitter" />
     </Form>
   );
 }

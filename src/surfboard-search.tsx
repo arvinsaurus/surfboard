@@ -2,158 +2,140 @@
 // This command lets you search for tools by typing keywords.
 // It searches across tool names, descriptions, and tags.
 
-import {
-    Action,
-    ActionPanel,
-    Icon,
-    List,
-    useNavigation,
-    confirmAlert,
-    Alert,
-    showToast,
-    Toast,
-} from "@raycast/api";
+import { Action, ActionPanel, Icon, List, confirmAlert, Alert, showToast, Toast } from "@raycast/api";
 import { useEffect, useState } from "react";
 import { supabase } from "./supabase";
 import { EditTool } from "./edit-tool";
 
 // TypeScript type — describes what a "tool" looks like
 interface Tool {
-    id: string;
-    url: string;
-    name: string;
-    description: string | null;
-    favicon_url: string | null;
-    tags: string[];
-    saved_by: string;
-    times_opened: number;
-    created_at: string;
+  id: string;
+  url: string;
+  name: string;
+  description: string | null;
+  favicon_url: string | null;
+  tags: string[];
+  saved_by: string;
+  times_opened: number;
+  created_at: string;
 }
 
 export default function SurfboardSearch() {
-    // State: the list of tools, whether we're loading, and what the user typed
-    const [tools, setTools] = useState<Tool[]>([]);
-    const [isLoading, setIsLoading] = useState(true);
-    const [searchText, setSearchText] = useState("");
+  // State: the list of tools, whether we're loading, and what the user typed
+  const [tools, setTools] = useState<Tool[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [searchText, setSearchText] = useState("");
 
-    // Re-fetch tools whenever the search text changes
-    useEffect(() => {
+  // Re-fetch tools whenever the search text changes
+  useEffect(() => {
+    fetchTools();
+  }, [searchText]);
+
+  async function fetchTools() {
+    setIsLoading(true);
+
+    // Fetch all tools from Supabase, newest first
+    const { data, error } = await supabase.from("tools").select("*").order("created_at", { ascending: false });
+
+    if (!error && data) {
+      let results = data as Tool[];
+
+      // Also filter by tags on the client side
+      // (because Supabase array search needs exact matches,
+      //  but we want partial matching like "back" → "Backgrounds")
+      if (searchText) {
+        const search = searchText.toLowerCase();
+        results = results.filter(
+          (tool) =>
+            tool.name.toLowerCase().includes(search) ||
+            (tool.description || "").toLowerCase().includes(search) ||
+            tool.tags.some((tag) => tag.toLowerCase().includes(search)),
+        );
+      }
+
+      setTools(results);
+    }
+
+    setIsLoading(false);
+  }
+
+  // When someone opens a tool, increment the counter
+  async function trackOpen(tool: Tool) {
+    await supabase
+      .from("tools")
+      .update({ times_opened: tool.times_opened + 1 })
+      .eq("id", tool.id);
+  }
+
+  async function handleDelete(tool: Tool) {
+    if (
+      await confirmAlert({
+        title: "Delete Tool",
+        message: `Are you sure you want to delete "${tool.name}"?`,
+        primaryAction: {
+          title: "Delete",
+          style: Alert.ActionStyle.Destructive,
+        },
+      })
+    ) {
+      try {
+        const { error } = await supabase.from("tools").delete().eq("id", tool.id);
+        if (error) throw error;
+        await showToast({ style: Toast.Style.Success, title: "Deleted 🏄" });
         fetchTools();
-    }, [searchText]);
-
-    async function fetchTools() {
-        setIsLoading(true);
-
-        // Fetch all tools from Supabase, newest first
-        const { data, error } = await supabase
-            .from("tools")
-            .select("*")
-            .order("created_at", { ascending: false });
-
-        if (!error && data) {
-            let results = data as Tool[];
-
-            // Also filter by tags on the client side
-            // (because Supabase array search needs exact matches,
-            //  but we want partial matching like "back" → "Backgrounds")
-            if (searchText) {
-                const search = searchText.toLowerCase();
-                results = results.filter(
-                    (tool) =>
-                        tool.name.toLowerCase().includes(search) ||
-                        (tool.description || "").toLowerCase().includes(search) ||
-                        tool.tags.some((tag) => tag.toLowerCase().includes(search))
-                );
-            }
-
-            setTools(results);
-        }
-
-        setIsLoading(false);
+      } catch {
+        await showToast({ style: Toast.Style.Failure, title: "Failed to delete" });
+      }
     }
+  }
 
-    // When someone opens a tool, increment the counter
-    async function trackOpen(tool: Tool) {
-        await supabase
-            .from("tools")
-            .update({ times_opened: tool.times_opened + 1 })
-            .eq("id", tool.id);
-    }
-
-    async function handleDelete(tool: Tool) {
-        if (
-            await confirmAlert({
-                title: "Delete Tool",
-                message: `Are you sure you want to delete "${tool.name}"?`,
-                primaryAction: {
-                    title: "Delete",
-                    style: Alert.ActionStyle.Destructive,
-                },
-            })
-        ) {
-            try {
-                const { error } = await supabase.from("tools").delete().eq("id", tool.id);
-                if (error) throw error;
-                await showToast({ style: Toast.Style.Success, title: "Deleted 🏄" });
-                fetchTools();
-            } catch (e) {
-                await showToast({ style: Toast.Style.Failure, title: "Failed to delete" });
-            }
-        }
-    }
-
-    // The list UI
-    return (
-        <List
-            isLoading={isLoading}
-            searchBarPlaceholder="What do you need? (e.g. background, icons, fonts)"
-            onSearchTextChange={setSearchText}
-            throttle
-        >
-            {tools.map((tool) => (
-                <List.Item
-                    key={tool.id}
-                    icon={tool.favicon_url || Icon.Globe}
-                    title={tool.name}
-                    subtitle={tool.description || ""}
-                    accessories={[
-                        {
-                            text: tool.tags.length === 0
-                                ? undefined
-                                : tool.tags.length === 1
-                                    ? tool.tags[0]
-                                    : `${tool.tags[0]} +${tool.tags.length - 1}`,
-                            icon: Icon.Tag,
-                        },
-                        { text: `by ${tool.saved_by}`, icon: Icon.Person },
-                    ]}
-                    actions={
-                        <ActionPanel>
-                            <Action.OpenInBrowser
-                                url={tool.url}
-                                onOpen={() => trackOpen(tool)}
-                            />
-                            <Action.Push
-                                title="Edit Tool"
-                                icon={Icon.Pencil}
-                                target={<EditTool tool={tool} onEdit={fetchTools} />}
-                                shortcut={{ modifiers: ["cmd"], key: "e" }}
-                            />
-                            <Action.CopyToClipboard
-                                content={tool.url}
-                                shortcut={{ modifiers: ["cmd"], key: "c" }}
-                            />
-                            <Action
-                                title="Delete Tool"
-                                icon={Icon.Trash}
-                                style={Action.Style.Destructive}
-                                shortcut={{ modifiers: ["ctrl"], key: "x" }}
-                                onAction={() => handleDelete(tool)}
-                            />
-                        </ActionPanel>
-                    }
-                />
-            ))}
-        </List>
-    );
+  // The list UI
+  return (
+    <List
+      isLoading={isLoading}
+      searchBarPlaceholder="What do you need? (e.g. background, icons, fonts)"
+      onSearchTextChange={setSearchText}
+      throttle
+    >
+      {tools.map((tool) => (
+        <List.Item
+          key={tool.id}
+          icon={tool.favicon_url || Icon.Globe}
+          title={tool.name}
+          subtitle={tool.description || ""}
+          accessories={[
+            {
+              text:
+                tool.tags.length === 0
+                  ? undefined
+                  : tool.tags.length === 1
+                    ? tool.tags[0]
+                    : `${tool.tags[0]} +${tool.tags.length - 1}`,
+              icon: Icon.Tag,
+            },
+            { text: `by ${tool.saved_by}`, icon: Icon.Person },
+          ]}
+          actions={
+            <ActionPanel>
+              <Action.OpenInBrowser url={tool.url} onOpen={() => trackOpen(tool)} />
+              <Action.Push
+                title="Edit Tool"
+                icon={Icon.Pencil}
+                target={<EditTool tool={tool} onEdit={fetchTools} />}
+                shortcut={{ modifiers: ["cmd"], key: "e" }}
+              />
+              <Action.CopyToClipboard content={tool.url} shortcut={{ modifiers: ["cmd"], key: "c" }} />
+              <Action
+                title="Delete Tool"
+                icon={Icon.Trash}
+                style={Action.Style.Destructive}
+                shortcut={{ modifiers: ["ctrl"], key: "x" }}
+                onAction={() => handleDelete(tool)}
+              />
+            </ActionPanel>
+          }
+        />
+      ))}
+    </List>
+  );
 }

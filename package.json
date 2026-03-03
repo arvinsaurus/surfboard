@@ -2,10 +2,9 @@
   "$schema": "https://www.raycast.com/schemas/extension.json",
   "name": "surfboard",
   "title": "Surfboard",
-  "description": "Save the tools you discover, tag them by when you'd need them, and recall them instantly ",
+  "description": "Save the tools you discover, tag them by when you'd need them, and recall them instantly",
   "icon": "extension-icon.png",
   "author": "arvin_aradhana",
-  "owner": "morva-brain",
   "platforms": [
     "macOS",
     "Windows"
