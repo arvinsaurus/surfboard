@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { motion } from 'motion/react'
-import { Search, Plus, ArrowRight, Github } from 'lucide-react'
+import { Search, Plus, ArrowRight, Github, X } from 'lucide-react'
 
 const FG = 'rgba(0,0,0,0.70)'
 const SUBTLE = 'rgba(0,0,0,0.50)'
@@ -73,6 +73,7 @@ interface SidebarProps {
   onTagChange: (tag: string | null) => void
   onSearchOpen: () => void
   onAddOpen: () => void
+  onClose?: () => void
   othersCount: number
   isMobile?: boolean
 }
@@ -85,6 +86,7 @@ export function Sidebar({
   onTagChange,
   onSearchOpen,
   onAddOpen,
+  onClose,
   othersCount,
   isMobile = false,
 }: SidebarProps) {
@@ -103,7 +105,7 @@ export function Sidebar({
         justifyContent: 'space-between',
         background: isMobile ? 'transparent' : '#fff',
         zIndex: 10,
-        padding: isMobile ? '36px 24px 32px' : 16,
+        padding: isMobile ? '32px 20px 28px' : 16,
         overflowY: 'auto',
         scrollbarWidth: 'none',
         msOverflowStyle: 'none',
@@ -111,6 +113,30 @@ export function Sidebar({
       className="sidebar-hidden-scrollbar"
     >
       <div>
+        {/* ── Mobile close button ── */}
+        {isMobile && (
+          <button
+            onClick={onClose}
+            style={{
+              position: 'absolute',
+              top: 20,
+              right: 20,
+              width: 32,
+              height: 32,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              background: 'rgba(0,0,0,0.06)',
+              border: 'none',
+              borderRadius: '50%',
+              cursor: 'pointer',
+              color: FG,
+            }}
+          >
+            <X size={16} strokeWidth={2} />
+          </button>
+        )}
+
         {/* ── App Icon + Title (stacked) ── */}
         {!isMobile && (
           <div className="sidebar-branding" style={{ marginBottom: 20 }}>
@@ -269,7 +295,7 @@ function NavItem({
   onClick: () => void
   isMobile?: boolean
 }) {
-  const show = active || hovered
+  const show = active || (!isMobile && hovered)
   const textColor = active ? FG : SUBTLE
 
   return (

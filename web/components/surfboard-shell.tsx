@@ -236,44 +236,41 @@ export function SurfboardShell() {
       {/* ── Mobile Sidebar Drawer ── */}
       <AnimatePresence>
         {mobileMenuOpen && (
-          <>
-            <motion.div
-              className="sidebar-overlay"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.2 }}
-              onClick={() => setMobileMenuOpen(false)}
+          <motion.div
+            className="sidebar-drawer"
+            drag="x"
+            dragConstraints={{ right: 0 }}
+            dragElastic={0.1}
+            onDragEnd={(_, info) => {
+              if (info.offset.x < -60) setMobileMenuOpen(false)
+            }}
+            initial={{ x: '-100%' }}
+            animate={{ x: 0 }}
+            exit={{ x: '-100%' }}
+            transition={{ duration: 0.25, ease: [0.23, 1, 0.32, 1] }}
+          >
+            <Sidebar
+              isMobile
+              toolCount={tools.length}
+              allTags={allPresetTags}
+              tagCounts={tagCounts}
+              activeTag={activeTag}
+              onTagChange={(tag) => {
+                setActiveTag(tag)
+                setMobileMenuOpen(false)
+              }}
+              onSearchOpen={() => {
+                setSearchOpen(true)
+                setMobileMenuOpen(false)
+              }}
+              onAddOpen={() => {
+                setShowAdd(true)
+                setMobileMenuOpen(false)
+              }}
+              onClose={() => setMobileMenuOpen(false)}
+              othersCount={othersCount}
             />
-            <motion.div
-              className="sidebar-drawer"
-              initial={{ x: -280 }}
-              animate={{ x: 0 }}
-              exit={{ x: -280 }}
-              transition={{ duration: 0.25, ease: [0.23, 1, 0.32, 1] }}
-            >
-              <Sidebar
-                isMobile
-                toolCount={tools.length}
-                allTags={allPresetTags}
-                tagCounts={tagCounts}
-                activeTag={activeTag}
-                onTagChange={(tag) => {
-                  setActiveTag(tag)
-                  setMobileMenuOpen(false)
-                }}
-                onSearchOpen={() => {
-                  setSearchOpen(true)
-                  setMobileMenuOpen(false)
-                }}
-                onAddOpen={() => {
-                  setShowAdd(true)
-                  setMobileMenuOpen(false)
-                }}
-                othersCount={othersCount}
-              />
-            </motion.div>
-          </>
+          </motion.div>
         )}
       </AnimatePresence>
 
