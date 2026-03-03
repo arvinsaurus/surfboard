@@ -104,14 +104,20 @@ export function ToolFormModal({ tool, onClose, onSaved }: ToolFormModalProps) {
     >
       <motion.div
         className="modal-content"
+        drag="y"
+        dragConstraints={{ top: 0 }}
+        dragElastic={0.2}
+        onDragEnd={(_, info) => {
+          if (info.offset.y > 100) onClose()
+        }}
         initial={{ opacity: 0, scale: 0.98, y: 20 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
-        exit={{ opacity: 0, scale: 0.98, y: 20 }}
+        exit={{ opacity: 0, scale: 0.98, y: 300 }}
         transition={{ duration: 0.25, ease: [0.23, 1, 0.32, 1] }}
         style={{
           background: 'rgba(255, 255, 255, 0.90)',
-          backdropFilter: 'blur(2px)',
-          WebkitBackdropFilter: 'blur(2px)',
+          backdropFilter: 'blur(10px)',
+          WebkitBackdropFilter: 'blur(10px)',
           borderRadius: 12,
           width: '100%',
           maxWidth: 480,

@@ -53,9 +53,15 @@ export function SearchModal({ tools, search, onSearchChange, onClose, onOpen }: 
     >
       <motion.div
         className="modal-content"
+        drag="y"
+        dragConstraints={{ top: 0 }}
+        dragElastic={0.2}
+        onDragEnd={(_, info) => {
+          if (info.offset.y > 100) onClose()
+        }}
         initial={{ opacity: 0, scale: 0.98, y: 20 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
-        exit={{ opacity: 0, scale: 0.98, y: 20 }}
+        exit={{ opacity: 0, scale: 0.98, y: 300 }}
         transition={{ duration: 0.2, ease: 'easeOut' }}
         style={{
           background: 'rgba(245, 245, 245, 0.90)',
