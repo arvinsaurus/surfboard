@@ -324,10 +324,11 @@ function ViewToggle({
       style={{
         display: 'inline-flex',
         height: 30,
-        background: '#f2f2f2',
-        borderRadius: 8,
+        background: 'rgba(0,0,0,0.05)',
+        borderRadius: 99,
         padding: 2,
         gap: 2,
+        position: 'relative',
       }}
     >
       {(['grid', 'list'] as const).map((mode) => {
@@ -336,15 +337,10 @@ function ViewToggle({
           <motion.button
             key={mode}
             onClick={() => onChange(mode)}
-            animate={{
-              backgroundColor: active ? '#ffffff' : 'transparent',
-              boxShadow: active ? '0 1px 2px rgba(0,0,0,0.08)' : 'none',
-            }}
-            transition={{ duration: 0.15, ease: 'easeOut' }}
             style={{
               width: 34,
               height: 26,
-              borderRadius: 6,
+              borderRadius: 99,
               border: 'none',
               cursor: 'pointer',
               display: 'flex',
@@ -353,9 +349,28 @@ function ViewToggle({
               color: active ? FG : SUBTLE,
               padding: 0,
               fontFamily: 'inherit',
+              background: 'transparent',
+              position: 'relative',
+              zIndex: 1,
             }}
+            whileTap={{ scale: 0.92 }}
+            transition={{ duration: 0.12 }}
             title={mode === 'grid' ? 'Grid view' : 'List view'}
           >
+            {active && (
+              <motion.span
+                layoutId="toggle-pill"
+                style={{
+                  position: 'absolute',
+                  inset: 0,
+                  borderRadius: 99,
+                  background: '#ffffff',
+                  boxShadow: '0 1px 2px rgba(0,0,0,0.10)',
+                  zIndex: -1,
+                }}
+                transition={{ type: 'spring', stiffness: 400, damping: 28 }}
+              />
+            )}
             {mode === 'grid'
               ? <LayoutGrid size={13} strokeWidth={2} />
               : <List size={13} strokeWidth={2} />
