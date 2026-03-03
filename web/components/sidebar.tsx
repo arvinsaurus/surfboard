@@ -101,9 +101,11 @@ export function Sidebar({
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'space-between',
-        background: '#fff',
+        background: isMobile ? 'rgba(238,238,238,0.8)' : '#fff',
+        backdropFilter: isMobile ? 'blur(20px)' : undefined,
+        WebkitBackdropFilter: isMobile ? 'blur(20px)' : undefined,
         zIndex: 10,
-        padding: 16,
+        padding: isMobile ? '36px 24px 32px' : 16,
         overflowY: 'auto',
         scrollbarWidth: 'none',
         msOverflowStyle: 'none',
@@ -185,6 +187,7 @@ export function Sidebar({
               onMouseEnter={() => setHoveredNav('__all')}
               onMouseLeave={() => setHoveredNav(null)}
               onClick={() => onTagChange(null)}
+              isMobile={isMobile}
             />
           </motion.div>
           {allTags.map((tag, i) => (
@@ -202,6 +205,7 @@ export function Sidebar({
                 onMouseEnter={() => setHoveredNav(tag)}
                 onMouseLeave={() => setHoveredNav(null)}
                 onClick={() => onTagChange(activeTag === tag ? null : tag)}
+                isMobile={isMobile}
               />
             </motion.div>
           ))}
@@ -219,14 +223,15 @@ export function Sidebar({
                 onMouseEnter={() => setHoveredNav('__others')}
                 onMouseLeave={() => setHoveredNav(null)}
                 onClick={() => onTagChange(activeTag === '__others' ? null : '__others')}
+                isMobile={isMobile}
               />
             </motion.div>
           )}
         </nav>
       </div>
 
-      {!isMobile && (
-        <div className="sidebar-footer" style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+      <div className="sidebar-footer" style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+        {!isMobile && (
           <motion.a
             href="https://github.com/arvinsaurus/surfboard"
             target="_blank"
@@ -239,9 +244,9 @@ export function Sidebar({
             <Github size={14} strokeWidth={2.4} />
             <span>Install on Raycast</span>
           </motion.a>
-          <p style={{ fontSize: 11, color: SUBTLE }}>Made by Arvin in his free time</p>
-        </div>
-      )}
+        )}
+        <p style={{ fontSize: isMobile ? 13 : 11, color: SUBTLE }}>Made by Arvin in his free time</p>
+      </div>
     </aside>
   )
 }
@@ -255,6 +260,7 @@ function NavItem({
   onMouseEnter,
   onMouseLeave,
   onClick,
+  isMobile = false,
 }: {
   label: string
   count: number
@@ -263,6 +269,7 @@ function NavItem({
   onMouseEnter: () => void
   onMouseLeave: () => void
   onClick: () => void
+  isMobile?: boolean
 }) {
   const show = active || hovered
   const textColor = active ? FG : SUBTLE
@@ -273,11 +280,11 @@ function NavItem({
         display: 'flex',
         alignItems: 'center',
         gap: 0,
-        padding: '5px 0',
+        padding: isMobile ? '9px 0' : '5px 0',
         background: 'none',
         border: 'none',
         cursor: 'pointer',
-        fontSize: 13,
+        fontSize: isMobile ? 24 : 13,
         lineHeight: 1.4,
         textAlign: 'left',
         width: '100%',
@@ -290,7 +297,6 @@ function NavItem({
       onMouseLeave={onMouseLeave}
       onClick={onClick}
     >
-      {/* Arrow: same color as the text so opacity matches */}
       <motion.span
         style={{
           display: 'inline-flex',
@@ -300,19 +306,19 @@ function NavItem({
           color: textColor,
         }}
         animate={{
-          width: show ? 20 : 0,
+          width: show ? (isMobile ? 28 : 20) : 0,
           opacity: show ? 1 : 0,
         }}
         transition={{ duration: 0.15, ease: 'easeOut' }}
       >
-        <ArrowRight size={13} strokeWidth={2} style={{ flexShrink: 0 }} />
+        <ArrowRight size={isMobile ? 18 : 13} strokeWidth={2} style={{ flexShrink: 0 }} />
       </motion.span>
       <span>{label}</span>
       <span
         style={{
-          fontSize: 13,
+          fontSize: isMobile ? 16 : 13,
           color: SUBTLE,
-          marginLeft: 6,
+          marginLeft: isMobile ? 8 : 6,
           fontVariantNumeric: 'tabular-nums',
           fontWeight: 400,
         }}
