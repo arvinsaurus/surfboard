@@ -14,6 +14,7 @@ interface ToolCardProps {
   onDelete: (tool: Tool) => void
   onEdit: (tool: Tool) => void
   onOpen: (tool: Tool) => void
+  viewMode?: 'grid' | 'list'
 }
 
 function getDomain(url: string) {
@@ -24,13 +25,162 @@ function getDomain(url: string) {
   }
 }
 
-export function ToolCard({ tool, index, onDelete, onEdit, onOpen }: ToolCardProps) {
+export function ToolCard({ tool, index, onDelete, onEdit, onOpen, viewMode = 'grid' }: ToolCardProps) {
   const [hovered, setHovered] = useState(false)
   const [imgOk, setImgOk] = useState(true)
   const [hasEntered, setHasEntered] = useState(false)
   const domain = getDomain(tool.url)
 
   const screenshotUrl = tool.image_url || `https://api.microlink.io/?url=${encodeURIComponent(tool.url)}&screenshot=true&meta=false&embed=screenshot.url`
+  const faviconUrl = tool.favicon_url || `https://www.google.com/s2/favicons?domain=${domain}&sz=64`
+
+  if (viewMode === 'list') {
+    return (
+      <motion.div
+        initial={{ opacity: 0, y: 8 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.25, ease: 'easeOut', delay: hasEntered ? 0 : index * 0.02 }}
+        onAnimationComplete={() => setHasEntered(true)}
+        style={{ position: 'relative' }}
+        onMouseEnter={() => setHovered(true)}
+        onMouseLeave={() => setHovered(false)}
+      >
+        <motion.a
+          href={tool.url}
+          target="_blank"
+          rel="noopener noreferrer"
+          onClick={() => onOpen(tool)}
+          animate={{ backgroundColor: hovered ? '#f6f6f6' : '#ffffff' }}
+          transition={{ duration: 0.12 }}
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: 12,
+            padding: '9px 8px',
+            borderBottom: '1px solid rgba(0,0,0,0.04)',
+            textDecoration: 'none',
+            color: 'inherit',
+            borderRadius: 6,
+            cursor: 'pointer',
+            position: 'relative',
+          }}
+        >
+          {/* Favicon */}
+          <img
+            src={faviconUrl}
+            alt=""
+            width={20}
+            height={20}
+            style={{ borderRadius: 4, objectFit: 'cover', flexShrink: 0 }}
+            onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }}
+          />
+
+          {/* Name */}
+          <span
+            style={{
+              fontSize: 13,
+              fontWeight: 600,
+              color: FG,
+              whiteSpace: 'nowrap',
+              minWidth: 100,
+              maxWidth: 200,
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              flexShrink: 0,
+            }}
+          >
+            {tool.name}
+          </span>
+
+          {/* Dot separator */}
+          {tool.description && (
+            <span style={{ fontSize: 13, color: SUBTLE, flexShrink: 0 }}>·</span>
+          )}
+
+          {/* Description */}
+          {tool.description && (
+            <span
+              style={{
+                fontSize: 11.5,
+                color: SUBTLE,
+                flex: 1,
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                whiteSpace: 'nowrap',
+                lineHeight: 1.4,
+              }}
+            >
+              {tool.description}
+            </span>
+          )}
+          {!tool.description && <span style={{ flex: 1 }} />}
+
+          {/* Tags (first 2) */}
+          <div style={{ display: 'flex', gap: 4, flexShrink: 0 }}>
+            {(tool.tags || []).slice(0, 2).map((tag) => (
+              <span
+                key={tag}
+                style={{
+                  fontSize: 10.5,
+                  fontWeight: 500,
+                  padding: '2px 7px',
+                  background: '#f2f2f2',
+                  borderRadius: 6,
+                  color: SUBTLE,
+                  whiteSpace: 'nowrap',
+                }}
+              >
+                {tag}
+              </span>
+            ))}
+          </div>
+
+          {/* Spacer for hover actions */}
+          <div style={{ width: 58, flexShrink: 0 }} />
+        </motion.a>
+
+        {/* Hover actions */}
+        {hovered && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.12 }}
+            style={{
+              position: 'absolute',
+              top: '50%',
+              right: 8,
+              transform: 'translateY(-50%)',
+              display: 'flex',
+              gap: 3,
+            }}
+          >
+            <button
+              onClick={(e) => {
+                e.preventDefault()
+                e.stopPropagation()
+                onEdit(tool)
+              }}
+              style={actionBtnStyle}
+              title="Edit"
+            >
+              <Pencil size={12} strokeWidth={2.2} />
+            </button>
+            <button
+              onClick={(e) => {
+                e.preventDefault()
+                e.stopPropagation()
+                onDelete(tool)
+              }}
+              style={{ ...actionBtnStyle, color: '#d44' }}
+              title="Delete"
+            >
+              <Trash2 size={12} strokeWidth={2.2} />
+            </button>
+          </motion.div>
+        )}
+      </motion.div>
+    )
+  }
 
   return (
     <motion.div

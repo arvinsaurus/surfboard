@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react'
 import { motion, AnimatePresence } from 'motion/react'
-import { SlidersHorizontal, Search, Plus } from 'lucide-react'
+import { Menu, Search, Plus } from 'lucide-react'
 import { supabase } from '@/lib/supabase'
 import { Tool, PRESET_TAGS } from '@/lib/types'
 import { Sidebar } from '@/components/sidebar'
@@ -23,6 +23,7 @@ export function SurfboardShell() {
   const [deleting, setDeleting] = useState(false)
   const [searchOpen, setSearchOpen] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid')
 
   const fetchTools = useCallback(async () => {
     const { data } = await supabase
@@ -40,17 +41,11 @@ export function SurfboardShell() {
   // Keyboard shortcuts
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
-      // Ignore shortcuts if user is typing in an input or textarea
-      const isTyping = (e.target as HTMLElement).tagName === 'INPUT' ||
-        (e.target as HTMLElement).tagName === 'TEXTAREA' ||
-        (e.target as HTMLElement).isContentEditable;
-      if (isTyping) return;
-
-      if ((e.metaKey || e.ctrlKey) && (e.key === 'f' || e.key === 'F')) {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'f') {
         e.preventDefault()
         setSearchOpen(true)
       }
-      if ((e.key === 's' || e.key === 'S') && !showAdd && !editTool) {
+      if ((e.metaKey || e.ctrlKey) && e.key === 's' && !showAdd && !editTool) {
         e.preventDefault()
         setShowAdd(true)
       }
@@ -147,69 +142,76 @@ export function SurfboardShell() {
 
   return (
     <div className="shell-root" style={{ display: 'flex', height: '100vh', overflow: 'hidden' }}>
-
-      {/* ── Mobile Bottom Bar ── */}
-      <div className="mobile-bottom-bar">
-        <button
-          onClick={() => setMobileMenuOpen(true)}
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            width: 44,
-            height: 44,
-            borderRadius: 99,
-            background: 'rgba(161,161,161,0.8)',
-            backdropFilter: 'blur(12px)',
-            WebkitBackdropFilter: 'blur(12px)',
-            border: 'none',
-            cursor: 'pointer',
-            color: '#fff',
-          }}
-          aria-label="Open menu"
-        >
-          <SlidersHorizontal size={18} strokeWidth={2} />
-        </button>
-        <button
-          onClick={() => setSearchOpen(true)}
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            width: 44,
-            height: 44,
-            borderRadius: 99,
-            background: 'rgba(161,161,161,0.8)',
-            backdropFilter: 'blur(12px)',
-            WebkitBackdropFilter: 'blur(12px)',
-            border: 'none',
-            cursor: 'pointer',
-            color: '#fff',
-          }}
-          aria-label="Search"
-        >
-          <Search size={18} strokeWidth={2.2} />
-        </button>
-        <button
-          onClick={() => setShowAdd(true)}
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            width: 44,
-            height: 44,
-            borderRadius: 99,
-            background: 'rgba(161,161,161,0.8)',
-            backdropFilter: 'blur(12px)',
-            WebkitBackdropFilter: 'blur(12px)',
-            border: 'none',
-            cursor: 'pointer',
-            color: '#fff',
-          }}
-          aria-label="Add bookmark"
-        >
-          <Plus size={18} strokeWidth={2.2} />
-        </button>
+      {/* ── Mobile Header ── */}
+      <div className="mobile-header">
+        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+          <button
+            onClick={() => setMobileMenuOpen(true)}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              width: 34,
+              height: 34,
+              borderRadius: 8,
+              background: '#f5f5f5',
+              border: 'none',
+              cursor: 'pointer',
+              color: FG,
+            }}
+            aria-label="Open menu"
+          >
+            <Menu size={18} strokeWidth={2} />
+          </button>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            <img
+              src="/icon.png"
+              alt="Surfboard"
+              width={22}
+              height={22}
+              style={{ borderRadius: 6 }}
+            />
+            <span style={{ fontSize: 14, fontWeight: 700, color: FG }}>Surfboard</span>
+          </div>
+        </div>
+        <div style={{ display: 'flex', gap: 6 }}>
+          <button
+            onClick={() => setSearchOpen(true)}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              width: 34,
+              height: 34,
+              borderRadius: 8,
+              background: '#f5f5f5',
+              border: 'none',
+              cursor: 'pointer',
+              color: FG,
+            }}
+            aria-label="Search"
+          >
+            <Search size={16} strokeWidth={2.2} />
+          </button>
+          <button
+            onClick={() => setShowAdd(true)}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              width: 34,
+              height: 34,
+              borderRadius: 8,
+              background: '#f5f5f5',
+              border: 'none',
+              cursor: 'pointer',
+              color: FG,
+            }}
+            aria-label="Add bookmark"
+          >
+            <Plus size={16} strokeWidth={2.2} />
+          </button>
+        </div>
       </div>
 
       {/* ── Desktop Sidebar ── */}
@@ -223,47 +225,55 @@ export function SurfboardShell() {
           onSearchOpen={() => setSearchOpen(true)}
           onAddOpen={() => setShowAdd(true)}
           othersCount={othersCount}
+          viewMode={viewMode}
+          onViewModeChange={setViewMode}
+          showViewToggleInFooter={false}
         />
       </div>
 
       {/* ── Mobile Sidebar Drawer ── */}
       <AnimatePresence>
         {mobileMenuOpen && (
-          <motion.div
-            className="sidebar-drawer"
-            drag="x"
-            dragConstraints={{ right: 0 }}
-            dragElastic={0.1}
-            onDragEnd={(_, info) => {
-              if (info.offset.x < -60) setMobileMenuOpen(false)
-            }}
-            initial={{ x: '-100%' }}
-            animate={{ x: 0 }}
-            exit={{ x: '-100%' }}
-            transition={{ duration: 0.25, ease: [0.23, 1, 0.32, 1] }}
-          >
-            <Sidebar
-              isMobile
-              toolCount={tools.length}
-              allTags={allPresetTags}
-              tagCounts={tagCounts}
-              activeTag={activeTag}
-              onTagChange={(tag) => {
-                setActiveTag(tag)
-                setMobileMenuOpen(false)
-              }}
-              onSearchOpen={() => {
-                setSearchOpen(true)
-                setMobileMenuOpen(false)
-              }}
-              onAddOpen={() => {
-                setShowAdd(true)
-                setMobileMenuOpen(false)
-              }}
-              onClose={() => setMobileMenuOpen(false)}
-              othersCount={othersCount}
+          <>
+            <motion.div
+              className="sidebar-overlay"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              onClick={() => setMobileMenuOpen(false)}
             />
-          </motion.div>
+            <motion.div
+              className="sidebar-drawer"
+              initial={{ x: -280 }}
+              animate={{ x: 0 }}
+              exit={{ x: -280 }}
+              transition={{ duration: 0.25, ease: [0.23, 1, 0.32, 1] }}
+            >
+              <Sidebar
+                toolCount={tools.length}
+                allTags={allPresetTags}
+                tagCounts={tagCounts}
+                activeTag={activeTag}
+                onTagChange={(tag) => {
+                  setActiveTag(tag)
+                  setMobileMenuOpen(false)
+                }}
+                onSearchOpen={() => {
+                  setSearchOpen(true)
+                  setMobileMenuOpen(false)
+                }}
+                onAddOpen={() => {
+                  setShowAdd(true)
+                  setMobileMenuOpen(false)
+                }}
+                othersCount={othersCount}
+                viewMode={viewMode}
+                onViewModeChange={setViewMode}
+                showViewToggleInFooter={true}
+              />
+            </motion.div>
+          </>
         )}
       </AnimatePresence>
 
@@ -315,7 +325,7 @@ export function SurfboardShell() {
           }}
         />
 
-        <div className="main-inner">
+        <div className="main-inner" style={{ padding: '32px 40px 72px' }}>
           {/* Active Search Hint */}
           <AnimatePresence>
             {search && !searchOpen && (
@@ -398,7 +408,13 @@ export function SurfboardShell() {
               )}
             </div>
           ) : (
-            <div className="card-grid">
+            <div
+              className="card-grid"
+              style={viewMode === 'list'
+                ? { display: 'flex', flexDirection: 'column' }
+                : { display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 64 }
+              }
+            >
               {filtered.map((tool, i) => (
                 <ToolCard
                   key={tool.id}
@@ -407,6 +423,7 @@ export function SurfboardShell() {
                   onDelete={handleDeleteClick}
                   onEdit={setEditTool}
                   onOpen={trackOpen}
+                  viewMode={viewMode}
                 />
               ))}
             </div>
