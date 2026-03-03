@@ -49,7 +49,7 @@ export function SearchModal({ tools, search, onSearchChange, onClose, onOpen }: 
       onClick={onClose}
     >
       <motion.div
-        className="modal-content"
+        className="modal-content search-modal-content"
         drag="y"
         dragConstraints={{ top: 0 }}
         dragElastic={0.2}
@@ -65,7 +65,7 @@ export function SearchModal({ tools, search, onSearchChange, onClose, onOpen }: 
           stiffness: 400,
           mass: 0.8
         }}
-        style={{ maxWidth: 640, overflow: 'hidden' }}
+        style={{ maxWidth: 640, overflow: 'hidden', display: 'flex', flexDirection: 'column' }}
         onClick={(e) => e.stopPropagation()}
       >
         <div className="modal-handle" />
@@ -98,25 +98,27 @@ export function SearchModal({ tools, search, onSearchChange, onClose, onOpen }: 
               outline: 'none',
             }}
           />
-          <kbd
-            style={{
-              fontSize: 11,
-              fontWeight: 600,
-              color: SUBTLE,
-              background: '#EEEEEE',
-              border: '1px solid rgba(0,0,0,0.05)',
-              borderRadius: 4,
-              padding: '2px 6px',
-              fontFamily: 'inherit',
-              letterSpacing: '0.02em',
-            }}
-          >
-            ESC
-          </kbd>
+          {!isMobile && (
+            <kbd
+              style={{
+                fontSize: 11,
+                fontWeight: 600,
+                color: SUBTLE,
+                background: '#EEEEEE',
+                border: '1px solid rgba(0,0,0,0.05)',
+                borderRadius: 4,
+                padding: '2px 6px',
+                fontFamily: 'inherit',
+                letterSpacing: '0.02em',
+              }}
+            >
+              ESC
+            </kbd>
+          )}
         </div>
 
         {/* Results */}
-        <div className="no-scrollbar" style={{ maxHeight: 320, overflowY: 'auto', paddingBottom: 10 }}>
+        <div className="no-scrollbar" style={{ flex: isMobile ? 1 : undefined, maxHeight: isMobile ? undefined : 320, overflowY: 'auto', paddingBottom: 10 }}>
           {tools.length === 0 ? (
             <p
               style={{

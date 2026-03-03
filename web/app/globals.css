@@ -298,6 +298,14 @@ textarea:focus {
     box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.1) !important;
   }
 
+  .search-modal-content {
+    height: 70vh !important;
+    max-height: 70vh !important;
+    overflow: hidden !important;
+    display: flex !important;
+    flex-direction: column !important;
+  }
+
   .modal-handle {
     display: block !important;
     width: 36px;
