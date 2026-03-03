@@ -158,11 +158,13 @@ export function SurfboardShell() {
               justifyContent: 'center',
               width: 34,
               height: 34,
-              borderRadius: 8,
-              background: '#f5f5f5',
+              borderRadius: 99,
+              background: 'rgba(0,0,0,0.50)',
+              backdropFilter: 'blur(3px)',
+              WebkitBackdropFilter: 'blur(3px)',
               border: 'none',
               cursor: 'pointer',
-              color: FG,
+              color: '#fff',
             }}
             aria-label="Open menu"
           >
@@ -188,11 +190,13 @@ export function SurfboardShell() {
               justifyContent: 'center',
               width: 34,
               height: 34,
-              borderRadius: 8,
-              background: '#f5f5f5',
+              borderRadius: 99,
+              background: 'rgba(0,0,0,0.50)',
+              backdropFilter: 'blur(3px)',
+              WebkitBackdropFilter: 'blur(3px)',
               border: 'none',
               cursor: 'pointer',
-              color: FG,
+              color: '#fff',
             }}
             aria-label="Search"
           >
@@ -206,11 +210,13 @@ export function SurfboardShell() {
               justifyContent: 'center',
               width: 34,
               height: 34,
-              borderRadius: 8,
-              background: '#f5f5f5',
+              borderRadius: 99,
+              background: 'rgba(0,0,0,0.50)',
+              backdropFilter: 'blur(3px)',
+              WebkitBackdropFilter: 'blur(3px)',
               border: 'none',
               cursor: 'pointer',
-              color: FG,
+              color: '#fff',
             }}
             aria-label="Add bookmark"
           >

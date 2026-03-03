@@ -232,7 +232,7 @@ textarea:focus {
     z-index: 20;
     height: 56px;
     padding: 0 16px;
-    background: rgba(255, 255, 255, 0.85);
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.92) 0%, rgba(255, 255, 255, 0) 100%);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
     border-bottom: none;
