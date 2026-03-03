@@ -247,7 +247,7 @@ textarea:focus {
     display: flex;
     gap: 12px;
     position: fixed;
-    bottom: 32px;
+    bottom: calc(24px + env(safe-area-inset-bottom, 0px));
     left: 50%;
     transform: translateX(-50%);
     z-index: 50;

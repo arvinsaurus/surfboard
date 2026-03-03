@@ -105,7 +105,7 @@ export function Sidebar({
         justifyContent: 'space-between',
         background: isMobile ? 'transparent' : '#fff',
         zIndex: 10,
-        padding: isMobile ? '32px 20px 28px' : 16,
+        padding: isMobile ? '32px 20px 0' : 16,
         overflowY: 'auto',
         scrollbarWidth: 'none',
         msOverflowStyle: 'none',
@@ -254,7 +254,21 @@ export function Sidebar({
         </nav>
       </div>
 
-      <div className="sidebar-footer" style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+      <div
+        className="sidebar-footer"
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          gap: isMobile ? 4 : 12,
+          padding: isMobile ? '0 20px calc(28px + env(safe-area-inset-bottom, 16px))' : undefined,
+        }}
+      >
+        {isMobile && (
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 }}>
+            <img src="/icon.png" alt="Surfboard" width={20} height={20} style={{ borderRadius: 6 }} />
+            <span style={{ fontSize: 14, fontWeight: 700, color: FG }}>Surfboard</span>
+          </div>
+        )}
         {!isMobile && (
           <motion.a
             href="https://github.com/arvinsaurus/surfboard"
@@ -269,7 +283,7 @@ export function Sidebar({
             <span>Install on Raycast</span>
           </motion.a>
         )}
-        <p style={{ fontSize: isMobile ? 13 : 11, color: SUBTLE }}>Made by Arvin in his free time</p>
+        <p style={{ fontSize: isMobile ? 12 : 11, color: SUBTLE }}>Made by Arvin in his free time</p>
       </div>
     </aside>
   )
@@ -304,7 +318,7 @@ function NavItem({
         display: 'flex',
         alignItems: 'center',
         gap: 0,
-        padding: isMobile ? '9px 0' : '5px 0',
+        padding: isMobile ? '5px 0' : '5px 0',
         background: 'none',
         border: 'none',
         cursor: 'pointer',

@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react'
 import { motion, AnimatePresence } from 'motion/react'
-import { Menu, Search, Plus } from 'lucide-react'
+import { SlidersHorizontal, Search, Plus } from 'lucide-react'
 import { supabase } from '@/lib/supabase'
 import { Tool, PRESET_TAGS } from '@/lib/types'
 import { Sidebar } from '@/components/sidebar'
@@ -147,44 +147,29 @@ export function SurfboardShell() {
 
   return (
     <div className="shell-root" style={{ display: 'flex', height: '100vh', overflow: 'hidden' }}>
-      {/* ── Mobile Header ── */}
-      <div className="mobile-header">
-        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-          <button
-            onClick={() => setMobileMenuOpen(true)}
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              width: 34,
-              height: 34,
-              borderRadius: 99,
-              background: 'rgba(0,0,0,0.50)',
-              backdropFilter: 'blur(3px)',
-              WebkitBackdropFilter: 'blur(3px)',
-              border: 'none',
-              cursor: 'pointer',
-              color: '#fff',
-            }}
-            aria-label="Open menu"
-          >
-            <Menu size={18} strokeWidth={2} />
-          </button>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-            <img
-              src="/icon.png"
-              alt="Surfboard"
-              width={22}
-              height={22}
-              style={{ borderRadius: 6 }}
-            />
-            <span style={{ fontSize: 14, fontWeight: 700, color: FG }}>Surfboard</span>
-          </div>
-        </div>
-      </div>
 
       {/* ── Mobile Bottom Bar ── */}
       <div className="mobile-bottom-bar">
+        <button
+          onClick={() => setMobileMenuOpen(true)}
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            width: 44,
+            height: 44,
+            borderRadius: 99,
+            background: 'rgba(161,161,161,0.8)',
+            backdropFilter: 'blur(12px)',
+            WebkitBackdropFilter: 'blur(12px)',
+            border: 'none',
+            cursor: 'pointer',
+            color: '#fff',
+          }}
+          aria-label="Open menu"
+        >
+          <SlidersHorizontal size={18} strokeWidth={2} />
+        </button>
         <button
           onClick={() => setSearchOpen(true)}
           style={{
@@ -194,9 +179,9 @@ export function SurfboardShell() {
             width: 44,
             height: 44,
             borderRadius: 99,
-            background: 'rgba(0,0,0,0.50)',
-            backdropFilter: 'blur(3px)',
-            WebkitBackdropFilter: 'blur(3px)',
+            background: 'rgba(161,161,161,0.8)',
+            backdropFilter: 'blur(12px)',
+            WebkitBackdropFilter: 'blur(12px)',
             border: 'none',
             cursor: 'pointer',
             color: '#fff',
@@ -214,9 +199,9 @@ export function SurfboardShell() {
             width: 44,
             height: 44,
             borderRadius: 99,
-            background: 'rgba(0,0,0,0.50)',
-            backdropFilter: 'blur(3px)',
-            WebkitBackdropFilter: 'blur(3px)',
+            background: 'rgba(161,161,161,0.8)',
+            backdropFilter: 'blur(12px)',
+            WebkitBackdropFilter: 'blur(12px)',
             border: 'none',
             cursor: 'pointer',
             color: '#fff',
