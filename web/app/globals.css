@@ -178,6 +178,7 @@ textarea:focus {
   .shell-root {
     flex-direction: column !important;
     overflow: visible !important;
+    height: auto !important;
   }
 
   .mobile-header {
@@ -218,11 +219,14 @@ textarea:focus {
     position: fixed !important;
     top: 0 !important;
     left: 0 !important;
-    width: 280px !important;
+    width: 100% !important;
     height: 100vh !important;
+    height: 100dvh !important;
     z-index: 120 !important;
-    background: #fff !important;
-    box-shadow: 20px 0 60px rgba(0, 0, 0, 0.1), 0 0 0 1px rgba(0, 0, 0, 0.05) !important;
+    background: rgba(255, 255, 255, 0.88) !important;
+    backdrop-filter: blur(24px) !important;
+    -webkit-backdrop-filter: blur(24px) !important;
+    box-shadow: none !important;
     overflow-y: auto !important;
   }
 
@@ -291,6 +295,13 @@ textarea:focus {
 
   .main-inner {
     padding: 16px 16px 100px !important;
+  }
+
+  /* ── Card grid: single column on mobile ── */
+  .card-grid {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 16px !important;
   }
 
   /* ── List view: hide description and right section on mobile ── */
