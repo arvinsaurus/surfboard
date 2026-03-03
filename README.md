@@ -20,22 +20,37 @@ Ever found an incredible design tool, bookmarked it, and completely forgot it ex
 
 ## 🚀 Setup (5 minutes)
 
-### Prerequisites
+### Step 1 — Install Raycast
 
-- **[Raycast](https://raycast.com)** — installed on your Mac
-- **Node.js** — run `brew install node` in Terminal
-  *(No Homebrew? Run this first: `/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"`)*
+If you don't have it yet: [raycast.com](https://raycast.com) → Download → install like any Mac app.
 
-### Install
+### Step 2 — Download Surfboard
 
-```bash
-git clone https://github.com/arvinsaurus/surfboard.git
-cd surfboard
-npm install
-npm run dev
+Go to [github.com/morvaproject/surfboard](https://github.com/morvaproject/surfboard), click the green **Code** button → **Download ZIP**. Unzip it anywhere (Desktop is fine).
+
+### Step 3 — Run the installer
+
+Open **Terminal** (press `Cmd + Space`, type `Terminal`, hit Enter).
+
+Drag the unzipped **surfboard** folder into the Terminal window — it'll fill in the path automatically. Then type `/install.sh` at the end so it looks like:
+
+```
+/Users/yourname/Desktop/surfboard/install.sh
 ```
 
-That's it. Raycast will ask for **your name** — type it so the team knows who saved what. You're in. 🤙
+Hit Enter. The script handles everything — Node.js, dependencies, build. Takes a few minutes on first run.
+
+### Step 4 — Add to Raycast
+
+In Raycast: **Settings → Extensions → +** → **Add Local Extension** → select the `surfboard` folder.
+
+Raycast will ask for **your name** the first time — type it so the team knows who saved what. You're in. 🤙
+
+---
+
+### Staying updated
+
+When there's an update, open Terminal, drag the `surfboard` folder in, type `/install.sh` and hit Enter. That's it.
 
 ---
 
@@ -113,14 +128,7 @@ These are the built-in intent tags. You can also create custom tags when saving.
 
 ## 🔄 Staying Updated
 
-When the extension gets an update, just pull and restart:
-
-```bash
-cd surfboard
-git pull
-npm install
-npm run dev
-```
+Drag the `surfboard` folder into Terminal, type `/install.sh`, hit Enter.
 
 ---
 
