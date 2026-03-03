@@ -59,7 +59,6 @@ export function ToolCard({ tool, index, onDelete, onEdit, onOpen, viewMode = 'gr
             borderBottom: '1px solid rgba(0,0,0,0.04)',
             textDecoration: 'none',
             color: 'inherit',
-            borderRadius: 6,
             cursor: 'pointer',
           }}
         >
