@@ -85,7 +85,7 @@ export default function SurfboardSave() {
     }
   }
 
-  if (onboardingDone === null) return null
+  if (onboardingDone === null) return <Form isLoading />
 
   if (!onboardingDone) {
     return (

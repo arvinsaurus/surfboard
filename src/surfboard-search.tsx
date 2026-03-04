@@ -99,7 +99,7 @@ export default function SurfboardSearch() {
     }
   }
 
-  if (onboardingDone === null) return null;
+  if (onboardingDone === null) return <List isLoading />;
 
   if (!onboardingDone) {
     return <Onboarding onComplete={() => setOnboardingDone(true)} />;
