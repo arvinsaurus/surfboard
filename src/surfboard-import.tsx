@@ -5,7 +5,6 @@
 import { Action, ActionPanel, Form, LocalStorage, showToast, Toast, popToRoot } from '@raycast/api'
 import { useEffect, useState } from 'react'
 import { supabase } from './supabase'
-import { Onboarding } from './onboarding'
 
 const TAGS = [
   'Backgrounds & Textures',
@@ -25,17 +24,10 @@ const TAGS = [
 
 export default function SurfboardImport() {
   const [memberName, setMemberName] = useState<string | null>(null)
-  const [onboardingDone, setOnboardingDone] = useState<boolean | null>(null)
   const [isLoading, setIsLoading] = useState(false)
 
   useEffect(() => {
-    async function check() {
-      const done = await LocalStorage.getItem<string>('onboardingComplete')
-      const name = await LocalStorage.getItem<string>('memberName')
-      setOnboardingDone(done === 'true')
-      setMemberName(name || null)
-    }
-    check()
+    LocalStorage.getItem<string>('memberName').then((name) => setMemberName(name || null))
   }, [])
 
   async function handleSubmit(values: { urls: string; tags: string[]; customTags: string; description: string }) {
@@ -103,19 +95,6 @@ export default function SurfboardImport() {
       setIsLoading(false)
       await showToast({ style: Toast.Style.Failure, title: 'Import failed', message: String(error) })
     }
-  }
-
-  if (onboardingDone === null) return null
-
-  if (!onboardingDone) {
-    return (
-      <Onboarding
-        onComplete={(name) => {
-          setMemberName(name)
-          setOnboardingDone(true)
-        }}
-      />
-    )
   }
 
   return (
