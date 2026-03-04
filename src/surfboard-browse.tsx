@@ -4,10 +4,11 @@
 // For example, Unicorn Studio tagged as "Backgrounds" and "Animation"
 // will show up in both sections.
 
-import { Action, ActionPanel, Icon, List, confirmAlert, Alert, showToast, Toast } from "@raycast/api";
+import { Action, ActionPanel, Icon, List, LocalStorage, confirmAlert, Alert, showToast, Toast } from "@raycast/api";
 import { useEffect, useState } from "react";
 import { supabase } from "./supabase";
 import { EditTool } from "./edit-tool";
+import { Onboarding } from "./onboarding";
 
 interface Tool {
   id: string;
@@ -23,6 +24,15 @@ interface Tool {
 export default function SurfboardBrowse() {
   const [tools, setTools] = useState<Tool[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [onboardingDone, setOnboardingDone] = useState<boolean | null>(null);
+
+  useEffect(() => {
+    async function check() {
+      const done = await LocalStorage.getItem<string>("onboardingComplete");
+      setOnboardingDone(done === "true");
+    }
+    check();
+  }, []);
 
   async function fetchTools() {
     setIsLoading(true);
@@ -34,8 +44,8 @@ export default function SurfboardBrowse() {
 
   // Fetch all tools on load, sorted by most popular first
   useEffect(() => {
-    fetchTools();
-  }, []);
+    if (onboardingDone) fetchTools();
+  }, [onboardingDone]);
 
   async function handleDelete(tool: Tool) {
     if (
@@ -71,6 +81,12 @@ export default function SurfboardBrowse() {
 
   // Sort sections alphabetically
   const sortedTags = Object.keys(grouped).sort();
+
+  if (onboardingDone === null) return null;
+
+  if (!onboardingDone) {
+    return <Onboarding onComplete={() => setOnboardingDone(true)} />;
+  }
 
   return (
     <List isLoading={isLoading}>

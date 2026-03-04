@@ -2,10 +2,11 @@
 // This command lets you search for tools by typing keywords.
 // It searches across tool names, descriptions, and tags.
 
-import { Action, ActionPanel, Icon, List, confirmAlert, Alert, showToast, Toast } from "@raycast/api";
+import { Action, ActionPanel, Icon, List, LocalStorage, confirmAlert, Alert, showToast, Toast } from "@raycast/api";
 import { useEffect, useState } from "react";
 import { supabase } from "./supabase";
 import { EditTool } from "./edit-tool";
+import { Onboarding } from "./onboarding";
 
 // TypeScript type — describes what a "tool" looks like
 interface Tool {
@@ -25,11 +26,20 @@ export default function SurfboardSearch() {
   const [tools, setTools] = useState<Tool[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchText, setSearchText] = useState("");
+  const [onboardingDone, setOnboardingDone] = useState<boolean | null>(null);
+
+  useEffect(() => {
+    async function check() {
+      const done = await LocalStorage.getItem<string>("onboardingComplete");
+      setOnboardingDone(done === "true");
+    }
+    check();
+  }, []);
 
   // Re-fetch tools whenever the search text changes
   useEffect(() => {
-    fetchTools();
-  }, [searchText]);
+    if (onboardingDone) fetchTools();
+  }, [searchText, onboardingDone]);
 
   async function fetchTools() {
     setIsLoading(true);
@@ -87,6 +97,12 @@ export default function SurfboardSearch() {
         await showToast({ style: Toast.Style.Failure, title: "Failed to delete" });
       }
     }
+  }
+
+  if (onboardingDone === null) return null;
+
+  if (!onboardingDone) {
+    return <Onboarding onComplete={() => setOnboardingDone(true)} />;
   }
 
   // The list UI

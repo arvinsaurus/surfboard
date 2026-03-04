@@ -58,16 +58,7 @@
       "mode": "view"
     }
   ],
-  "preferences": [
-    {
-      "name": "memberName",
-      "title": "Your Name",
-      "description": "How your team sees you in Surfboard",
-      "type": "textfield",
-      "required": true,
-      "placeholder": "e.g. Alex"
-    }
-  ],
+  "preferences": [],
   "dependencies": {
     "@raycast/api": "^1.104.6",
     "@raycast/utils": "^1.17.0",
