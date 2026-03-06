@@ -87,7 +87,7 @@ export default function SurfboardSave() {
 
   if (onboardingDone === null) return <Form isLoading />
 
-  if (!onboardingDone) {
+  if (!onboardingDone || !memberName) {
     return (
       <Onboarding
         onComplete={(name) => {
