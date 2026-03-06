@@ -88,6 +88,7 @@ export function SearchModal({ tools, search, onSearchChange, onClose, onOpen }: 
             placeholder="What are you looking for?"
             value={search}
             onChange={(e) => onSearchChange(e.target.value)}
+            onKeyDown={(e) => { if (e.key === 'Enter' && search) onClose() }}
             style={{
               flex: 1,
               background: 'none',
