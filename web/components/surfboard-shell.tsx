@@ -51,11 +51,11 @@ export function SurfboardShell() {
   // Keyboard shortcuts
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
-      if ((e.metaKey || e.ctrlKey) && e.key === 'f') {
+      const isTyping = (e.target as HTMLElement).tagName === 'INPUT' || (e.target as HTMLElement).tagName === 'TEXTAREA' || (e.target as HTMLElement).isContentEditable
+      if (e.key === '/' && !isTyping) {
         e.preventDefault()
         setSearchOpen(true)
       }
-      const isTyping = (e.target as HTMLElement).tagName === 'INPUT' || (e.target as HTMLElement).tagName === 'TEXTAREA' || (e.target as HTMLElement).isContentEditable
       if ((e.key === 's' || e.key === 'S') && !showAdd && !editTool && !isTyping) {
         e.preventDefault()
         setShowAdd(true)

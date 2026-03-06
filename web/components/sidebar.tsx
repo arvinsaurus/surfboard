@@ -190,7 +190,7 @@ export function Sidebar({
             style={searchBtnStyle}
           >
             <Search size={13} strokeWidth={2.4} />
-            <span style={{ fontSize: 11, color: SUBTLE }}>⌘F</span>
+            <span style={{ fontSize: 11, color: SUBTLE }}>/</span>
           </motion.button>
           <motion.button
             whileHover={{ scale: 1.02, backgroundColor: '#EEEEEE' }}
