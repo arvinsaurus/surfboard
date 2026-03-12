@@ -258,6 +258,25 @@ textarea:focus {
     gap: 32px !important;
   }
 
+  .card-grid--list {
+    gap: 0 !important;
+  }
+
+  .list-row-desc,
+  .list-row-right {
+    display: none !important;
+  }
+
+  .list-row-mobile-sub {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: flex-start !important;
+  }
+
+  .list-swipe-actions {
+    display: flex !important;
+  }
+
   .main-inner {
     padding: 16px 16px 72px !important;
   }

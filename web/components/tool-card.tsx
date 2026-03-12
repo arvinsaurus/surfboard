@@ -1,7 +1,7 @@
 'use client'
 
-import { useState } from 'react'
-import { motion } from 'motion/react'
+import { useState, useEffect, memo } from 'react'
+import { motion, useMotionValue, animate } from 'motion/react'
 import { Pencil, Trash2 } from 'lucide-react'
 import { Tool } from '@/lib/types'
 
@@ -25,11 +25,18 @@ function getDomain(url: string) {
   }
 }
 
-export function ToolCard({ tool, index, onDelete, onEdit, onOpen, viewMode = 'grid' }: ToolCardProps) {
+export const ToolCard = memo(function ToolCard({ tool, index, onDelete, onEdit, onOpen, viewMode = 'grid' }: ToolCardProps) {
   const [hovered, setHovered] = useState(false)
   const [imgOk, setImgOk] = useState(true)
   const [hasEntered, setHasEntered] = useState(false)
+  const [isMobile, setIsMobile] = useState(false)
+  const [swiped, setSwiped] = useState(false)
+  const swipeX = useMotionValue(0)
   const domain = getDomain(tool.url)
+
+  useEffect(() => {
+    setIsMobile(window.matchMedia('(hover: none)').matches)
+  }, [])
 
   const screenshotUrl = tool.image_url || `https://api.microlink.io/?url=${encodeURIComponent(tool.url)}&screenshot=true&meta=false&embed=screenshot.url`
   const faviconUrl = tool.favicon_url || `https://www.google.com/s2/favicons?domain=${domain}&sz=64`
@@ -39,28 +46,86 @@ export function ToolCard({ tool, index, onDelete, onEdit, onOpen, viewMode = 'gr
       <motion.div
         initial={{ opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.25, ease: 'easeOut', delay: hasEntered ? 0 : index * 0.02 }}
+        transition={{ duration: 0.25, ease: 'easeOut', delay: hasEntered ? 0 : Math.min(index * 0.02, 0.4) }}
         onAnimationComplete={() => setHasEntered(true)}
         onMouseEnter={() => setHovered(true)}
         onMouseLeave={() => setHovered(false)}
+        style={{ position: 'relative', overflow: 'hidden' }}
       >
+        {/* Swipe-to-reveal actions — mobile only */}
+        <div
+          className="list-swipe-actions"
+          style={{ position: 'absolute', right: 0, top: 0, bottom: 0, display: 'none', zIndex: 0 }}
+        >
+          <button
+            onClick={(e) => {
+              e.preventDefault()
+              e.stopPropagation()
+              animate(swipeX, 0, { type: 'spring', stiffness: 300, damping: 30 })
+              setSwiped(false)
+              onEdit(tool)
+            }}
+            style={swipeEditBtnStyle}
+          >
+            <Pencil size={15} strokeWidth={2} />
+            <span style={{ fontSize: 11, fontWeight: 600 }}>Edit</span>
+          </button>
+          <button
+            onClick={(e) => {
+              e.preventDefault()
+              e.stopPropagation()
+              animate(swipeX, 0, { type: 'spring', stiffness: 300, damping: 30 })
+              setSwiped(false)
+              onDelete(tool)
+            }}
+            style={swipeDeleteBtnStyle}
+          >
+            <Trash2 size={15} strokeWidth={2} />
+            <span style={{ fontSize: 11, fontWeight: 600 }}>Delete</span>
+          </button>
+        </div>
+
         <motion.a
           href={tool.url}
           target="_blank"
           rel="noopener noreferrer"
-          onClick={() => onOpen(tool)}
-          animate={{ backgroundColor: hovered ? '#f6f6f6' : '#ffffff' }}
+          onClick={(e) => {
+            if (swiped) {
+              e.preventDefault()
+              animate(swipeX, 0, { type: 'spring', stiffness: 300, damping: 30 })
+              setSwiped(false)
+              return
+            }
+            onOpen(tool)
+          }}
+          drag="x"
+          dragConstraints={{ right: 0, left: -144 }}
+          dragElastic={{ left: 0.18, right: 0.05 }}
+          dragMomentum={false}
+          dragTransition={{ bounceStiffness: 500, bounceDamping: 28 }}
+          onDragEnd={(_, info) => {
+            if (info.offset.x < -60) {
+              animate(swipeX, -144, { type: 'spring', stiffness: 500, damping: 32, mass: 0.6 })
+              setSwiped(true)
+            } else {
+              animate(swipeX, 0, { type: 'spring', stiffness: 500, damping: 32, mass: 0.6 })
+              setSwiped(false)
+            }
+          }}
+          animate={{ backgroundColor: hovered && !isMobile ? '#f6f6f6' : '#ffffff' }}
           transition={{ duration: 0.12 }}
           style={{
+            x: swipeX,
             display: 'flex',
             alignItems: 'center',
             gap: 12,
-            padding: '9px 8px',
+            padding: '8px 8px',
             borderBottom: '1px solid rgba(0,0,0,0.04)',
             textDecoration: 'none',
             color: 'inherit',
-            borderRadius: 6,
             cursor: 'pointer',
+            position: 'relative',
+            zIndex: 1,
           }}
         >
           {/* Index */}
@@ -88,49 +153,61 @@ export function ToolCard({ tool, index, onDelete, onEdit, onOpen, viewMode = 'gr
             onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }}
           />
 
-          {/* Name */}
-          <span
-            style={{
-              fontSize: 13,
-              fontWeight: 600,
-              color: FG,
-              whiteSpace: 'nowrap',
-              minWidth: 100,
-              maxWidth: 200,
-              overflow: 'hidden',
-              textOverflow: 'ellipsis',
-              flexShrink: 0,
-            }}
-          >
-            {tool.name}
-          </span>
-
-          {/* Description area — hidden on mobile */}
-          <div
-            className="list-row-desc"
-            style={{ flex: 1, display: 'flex', alignItems: 'center', gap: 8, overflow: 'hidden', minWidth: 0 }}
-          >
-            {tool.description && (
-              <>
-                <span style={{ fontSize: 13, color: SUBTLE, flexShrink: 0 }}>·</span>
+          {/* Content */}
+          <div style={{ flex: 1, overflow: 'hidden', minWidth: 0 }}>
+            {/* Name + Description — inline on desktop */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: 6, overflow: 'hidden' }}>
+              <span
+                style={{
+                  fontSize: 13,
+                  fontWeight: 600,
+                  color: FG,
+                  whiteSpace: 'nowrap',
+                  flexShrink: 0,
+                }}
+              >
+                {tool.name}
+              </span>
+              {tool.description && (
                 <span
+                  className="list-row-desc"
                   style={{
                     fontSize: 11.5,
                     color: SUBTLE,
                     overflow: 'hidden',
                     textOverflow: 'ellipsis',
                     whiteSpace: 'nowrap',
-                    lineHeight: 1.4,
+                    flexShrink: 1,
                   }}
                 >
+                  · {tool.description}
+                </span>
+              )}
+            </div>
+            {/* Description + Tags — only on mobile, stacked vertically */}
+            <div className="list-row-mobile-sub" style={{ display: 'none', flexDirection: 'column', alignItems: 'flex-start', gap: 3, marginTop: 3 }}>
+              {tool.description && (
+                <span style={{ fontSize: 11.5, color: SUBTLE, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '100%' }}>
                   {tool.description}
                 </span>
-              </>
-            )}
+              )}
+              {(tool.tags || []).length > 0 && (
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: 3 }}>
+                  {(tool.tags || []).slice(0, 3).map((tag) => (
+                    <span
+                      key={tag}
+                      style={{ fontSize: 10, padding: '1px 6px', background: '#f2f2f2', borderRadius: 4, color: SUBTLE, whiteSpace: 'nowrap' }}
+                    >
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
 
           {/* Tags → replaced by edit/delete on hover — hidden on mobile */}
-          <div className="list-row-right" style={{ display: 'flex', flexShrink: 0 }}>
+          <div className="list-row-right" style={{ display: 'flex', flexShrink: 0, height: 25, alignItems: 'center' }}>
             {hovered ? (
               <motion.div
                 key="actions"
@@ -198,7 +275,7 @@ export function ToolCard({ tool, index, onDelete, onEdit, onOpen, viewMode = 'gr
           transition: {
             duration: hasEntered ? 0.15 : 0.4,
             ease: 'easeOut',
-            delay: hasEntered ? 0 : index * 0.035,
+            delay: hasEntered ? 0 : Math.min(index * 0.035, 0.6),
           },
         },
         hover: {
@@ -359,7 +436,7 @@ export function ToolCard({ tool, index, onDelete, onEdit, onOpen, viewMode = 'gr
       )}
     </motion.div>
   )
-}
+})
 
 const actionBtnStyle: React.CSSProperties = {
   width: 25,
@@ -388,4 +465,32 @@ const listActionBtnStyle: React.CSSProperties = {
   color: SUBTLE,
   cursor: 'pointer',
   padding: 0,
+}
+
+const swipeEditBtnStyle: React.CSSProperties = {
+  width: 72,
+  height: '100%',
+  background: '#ebebeb',
+  border: 'none',
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center',
+  justifyContent: 'center',
+  gap: 4,
+  color: FG,
+  cursor: 'pointer',
+}
+
+const swipeDeleteBtnStyle: React.CSSProperties = {
+  width: 72,
+  height: '100%',
+  background: '#ff3b30',
+  border: 'none',
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center',
+  justifyContent: 'center',
+  gap: 4,
+  color: '#fff',
+  cursor: 'pointer',
 }

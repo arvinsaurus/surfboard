@@ -190,7 +190,7 @@ export function Sidebar({
             style={searchBtnStyle}
           >
             <Search size={13} strokeWidth={2.4} />
-            <span style={{ fontSize: 11, color: SUBTLE }}>⌘F</span>
+            <span style={{ fontSize: 11, color: SUBTLE }}>/</span>
           </motion.button>
           <motion.button
             whileHover={{ scale: 1.02, backgroundColor: '#EEEEEE' }}
@@ -288,7 +288,7 @@ export function Sidebar({
         )}
         {!isMobile && (
           <motion.a
-            href="https://github.com/arvinsaurus/surfboard"
+            href="https://github.com/morvaproject/surfboard"
             target="_blank"
             rel="noopener noreferrer"
             whileHover={{ scale: 1.02, backgroundColor: '#EEEEEE' }}

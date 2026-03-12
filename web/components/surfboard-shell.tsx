@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useCallback, useRef } from 'react'
+import { useState, useEffect, useCallback, useRef, useMemo } from 'react'
 import { motion, AnimatePresence } from 'motion/react'
 import { SlidersHorizontal, Search, Plus } from 'lucide-react'
 import { supabase } from '@/lib/supabase'
@@ -16,6 +16,7 @@ export function SurfboardShell() {
   const [tools, setTools] = useState<Tool[]>([])
   const [loading, setLoading] = useState(true)
   const [search, setSearch] = useState('')
+  const [debouncedSearch, setDebouncedSearch] = useState('')
   const [activeTag, setActiveTag] = useState<string | null>(null)
   const [showAdd, setShowAdd] = useState(false)
   const [editTool, setEditTool] = useState<Tool | null>(null)
@@ -48,14 +49,24 @@ export function SurfboardShell() {
     return () => el.removeEventListener('scroll', onScroll)
   }, [])
 
+  // Debounce search for filtering
+  useEffect(() => {
+    if (!search) {
+      setDebouncedSearch('')
+      return
+    }
+    const timer = setTimeout(() => setDebouncedSearch(search), 150)
+    return () => clearTimeout(timer)
+  }, [search])
+
   // Keyboard shortcuts
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
-      if ((e.metaKey || e.ctrlKey) && e.key === 'f') {
+      const isTyping = (e.target as HTMLElement).tagName === 'INPUT' || (e.target as HTMLElement).tagName === 'TEXTAREA' || (e.target as HTMLElement).isContentEditable
+      if (e.key === '/' && !isTyping) {
         e.preventDefault()
         setSearchOpen(true)
       }
-      const isTyping = (e.target as HTMLElement).tagName === 'INPUT' || (e.target as HTMLElement).tagName === 'TEXTAREA' || (e.target as HTMLElement).isContentEditable
       if ((e.key === 's' || e.key === 'S') && !showAdd && !editTool && !isTyping) {
         e.preventDefault()
         setShowAdd(true)
@@ -75,31 +86,35 @@ export function SurfboardShell() {
   }, [showAdd, editTool])
 
   // Determine which tags are preset vs custom
-  const presetTagSet = new Set<string>(PRESET_TAGS)
+  const presetTagSet = useMemo(() => new Set<string>(PRESET_TAGS), [])
 
   // Tag counts (only preset tags shown individually)
-  const allPresetTags = Array.from(new Set(
+  const allPresetTags = useMemo(() => Array.from(new Set(
     tools.flatMap((t) => (t.tags || []).filter((tag) => presetTagSet.has(tag)))
-  )).sort()
+  )).sort(), [tools, presetTagSet])
 
-  const tagCounts: Record<string, number> = {}
-  tools.forEach((t) =>
-    (t.tags || []).forEach((tag) => {
-      if (presetTagSet.has(tag)) {
-        tagCounts[tag] = (tagCounts[tag] || 0) + 1
-      }
-    }),
-  )
+  const tagCounts = useMemo(() => {
+    const counts: Record<string, number> = {}
+    tools.forEach((t) =>
+      (t.tags || []).forEach((tag) => {
+        if (presetTagSet.has(tag)) {
+          counts[tag] = (counts[tag] || 0) + 1
+        }
+      }),
+    )
+    return counts
+  }, [tools, presetTagSet])
 
   // Count tools that have at least one custom (non-preset) tag
-  const othersTools = tools.filter((t) =>
-    (t.tags || []).some((tag) => !presetTagSet.has(tag))
-  )
-  const othersCount = othersTools.length
+  const othersCount = useMemo(() =>
+    tools.filter((t) =>
+      (t.tags || []).some((tag) => !presetTagSet.has(tag))
+    ).length
+  , [tools, presetTagSet])
 
-  // Filtering
-  const filtered = tools.filter((t) => {
-    const q = search.toLowerCase().trim()
+  // Filtering — uses debouncedSearch to avoid re-filtering on every keystroke
+  const filtered = useMemo(() => tools.filter((t) => {
+    const q = debouncedSearch.toLowerCase().trim()
     const terms = q.split(/\s+/).filter(Boolean)
 
     const matchSearch = terms.length === 0 || terms.every(term =>
@@ -120,11 +135,15 @@ export function SurfboardShell() {
     }
 
     return matchTag
-  })
+  }), [tools, debouncedSearch, activeTag, presetTagSet])
 
-  const handleDeleteClick = (tool: Tool) => {
+  const handleDeleteClick = useCallback((tool: Tool) => {
     setDeleteTool(tool)
-  }
+  }, [])
+
+  const handleEditClick = useCallback((tool: Tool) => {
+    setEditTool(tool)
+  }, [])
 
   const confirmDelete = async () => {
     if (!deleteTool) return
@@ -144,12 +163,12 @@ export function SurfboardShell() {
     }
   }
 
-  const trackOpen = async (tool: Tool) => {
+  const trackOpen = useCallback(async (tool: Tool) => {
     await supabase
       .from('tools')
       .update({ times_opened: (tool.times_opened || 0) + 1 })
       .eq('id', tool.id)
-  }
+  }, [])
 
   return (
     <div className="shell-root" style={{ display: 'flex', height: '100vh', overflow: 'hidden' }}>
@@ -157,21 +176,25 @@ export function SurfboardShell() {
       <div className="mobile-bottom-bar">
         <button
           onClick={() => setMobileMenuOpen(true)}
-          style={mobileBarBtnStyle}
+          style={{ ...mobileBarBtnStyle, width: 'auto', maxWidth: 160, padding: '0 14px', gap: 7, flexShrink: 0 }}
           aria-label="Open menu"
         >
-          <SlidersHorizontal size={18} strokeWidth={2} />
+          <SlidersHorizontal size={14} strokeWidth={2} />
+          <span style={{ fontSize: 15, fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: 84 }}>
+            {activeTag === null ? 'All' : activeTag === '__others' ? 'Others' : activeTag}
+          </span>
+          <span style={{ fontSize: 13, opacity: 0.7 }}>{filtered.length}</span>
         </button>
         <button
           onClick={() => setSearchOpen(true)}
-          style={mobileBarBtnStyle}
+          style={{ ...mobileBarBtnStyle, flexShrink: 0 }}
           aria-label="Search"
         >
           <Search size={18} strokeWidth={2.2} />
         </button>
         <button
           onClick={() => setShowAdd(true)}
-          style={mobileBarBtnStyle}
+          style={{ ...mobileBarBtnStyle, flexShrink: 0 }}
           aria-label="Add bookmark"
         >
           <Plus size={18} strokeWidth={2.2} />
@@ -375,7 +398,7 @@ export function SurfboardShell() {
             </div>
           ) : (
             <div
-              className="card-grid"
+              className={viewMode === 'list' ? 'card-grid card-grid--list' : 'card-grid'}
               style={viewMode === 'list'
                 ? { display: 'flex', flexDirection: 'column', gap: 0 }
                 : { display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 64 }
@@ -387,7 +410,7 @@ export function SurfboardShell() {
                   tool={tool}
                   index={i}
                   onDelete={handleDeleteClick}
-                  onEdit={setEditTool}
+                  onEdit={handleEditClick}
                   onOpen={trackOpen}
                   viewMode={viewMode}
                 />
@@ -403,7 +426,7 @@ export function SurfboardShell() {
       <AnimatePresence>
         {searchOpen && (
           <SearchModal
-            tools={filtered}
+            tools={tools}
             search={search}
             onSearchChange={setSearch}
             onClose={() => setSearchOpen(false)}

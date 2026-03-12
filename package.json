@@ -19,7 +19,8 @@
       "title": "Add to Surfboard",
       "subtitle": "Save a tool to your team's toolkit",
       "description": "Save a new tool or resource to your shared Surfboard",
-      "mode": "view"
+      "mode": "view",
+      "hotkey": ""
     },
     {
       "name": "surfboard-search",
@@ -27,6 +28,7 @@
       "subtitle": "Find a tool from your team's toolkit",
       "description": "Search your team's shared Surfboard by keyword or tag",
       "mode": "view",
+      "hotkey": "",
       "keywords": [
         "background",
         "icons",
@@ -56,16 +58,7 @@
       "mode": "view"
     }
   ],
-  "preferences": [
-    {
-      "name": "memberName",
-      "title": "Your Name",
-      "description": "How your team sees you in Surfboard",
-      "type": "textfield",
-      "required": true,
-      "placeholder": "e.g. Alex"
-    }
-  ],
+  "preferences": [],
   "dependencies": {
     "@raycast/api": "^1.104.6",
     "@raycast/utils": "^1.17.0",
