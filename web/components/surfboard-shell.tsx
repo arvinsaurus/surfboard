@@ -388,7 +388,7 @@ export function SurfboardShell() {
             <div style={emptyStyle}>
               <p style={{ fontSize: 42, opacity: 0.1 }}>🏄</p>
               <p style={{ color: colors.subtle, fontSize: 13, marginTop: 10 }}>
-                No tools found
+                {activeSection === 'design' ? 'No designs found' : 'No tools found'}
               </p>
               {(search || activeTag) && (
                 <button
