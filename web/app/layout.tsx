@@ -4,7 +4,7 @@ import './globals.css'
 export const metadata: Metadata = {
   title: 'Surfboard — Curated bookmarks for Morva Labs',
   description: 'A shared collection of design tools, resources, and inspiration curated by the Morva Labs team.',
-  icons: { icon: '/icon.png' },
+  icons: { icon: '/icon.png', apple: '/icon.png' },
   openGraph: {
     images: ['/og-image.png'],
   },
