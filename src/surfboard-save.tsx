@@ -2,118 +2,118 @@
 // This command lets you save a new tool to Surfboard.
 // It shows a form with fields for URL, name, tags, and a note.
 
-import { Action, ActionPanel, Form, LocalStorage, showToast, Toast, popToRoot } from '@raycast/api'
-import { useEffect, useState } from 'react'
-import { supabase } from './supabase'
-import { Onboarding } from './onboarding'
+import { Action, ActionPanel, Form, LocalStorage, showToast, Toast, popToRoot } from "@raycast/api";
+import { useEffect, useState } from "react";
+import { supabase } from "./supabase";
+import { Onboarding } from "./onboarding";
 
 const TOOL_TAGS = [
-  'Backgrounds & Textures',
-  'Icons',
-  'Fonts & Typography',
-  'Color Tools',
-  'Mockups & Prototyping',
-  'Animation & Motion',
-  'Stock Photos & Video',
-  'CSS & Code Tools',
-  'Web Inspo',
-  'Product Inspo',
-  'App Inspo',
-  'Bento & Illustrations',
-  'Brand & Logos',
-]
+  "Backgrounds & Textures",
+  "Icons",
+  "Fonts & Typography",
+  "Color Tools",
+  "Mockups & Prototyping",
+  "Animation & Motion",
+  "Stock Photos & Video",
+  "CSS & Code Tools",
+  "Web Inspo",
+  "Product Inspo",
+  "App Inspo",
+  "Bento & Illustrations",
+  "Brand & Logos",
+];
 
 const DESIGN_TAGS = [
-  'Isometric',
-  'Technical',
-  'Dither',
-  'Standard SaaS',
-  'People First',
-  'Brutalism',
-  'Scroll Animation',
-  'Playful',
-  'Narrow Layout',
-]
+  "Isometric",
+  "Technical",
+  "Dither",
+  "Standard SaaS",
+  "People First",
+  "Brutalism",
+  "Scroll Animation",
+  "Playful",
+  "Narrow Layout",
+];
 
 export default function SurfboardSave() {
-  const [memberName, setMemberName] = useState<string | null>(null)
-  const [onboardingDone, setOnboardingDone] = useState<boolean | null>(null)
-  const [section, setSection] = useState<'tools' | 'design'>('tools')
+  const [memberName, setMemberName] = useState<string | null>(null);
+  const [onboardingDone, setOnboardingDone] = useState<boolean | null>(null);
+  const [section, setSection] = useState<"tools" | "design">("tools");
 
   useEffect(() => {
     async function check() {
-      const done = await LocalStorage.getItem<string>('onboardingComplete')
-      const name = await LocalStorage.getItem<string>('memberName')
-      setOnboardingDone(done === 'true')
-      setMemberName(name || null)
+      const done = await LocalStorage.getItem<string>("onboardingComplete");
+      const name = await LocalStorage.getItem<string>("memberName");
+      setOnboardingDone(done === "true");
+      setMemberName(name || null);
     }
-    check()
-  }, [])
+    check();
+  }, []);
 
   async function handleSubmit(values: {
-    url: string
-    name: string
-    section: string
-    tags: string[]
-    customTags: string
-    description: string
+    url: string;
+    name: string;
+    section: string;
+    tags: string[];
+    customTags: string;
+    description: string;
   }) {
     try {
-      const presetTags = values.tags || []
+      const presetTags = values.tags || [];
       const extraTags = values.customTags
         ? values.customTags
-            .split(',')
+            .split(",")
             .map((t) => t.trim())
             .filter(Boolean)
-        : []
-      const allTags = [...presetTags, ...extraTags]
+        : [];
+      const allTags = [...presetTags, ...extraTags];
 
       if (allTags.length === 0) {
-        await showToast({ style: Toast.Style.Failure, title: 'Pick or type at least one tag' })
-        return
+        await showToast({ style: Toast.Style.Failure, title: "Pick or type at least one tag" });
+        return;
       }
 
-      const domain = new URL(values.url).hostname
-      const faviconUrl = `https://www.google.com/s2/favicons?domain=${domain}&sz=64`
+      const domain = new URL(values.url).hostname;
+      const faviconUrl = `https://www.google.com/s2/favicons?domain=${domain}&sz=64`;
 
-      const { error } = await supabase.from('tools').insert({
+      const { error } = await supabase.from("tools").insert({
         url: values.url,
         name: values.name,
         tags: allTags,
         description: values.description || null,
         favicon_url: faviconUrl,
-        saved_by: memberName || 'Unknown',
-        section: values.section || 'tools',
-      })
+        saved_by: memberName || "Unknown",
+        section: values.section || "tools",
+      });
 
-      if (error) throw error
+      if (error) throw error;
 
       await showToast({
         style: Toast.Style.Success,
-        title: 'Saved! 🏄',
-        message: `${values.name} saved with ${allTags.length} tag${allTags.length > 1 ? 's' : ''}`,
-      })
+        title: "Saved! 🏄",
+        message: `${values.name} saved with ${allTags.length} tag${allTags.length > 1 ? "s" : ""}`,
+      });
 
-      popToRoot()
+      popToRoot();
     } catch (error) {
-      await showToast({ style: Toast.Style.Failure, title: 'Failed to save', message: String(error) })
+      await showToast({ style: Toast.Style.Failure, title: "Failed to save", message: String(error) });
     }
   }
 
-  if (onboardingDone === null) return <Form isLoading />
+  if (onboardingDone === null) return <Form isLoading />;
 
   if (!onboardingDone || !memberName) {
     return (
       <Onboarding
         onComplete={(name) => {
-          setMemberName(name)
-          setOnboardingDone(true)
+          setMemberName(name);
+          setOnboardingDone(true);
         }}
       />
-    )
+    );
   }
 
-  const activeTags = section === 'design' ? DESIGN_TAGS : TOOL_TAGS
+  const activeTags = section === "design" ? DESIGN_TAGS : TOOL_TAGS;
 
   return (
     <Form
@@ -127,7 +127,7 @@ export default function SurfboardSave() {
         id="section"
         title="Section"
         defaultValue="tools"
-        onChange={(val) => setSection(val as 'tools' | 'design')}
+        onChange={(val) => setSection(val as "tools" | "design")}
       >
         <Form.Dropdown.Item value="tools" title="Tools" />
         <Form.Dropdown.Item value="design" title="Design" />
@@ -150,5 +150,5 @@ export default function SurfboardSave() {
         placeholder="Great for animated gradient backgrounds"
       />
     </Form>
-  )
+  );
 }

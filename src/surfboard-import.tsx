@@ -2,77 +2,77 @@
 // Bulk import multiple URLs at once with shared tags.
 // Paste URLs (one per line), pick tags, hit Enter — all saved.
 
-import { Action, ActionPanel, Form, LocalStorage, showToast, Toast, popToRoot } from '@raycast/api'
-import { useEffect, useState } from 'react'
-import { supabase } from './supabase'
+import { Action, ActionPanel, Form, LocalStorage, showToast, Toast, popToRoot } from "@raycast/api";
+import { useEffect, useState } from "react";
+import { supabase } from "./supabase";
 
 const TAGS = [
-  'Backgrounds & Textures',
-  'Icons',
-  'Fonts & Typography',
-  'Color Tools',
-  'Mockups & Prototyping',
-  'Animation & Motion',
-  'Stock Photos & Video',
-  'CSS & Code Tools',
-  'Web Inspo',
-  'Product Inspo',
-  'App Inspo',
-  'Bento & Illustrations',
-  'Brand & Logos',
-]
+  "Backgrounds & Textures",
+  "Icons",
+  "Fonts & Typography",
+  "Color Tools",
+  "Mockups & Prototyping",
+  "Animation & Motion",
+  "Stock Photos & Video",
+  "CSS & Code Tools",
+  "Web Inspo",
+  "Product Inspo",
+  "App Inspo",
+  "Bento & Illustrations",
+  "Brand & Logos",
+];
 
 export default function SurfboardImport() {
-  const [memberName, setMemberName] = useState<string | null>(null)
-  const [isLoading, setIsLoading] = useState(false)
+  const [memberName, setMemberName] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    LocalStorage.getItem<string>('memberName').then((name) => setMemberName(name || null))
-  }, [])
+    LocalStorage.getItem<string>("memberName").then((name) => setMemberName(name || null));
+  }, []);
 
   async function handleSubmit(values: { urls: string; tags: string[]; customTags: string; description: string }) {
     try {
-      const presetTags = values.tags || []
+      const presetTags = values.tags || [];
       const extraTags = values.customTags
         ? values.customTags
-            .split(',')
+            .split(",")
             .map((t) => t.trim())
             .filter(Boolean)
-        : []
-      const allTags = [...presetTags, ...extraTags]
+        : [];
+      const allTags = [...presetTags, ...extraTags];
 
       if (allTags.length === 0) {
-        await showToast({ style: Toast.Style.Failure, title: 'Pick or type at least one tag' })
-        return
+        await showToast({ style: Toast.Style.Failure, title: "Pick or type at least one tag" });
+        return;
       }
 
       const urls = values.urls
-        .split('\n')
+        .split("\n")
         .map((u) => u.trim())
-        .filter((u) => u.length > 0 && (u.startsWith('http://') || u.startsWith('https://')))
+        .filter((u) => u.length > 0 && (u.startsWith("http://") || u.startsWith("https://")));
 
       if (urls.length === 0) {
         await showToast({
           style: Toast.Style.Failure,
-          title: 'No valid URLs found',
-          message: 'Paste URLs starting with http:// or https://, one per line',
-        })
-        return
+          title: "No valid URLs found",
+          message: "Paste URLs starting with http:// or https://, one per line",
+        });
+        return;
       }
 
-      setIsLoading(true)
-      await showToast({ style: Toast.Style.Animated, title: `Importing ${urls.length} tools...` })
+      setIsLoading(true);
+      await showToast({ style: Toast.Style.Animated, title: `Importing ${urls.length} tools...` });
 
       const rows = urls.map((url) => {
-        let domain = ''
-        let name = ''
+        let domain = "";
+        let name = "";
         try {
-          const parsed = new URL(url)
-          domain = parsed.hostname
-          name = domain.replace(/^www\./, '')
+          const parsed = new URL(url);
+          domain = parsed.hostname;
+          name = domain.replace(/^www\./, "");
         } catch {
-          domain = url
-          name = url
+          domain = url;
+          name = url;
         }
 
         return {
@@ -81,19 +81,19 @@ export default function SurfboardImport() {
           tags: allTags,
           description: values.description || null,
           favicon_url: `https://www.google.com/s2/favicons?domain=${domain}&sz=64`,
-          saved_by: memberName || 'Unknown',
-        }
-      })
+          saved_by: memberName || "Unknown",
+        };
+      });
 
-      const { error } = await supabase.from('tools').insert(rows)
-      if (error) throw error
+      const { error } = await supabase.from("tools").insert(rows);
+      if (error) throw error;
 
-      setIsLoading(false)
-      await showToast({ style: Toast.Style.Success, title: `Imported ${urls.length} tools! 🏄` })
-      popToRoot()
+      setIsLoading(false);
+      await showToast({ style: Toast.Style.Success, title: `Imported ${urls.length} tools! 🏄` });
+      popToRoot();
     } catch (error) {
-      setIsLoading(false)
-      await showToast({ style: Toast.Style.Failure, title: 'Import failed', message: String(error) })
+      setIsLoading(false);
+      await showToast({ style: Toast.Style.Failure, title: "Import failed", message: String(error) });
     }
   }
 
@@ -119,5 +119,5 @@ export default function SurfboardImport() {
       <Form.TextField id="customTags" title="Custom Tags (optional)" placeholder="e.g. Gradients, Hero Sections" />
       <Form.TextField id="description" title="Note for all (optional)" placeholder="e.g. Found these on Twitter" />
     </Form>
-  )
+  );
 }

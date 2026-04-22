@@ -54,6 +54,16 @@ When there's an update, open Terminal, drag the `surfboard` folder in, type `/in
 
 ---
 
+## 🌐 Web Dashboard
+
+Browse the full library at **[surfboard.morvalabs.com](https://surfboard.morvalabs.com)** — no install needed. The web app syncs in real-time with the Raycast extension.
+
+- **Tools** — all your saved design resources, browseable by tag
+- **Design** — a curated section for design styles and aesthetic references (Brutalism, Isometric, Scroll Animation, and more)
+- Grid and list view, search, tag filtering — all in the browser
+
+---
+
 ## 🛠 Commands
 
 | Command | What it does |
@@ -67,8 +77,9 @@ When there's an update, open Terminal, drag the `surfboard` folder in, type `/in
 `Raycast → "Add to Surfboard"`
 1. Paste the URL (favicon loads automatically)
 2. Name it
-3. Pick tags from the list — or type your own custom ones
-4. Add an optional note (e.g., *"amazing for hero sections"*)
+3. Choose a section — **Tools** (resources you use) or **Design** (visual references and styles)
+4. Pick tags from the list — or type your own custom ones
+5. Add an optional note (e.g., *"amazing for hero sections"*)
 
 ### 🔍 Search
 `Raycast → "Surfboard Search"`
@@ -105,6 +116,8 @@ When there's an update, open Terminal, drag the `surfboard` folder in, type `/in
 
 ## 🏷 Tags
 
+### Tools section tags
+
 These are the built-in intent tags. You can also create custom tags when saving.
 
 | Tag | When you need... |
@@ -122,7 +135,22 @@ These are the built-in intent tags. You can also create custom tags when saving.
 | App Inspo | Mobile and desktop interaction flows |
 | Bento & Illustrations | Grid layouts, bento-style designs, illustration sets |
 | Brand & Logos | Brand guidelines, logo inspiration, identity assets |
-| Other | Everything else worth remembering |
+
+### Design section tags
+
+For visual references, aesthetic styles, and layout patterns.
+
+| Tag | What it covers |
+|---|---|
+| Isometric | Isometric illustration and 3D-style compositions |
+| Technical | Blueprint, diagram, and engineering aesthetics |
+| Dither | Pixel art, dithered textures, retro graphics |
+| Standard SaaS | Clean, functional product UI patterns |
+| People First | Human-centred, editorial illustration styles |
+| Brutalism | Raw, grid-breaking, typographic-heavy design |
+| Scroll Animation | Parallax, scroll-driven, and cinematic web experiences |
+| Playful | Rounded, colourful, expressive UI directions |
+| Narrow Layout | Column-heavy, editorial, and content-dense layouts |
 
 ---
 

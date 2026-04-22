@@ -98,7 +98,7 @@ export function EditTool({ tool, onEdit }: { tool: Tool; onEdit: () => void }) {
     }
   }
 
-  const activeTags = section === "design" ? DESIGN_TAGS : TOOL_TAGS
+  const activeTags = section === "design" ? DESIGN_TAGS : TOOL_TAGS;
 
   return (
     <Form

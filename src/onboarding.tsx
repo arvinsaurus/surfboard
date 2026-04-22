@@ -1,27 +1,27 @@
-import { Action, ActionPanel, Detail, Form, LocalStorage, openExtensionPreferences } from '@raycast/api'
-import { useState } from 'react'
+import { Action, ActionPanel, Detail, Form, LocalStorage, openExtensionPreferences } from "@raycast/api";
+import { useState } from "react";
 
 interface OnboardingProps {
-  onComplete: (name: string) => void
+  onComplete: (name: string) => void;
 }
 
 export function Onboarding({ onComplete }: OnboardingProps) {
-  const [step, setStep] = useState<'name' | 'hotkeys'>('name')
-  const [name, setName] = useState('')
+  const [step, setStep] = useState<"name" | "hotkeys">("name");
+  const [name, setName] = useState("");
 
   async function handleNameSubmit(values: { name: string }) {
-    setName(values.name)
-    setStep('hotkeys')
+    setName(values.name);
+    setStep("hotkeys");
   }
 
   async function finish(openPrefs: boolean) {
-    await LocalStorage.setItem('memberName', name)
-    await LocalStorage.setItem('onboardingComplete', 'true')
-    if (openPrefs) openExtensionPreferences()
-    onComplete(name)
+    await LocalStorage.setItem("memberName", name);
+    await LocalStorage.setItem("onboardingComplete", "true");
+    if (openPrefs) openExtensionPreferences();
+    onComplete(name);
   }
 
-  if (step === 'hotkeys') {
+  if (step === "hotkeys") {
     return (
       <Detail
         markdown={`# Set up hotkeys\n\nAssign global shortcuts so you can reach Surfboard from anywhere on your Mac.\n\n**Suggested shortcuts:**\n- **Add to Surfboard** — e.g. \`⌥⇧S\`\n- **Surfboard Search** — e.g. \`⌥⇧F\`\n\nPress **Set Hotkeys** below, then click the hotkey field next to each command and press your preferred shortcut.`}
@@ -32,7 +32,7 @@ export function Onboarding({ onComplete }: OnboardingProps) {
           </ActionPanel>
         }
       />
-    )
+    );
   }
 
   return (
@@ -51,5 +51,5 @@ export function Onboarding({ onComplete }: OnboardingProps) {
         autoFocus
       />
     </Form>
-  )
+  );
 }
