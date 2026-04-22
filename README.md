@@ -1,5 +1,7 @@
 # 🏄 Surfboard
 
+![Version](https://img.shields.io/badge/version-1.1.0-blue) ![Web](https://img.shields.io/badge/web-surf.morvalabs.com-brightgreen)
+
 **Your team's shared design toolkit — always one keystroke away.**
 
 Ever found an incredible design tool, bookmarked it, and completely forgot it existed two weeks later? Surfboard fixes that. It's a collaborative Raycast extension that turns your team's scattered bookmarks into a shared, searchable library — organized by *when you'd need them*, not just what they're called.
@@ -8,7 +10,7 @@ Ever found an incredible design tool, bookmarked it, and completely forgot it ex
 
 ---
 
-## ✨ What's New — April 2026
+## ✨ What's New — v1.1.0 (April 2026)
 
 ### Design section
 Surfboard now has two sections — **Tools** and **Design**. Tools is everything you already know: resources, generators, libraries. Design is new — a dedicated space for visual references, aesthetic styles, and layout inspiration.
