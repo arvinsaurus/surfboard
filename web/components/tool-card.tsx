@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, memo } from 'react'
 import { motion, useMotionValue, animate } from 'motion/react'
 import { Pencil, Trash2 } from 'lucide-react'
 import { Tool } from '@/lib/types'
@@ -24,7 +24,7 @@ function getDomain(url: string) {
   }
 }
 
-export function ToolCard({ tool, index, onDelete, onEdit, onOpen, viewMode = 'grid' }: ToolCardProps) {
+export const ToolCard = memo(function ToolCard({ tool, index, onDelete, onEdit, onOpen, viewMode = 'grid' }: ToolCardProps) {
   const [hovered, setHovered] = useState(false)
   const [imgOk, setImgOk] = useState(true)
   const [hasEntered, setHasEntered] = useState(false)
@@ -45,7 +45,7 @@ export function ToolCard({ tool, index, onDelete, onEdit, onOpen, viewMode = 'gr
       <motion.div
         initial={{ opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.25, ease: 'easeOut', delay: hasEntered ? 0 : index * 0.02 }}
+        transition={{ duration: 0.25, ease: 'easeOut', delay: hasEntered ? 0 : Math.min(index * 0.02, 0.4) }}
         onAnimationComplete={() => setHasEntered(true)}
         onMouseEnter={() => setHovered(true)}
         onMouseLeave={() => setHovered(false)}
@@ -249,7 +249,7 @@ export function ToolCard({ tool, index, onDelete, onEdit, onOpen, viewMode = 'gr
           transition: {
             duration: hasEntered ? 0.15 : 0.4,
             ease: 'easeOut',
-            delay: hasEntered ? 0 : index * 0.035,
+            delay: hasEntered ? 0 : Math.min(index * 0.035, 0.6),
           },
         },
         hover: {
@@ -375,7 +375,7 @@ export function ToolCard({ tool, index, onDelete, onEdit, onOpen, viewMode = 'gr
       )}
     </motion.div>
   )
-}
+})
 
 const swipeEditBtnStyle: React.CSSProperties = {
   width: 72,

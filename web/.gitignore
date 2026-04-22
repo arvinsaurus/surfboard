@@ -7,3 +7,4 @@ out/
 
 *storybook.log
 storybook-static
+tsconfig.tsbuildinfo

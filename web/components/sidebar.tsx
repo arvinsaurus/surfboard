@@ -289,7 +289,7 @@ export function Sidebar({
           )}
           {!isMobile && (
             <motion.a
-              href="https://github.com/arvinsaurus/surfboard"
+              href="https://github.com/morvaproject/surfboard"
               target="_blank"
               rel="noopener noreferrer"
               whileHover={{ scale: 1.02, backgroundColor: colors.surfaceHover }}

@@ -1,6 +1,6 @@
 'use client'
 
-import { useRef, useEffect, useState } from 'react'
+import { useRef, useEffect, useState, useMemo, memo } from 'react'
 import { motion } from 'motion/react'
 import { Search } from 'lucide-react'
 import { Tool } from '@/lib/types'
@@ -23,7 +23,7 @@ function getDomain(url: string) {
   }
 }
 
-export function SearchModal({ tools, search, onSearchChange, onClose, onOpen }: SearchModalProps) {
+export const SearchModal = memo(function SearchModal({ tools, search, onSearchChange, onClose, onOpen }: SearchModalProps) {
   const inputRef = useRef<HTMLInputElement>(null)
   const [isMobile, setIsMobile] = useState(false)
 
@@ -34,6 +34,24 @@ export function SearchModal({ tools, search, onSearchChange, onClose, onOpen }: 
     setIsMobile(window.innerWidth < 768)
     return () => window.removeEventListener('keydown', handleKeyDown)
   }, [onClose])
+
+  // Filter locally for instant results (only need top 8)
+  const results = useMemo(() => {
+    const q = search.toLowerCase().trim()
+    const terms = q.split(/\s+/).filter(Boolean)
+    if (terms.length === 0) return tools.slice(0, 8)
+    const matched: Tool[] = []
+    for (const t of tools) {
+      if (matched.length >= 8) break
+      const hit = terms.every(term =>
+        t.name?.toLowerCase().includes(term) ||
+        (t.description || '').toLowerCase().includes(term) ||
+        t.tags?.some((tag) => tag.toLowerCase().includes(term))
+      )
+      if (hit) matched.push(t)
+    }
+    return matched
+  }, [tools, search])
 
   return (
     <motion.div
@@ -95,12 +113,12 @@ export function SearchModal({ tools, search, onSearchChange, onClose, onOpen }: 
           className="no-scrollbar"
           style={{ flex: isMobile ? 1 : undefined, maxHeight: isMobile ? undefined : 320, overflowY: 'auto', paddingBottom: 10 }}
         >
-          {tools.length === 0 ? (
+          {results.length === 0 ? (
             <p style={{ padding: '20px 16px', color: colors.subtle, fontSize: 13, textAlign: 'center' }}>
               {search ? `No results for "${search}"` : 'No tools found'}
             </p>
           ) : (
-            tools.slice(0, 8).map((tool) => {
+            results.map((tool) => {
               const domain = getDomain(tool.url)
               return (
                 <a
@@ -150,4 +168,4 @@ export function SearchModal({ tools, search, onSearchChange, onClose, onOpen }: 
       </motion.div>
     </motion.div>
   )
-}
+})
