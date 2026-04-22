@@ -19,7 +19,6 @@ export function ViewToggle({ viewMode, onChange }: ViewToggleProps) {
         width: 32,
         height: 32,
         borderRadius: 99,
-        border: 'none',
         cursor: 'pointer',
         display: 'flex',
         alignItems: 'center',
