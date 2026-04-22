@@ -7,7 +7,7 @@ import { useEffect, useState } from 'react'
 import { supabase } from './supabase'
 import { Onboarding } from './onboarding'
 
-const TAGS = [
+const TOOL_TAGS = [
   'Backgrounds & Textures',
   'Icons',
   'Fonts & Typography',
@@ -23,9 +23,22 @@ const TAGS = [
   'Brand & Logos',
 ]
 
+const DESIGN_TAGS = [
+  'Isometric',
+  'Technical',
+  'Dither',
+  'Standard SaaS',
+  'People First',
+  'Brutalism',
+  'Scroll Animation',
+  'Playful',
+  'Narrow Layout',
+]
+
 export default function SurfboardSave() {
   const [memberName, setMemberName] = useState<string | null>(null)
   const [onboardingDone, setOnboardingDone] = useState<boolean | null>(null)
+  const [section, setSection] = useState<'tools' | 'design'>('tools')
 
   useEffect(() => {
     async function check() {
@@ -40,6 +53,7 @@ export default function SurfboardSave() {
   async function handleSubmit(values: {
     url: string
     name: string
+    section: string
     tags: string[]
     customTags: string
     description: string
@@ -69,6 +83,7 @@ export default function SurfboardSave() {
         description: values.description || null,
         favicon_url: faviconUrl,
         saved_by: memberName || 'Unknown',
+        section: values.section || 'tools',
       })
 
       if (error) throw error
@@ -98,6 +113,8 @@ export default function SurfboardSave() {
     )
   }
 
+  const activeTags = section === 'design' ? DESIGN_TAGS : TOOL_TAGS
+
   return (
     <Form
       actions={
@@ -106,10 +123,19 @@ export default function SurfboardSave() {
         </ActionPanel>
       }
     >
+      <Form.Dropdown
+        id="section"
+        title="Section"
+        defaultValue="tools"
+        onChange={(val) => setSection(val as 'tools' | 'design')}
+      >
+        <Form.Dropdown.Item value="tools" title="Tools" />
+        <Form.Dropdown.Item value="design" title="Design" />
+      </Form.Dropdown>
       <Form.TextField id="url" title="URL" placeholder="https://unicorn.studio" />
-      <Form.TextField id="name" title="Tool Name" placeholder="Unicorn Studio" />
+      <Form.TextField id="name" title="Name" placeholder="Unicorn Studio" />
       <Form.TagPicker id="tags" title="Tags">
-        {TAGS.map((tag) => (
+        {activeTags.map((tag) => (
           <Form.TagPicker.Item key={tag} value={tag} title={tag} />
         ))}
       </Form.TagPicker>

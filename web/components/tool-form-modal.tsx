@@ -1,22 +1,22 @@
 'use client'
 
-import { useState, useRef, useEffect } from 'react'
+import { useState } from 'react'
 import { motion, AnimatePresence } from 'motion/react'
 import { X, Plus, Check, Pencil } from 'lucide-react'
 import { supabase } from '@/lib/supabase'
-import { Tool, PRESET_TAGS } from '@/lib/types'
+import { Tool, PRESET_TAGS, DESIGN_TAGS } from '@/lib/types'
 import { toast } from 'sonner'
-
-const FG = 'rgba(0,0,0,0.85)'
-const SUBTLE = 'rgba(0,0,0,0.45)'
+import { colors, shadows } from '@/lib/tokens'
+import { formInput, cancelBtn, primaryBtn, tagChip, tagTrigger, kbdBadge } from '@/lib/styles'
 
 interface ToolFormModalProps {
   tool: Tool | null
+  section: 'tools' | 'design'
   onClose: () => void
   onSaved: () => void
 }
 
-export function ToolFormModal({ tool, onClose, onSaved }: ToolFormModalProps) {
+export function ToolFormModal({ tool, section: sectionProp, onClose, onSaved }: ToolFormModalProps) {
   const [form, setForm] = useState({
     url: tool?.url || '',
     name: tool?.name || '',
@@ -24,6 +24,7 @@ export function ToolFormModal({ tool, onClose, onSaved }: ToolFormModalProps) {
     tags: tool?.tags || [],
     saved_by: tool?.saved_by || 'Morva',
   })
+  const [section, setSection] = useState<'tools' | 'design'>(sectionProp)
   const [saving, setSaving] = useState(false)
   const [showTagPicker, setShowTagPicker] = useState(false)
   const [tagSearch, setTagSearch] = useState('')
@@ -42,7 +43,8 @@ export function ToolFormModal({ tool, onClose, onSaved }: ToolFormModalProps) {
   const removeTag = (tag: string) =>
     setForm((f) => ({ ...f, tags: f.tags.filter((t) => t !== tag) }))
 
-  const allAvailableTags = Array.from(new Set([...PRESET_TAGS, ...form.tags]))
+  const sectionPresetTags = section === 'design' ? DESIGN_TAGS : PRESET_TAGS
+  const allAvailableTags = Array.from(new Set([...sectionPresetTags, ...form.tags]))
   const filteredTags = allAvailableTags.filter(t =>
     t.toLowerCase().includes(tagSearch.toLowerCase())
   )
@@ -68,6 +70,7 @@ export function ToolFormModal({ tool, onClose, onSaved }: ToolFormModalProps) {
         description: form.description || null,
         favicon_url: `https://www.google.com/s2/favicons?domain=${domain}&sz=64`,
         saved_by: form.saved_by,
+        section,
       }
 
       if (tool) {
@@ -79,7 +82,7 @@ export function ToolFormModal({ tool, onClose, onSaved }: ToolFormModalProps) {
       }
 
       onSaved()
-      toast.success(tool ? 'Tool updated!' : 'Tool added to Surfboard!')
+      toast.success(tool ? 'Saved!' : 'Added!')
     } catch (e: unknown) {
       const message = e instanceof Error ? e.message : 'Unknown error'
       toast.error('Something went wrong: ' + message)
@@ -95,11 +98,7 @@ export function ToolFormModal({ tool, onClose, onSaved }: ToolFormModalProps) {
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.15 }}
-      style={{
-        position: 'fixed',
-        inset: 0,
-        zIndex: 1000,
-      }}
+      style={{ position: 'fixed', inset: 0, zIndex: 1000 }}
       onClick={onClose}
     >
       <motion.div
@@ -117,39 +116,20 @@ export function ToolFormModal({ tool, onClose, onSaved }: ToolFormModalProps) {
           maxWidth: 480,
           maxHeight: '90vh',
           overflow: 'visible',
-          boxShadow: '0 16px 48px 0 rgba(0, 0, 0, 0.10)',
+          boxShadow: shadows.modal,
           position: 'relative',
         }}
         onClick={(e) => e.stopPropagation()}
       >
         <div className="modal-handle" />
-        {/* Header Overlay (ESC) */}
+
+        {/* ESC badge */}
         <div style={{ position: 'absolute', top: 16, right: 16 }}>
-          <div
-            style={{
-              fontSize: 10,
-              fontWeight: 600,
-              color: SUBTLE,
-              background: '#f2f2f2',
-              border: '1px solid rgba(0,0,0,0.05)',
-              padding: '2px 6px',
-              borderRadius: 4,
-              letterSpacing: '0.02em',
-            }}
-          >
-            ESC
-          </div>
+          <div style={{ ...kbdBadge, fontSize: 10 }}>ESC</div>
         </div>
 
-        {/* Centered Header */}
-        <div
-          style={{
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            padding: '24px 12px 20px',
-          }}
-        >
+        {/* Header */}
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '24px 12px 20px' }}>
           <div
             style={{
               width: 32,
@@ -160,18 +140,60 @@ export function ToolFormModal({ tool, onClose, onSaved }: ToolFormModalProps) {
               alignItems: 'center',
               justifyContent: 'center',
               marginBottom: 10,
-              color: SUBTLE,
+              color: colors.subtle,
             }}
           >
-            {tool ? (
-              <Pencil size={14} strokeWidth={1.5} />
-            ) : (
-              <Plus size={14} strokeWidth={1.5} />
-            )}
+            {tool ? <Pencil size={14} strokeWidth={1.5} /> : <Plus size={14} strokeWidth={1.5} />}
           </div>
           <h2 style={{ fontSize: 13, fontWeight: 500, color: '#000' }}>
-            {tool ? 'Edit Tool' : 'New Tool'}
+            {tool ? 'Edit' : 'New'}
           </h2>
+
+          {/* ── Section Radio ── */}
+          <div style={{ display: 'inline-flex', gap: 2, background: 'rgba(0,0,0,0.05)', borderRadius: 99, padding: 2, marginTop: 12 }}>
+            {(['tools', 'design'] as const).map((sec) => {
+              const isActive = section === sec
+              return (
+                <motion.button
+                  key={sec}
+                  onClick={() => { setSection(sec); setForm((f) => ({ ...f, tags: [] })) }}
+                  style={{
+                    padding: '0 14px',
+                    height: 26,
+                    borderRadius: 99,
+                    border: 'none',
+                    cursor: 'pointer',
+                    fontSize: 12,
+                    fontWeight: isActive ? 600 : 400,
+                    color: isActive ? colors.fg : colors.subtle,
+                    background: 'transparent',
+                    position: 'relative',
+                    zIndex: 1,
+                    fontFamily: 'inherit',
+                    whiteSpace: 'nowrap',
+                  }}
+                  whileTap={{ scale: 0.96 }}
+                  transition={{ duration: 0.12 }}
+                >
+                  {isActive && (
+                    <motion.span
+                      layoutId="modal-section-pill"
+                      style={{
+                        position: 'absolute',
+                        inset: 0,
+                        borderRadius: 99,
+                        background: '#ffffff',
+                        boxShadow: '0 1px 2px rgba(0,0,0,0.10)',
+                        zIndex: -1,
+                      }}
+                      transition={{ type: 'spring', stiffness: 400, damping: 28 }}
+                    />
+                  )}
+                  {sec === 'tools' ? 'Tool' : 'Design'}
+                </motion.button>
+              )
+            })}
+          </div>
         </div>
 
         {/* Form Body */}
@@ -183,45 +205,28 @@ export function ToolFormModal({ tool, onClose, onSaved }: ToolFormModalProps) {
               onChange={(e) => update('url', e.target.value)}
               placeholder="URL"
               className="form-input"
-              style={inputStyle}
+              style={formInput}
             />
-
             <input
               value={form.name}
               onChange={(e) => update('name', e.target.value)}
               placeholder="Tool name"
               className="form-input"
-              style={inputStyle}
+              style={formInput}
             />
-
             <textarea
               value={form.description}
               onChange={(e) => update('description', e.target.value)}
               placeholder="Notes (e.g. Great for animated background)"
               className="form-input"
-              style={{ ...inputStyle, height: 'auto', minHeight: 140, padding: '12px', resize: 'none' }}
+              style={{ ...formInput, height: 'auto', minHeight: 140, padding: '12px', resize: 'none' }}
             />
 
-            {/* Notion Style Multi-select */}
+            {/* Multi-select tags */}
             <div style={{ position: 'relative' }}>
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, alignItems: 'center' }}>
                 {form.tags.map(tag => (
-                  <span
-                    key={tag}
-                    onClick={() => removeTag(tag)}
-                    style={{
-                      background: '#f2f2f2',
-                      padding: '0 10px',
-                      height: 24,
-                      borderRadius: 6,
-                      fontSize: 13,
-                      color: FG,
-                      cursor: 'pointer',
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: 4
-                    }}
-                  >
+                  <span key={tag} onClick={() => removeTag(tag)} style={tagChip}>
                     {tag}
                     <X size={10} strokeWidth={3} style={{ opacity: 0.4 }} />
                   </span>
@@ -229,20 +234,7 @@ export function ToolFormModal({ tool, onClose, onSaved }: ToolFormModalProps) {
                 <button
                   onClick={() => setShowTagPicker(!showTagPicker)}
                   className="tag-trigger"
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: 6,
-                    height: 26,
-                    padding: '0 10px',
-                    borderRadius: 8,
-                    border: '1.5px dashed #ddd',
-                    background: 'none',
-                    color: SUBTLE,
-                    fontSize: 13,
-                    cursor: 'pointer',
-                    transition: 'all 0.15s'
-                  }}
+                  style={tagTrigger}
                 >
                   <Plus size={13} strokeWidth={2.5} />
                   <span>Tags</span>
@@ -250,100 +242,103 @@ export function ToolFormModal({ tool, onClose, onSaved }: ToolFormModalProps) {
               </div>
 
               {/* Tag Picker Dropdown */}
-              {showTagPicker && (
-                <>
-                  <div
-                    style={{ position: 'fixed', inset: 0, zIndex: 50 }}
-                    onClick={() => setShowTagPicker(false)}
-                  />
-                  <motion.div
-                    initial={{ opacity: 0, y: 4, scale: 0.98 }}
-                    animate={{ opacity: 1, y: 0, scale: 1 }}
-                    style={{
-                      position: 'absolute',
-                      bottom: 'calc(100% + 8px)',
-                      left: 0,
-                      width: 240,
-                      background: '#fff',
-                      borderRadius: 12,
-                      boxShadow: '0 10px 30px rgba(0,0,0,0.12), 0 0 0 1px rgba(0,0,0,0.05)',
-                      zIndex: 100,
-                      padding: 6,
-                      maxHeight: 280,
-                      overflowY: 'auto'
-                    }}
-                  >
-                    <input
-                      autoFocus
-                      placeholder="Search or create tag..."
-                      value={tagSearch}
-                      onChange={e => setTagSearch(e.target.value)}
-                      onKeyDown={e => {
-                        if (e.key === 'Enter' && tagSearch && !form.tags.includes(tagSearch)) {
-                          toggleTag(tagSearch)
-                          setTagSearch('')
-                        }
-                      }}
-                      style={{
-                        width: '100%',
-                        padding: '8px 10px',
-                        border: 'none',
-                        background: '#f8f8f8',
-                        borderRadius: 6,
-                        fontSize: 13,
-                        outline: 'none',
-                        marginBottom: 6
-                      }}
+              <AnimatePresence>
+                {showTagPicker && (
+                  <>
+                    <div
+                      style={{ position: 'fixed', inset: 0, zIndex: 50 }}
+                      onClick={() => setShowTagPicker(false)}
                     />
-                    <div style={{ display: 'flex', flexDirection: 'column' }}>
-                      {filteredTags.map(tag => (
-                        <button
-                          key={tag}
-                          onClick={() => toggleTag(tag)}
-                          style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'space-between',
-                            padding: '6px 8px',
-                            background: 'none',
-                            border: 'none',
-                            borderRadius: 6,
-                            cursor: 'pointer',
-                            textAlign: 'left',
-                            fontSize: 13,
-                            color: form.tags.includes(tag) ? FG : SUBTLE,
-                            transition: 'background 0.1s'
-                          }}
-                          onMouseEnter={e => e.currentTarget.style.background = '#EEEEEE'}
-                          onMouseLeave={e => e.currentTarget.style.background = 'none'}
-                        >
-                          {tag}
-                          {form.tags.includes(tag) && <Check size={14} strokeWidth={2.5} />}
-                        </button>
-                      ))}
-                      {tagSearch && !allAvailableTags.includes(tagSearch) && (
-                        <button
-                          onClick={() => {
+                    <motion.div
+                      initial={{ opacity: 0, y: 4, scale: 0.98 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      exit={{ opacity: 0, y: 4, scale: 0.98 }}
+                      style={{
+                        position: 'absolute',
+                        bottom: 'calc(100% + 8px)',
+                        left: 0,
+                        width: 240,
+                        background: '#fff',
+                        borderRadius: 12,
+                        boxShadow: shadows.dropdown,
+                        zIndex: 100,
+                        padding: 6,
+                        maxHeight: 280,
+                        overflowY: 'auto',
+                      }}
+                    >
+                      <input
+                        autoFocus
+                        placeholder="Search or create tag..."
+                        value={tagSearch}
+                        onChange={e => setTagSearch(e.target.value)}
+                        onKeyDown={e => {
+                          if (e.key === 'Enter' && tagSearch && !form.tags.includes(tagSearch)) {
                             toggleTag(tagSearch)
                             setTagSearch('')
-                          }}
-                          style={{
-                            padding: '8px',
-                            textAlign: 'left',
-                            fontSize: 12,
-                            color: SUBTLE,
-                            border: 'none',
-                            background: 'none',
-                            cursor: 'pointer'
-                          }}
-                        >
-                          Create "{tagSearch}"
-                        </button>
-                      )}
-                    </div>
-                  </motion.div>
-                </>
-              )}
+                          }
+                        }}
+                        style={{
+                          width: '100%',
+                          padding: '8px 10px',
+                          border: 'none',
+                          background: '#f8f8f8',
+                          borderRadius: 6,
+                          fontSize: 13,
+                          outline: 'none',
+                          marginBottom: 6,
+                          fontFamily: 'inherit',
+                        }}
+                      />
+                      <div style={{ display: 'flex', flexDirection: 'column' }}>
+                        {filteredTags.map(tag => (
+                          <button
+                            key={tag}
+                            onClick={() => toggleTag(tag)}
+                            style={{
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'space-between',
+                              padding: '6px 8px',
+                              background: 'none',
+                              border: 'none',
+                              borderRadius: 6,
+                              cursor: 'pointer',
+                              textAlign: 'left',
+                              fontSize: 13,
+                              color: form.tags.includes(tag) ? colors.fg : colors.subtle,
+                              transition: 'background 0.1s',
+                              fontFamily: 'inherit',
+                            }}
+                            onMouseEnter={e => e.currentTarget.style.background = colors.surfaceHover}
+                            onMouseLeave={e => e.currentTarget.style.background = 'none'}
+                          >
+                            {tag}
+                            {form.tags.includes(tag) && <Check size={14} strokeWidth={2.5} />}
+                          </button>
+                        ))}
+                        {tagSearch && !allAvailableTags.includes(tagSearch) && (
+                          <button
+                            onClick={() => { toggleTag(tagSearch); setTagSearch('') }}
+                            style={{
+                              padding: '8px',
+                              textAlign: 'left',
+                              fontSize: 12,
+                              color: colors.subtle,
+                              border: 'none',
+                              background: 'none',
+                              cursor: 'pointer',
+                              fontFamily: 'inherit',
+                            }}
+                          >
+                            Create "{tagSearch}"
+                          </button>
+                        )}
+                      </div>
+                    </motion.div>
+                  </>
+                )}
+              </AnimatePresence>
             </div>
           </div>
         </div>
@@ -351,20 +346,14 @@ export function ToolFormModal({ tool, onClose, onSaved }: ToolFormModalProps) {
         {/* Footer */}
         <div
           className="modal-footer"
-          style={{
-            display: 'flex',
-            justifyContent: 'flex-end',
-            alignItems: 'center',
-            gap: 12,
-            padding: '16px 12px 12px',
-          }}
+          style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', gap: 12, padding: '16px 12px 12px' }}
         >
           <button
             onClick={onClose}
             className="modal-action-btn"
-            style={cancelBtnStyle}
-            onMouseEnter={e => e.currentTarget.style.background = '#EEEEEE'}
-            onMouseLeave={e => e.currentTarget.style.background = '#f5f5f5'}
+            style={cancelBtn}
+            onMouseEnter={e => e.currentTarget.style.background = colors.surfaceHover}
+            onMouseLeave={e => e.currentTarget.style.background = colors.surface}
           >
             Cancel
           </button>
@@ -372,65 +361,14 @@ export function ToolFormModal({ tool, onClose, onSaved }: ToolFormModalProps) {
             onClick={handleSubmit}
             disabled={saving}
             className="modal-action-btn"
-            style={{
-              ...saveBtnStyle,
-              opacity: saving ? 0.6 : 1,
-            }}
-            onMouseEnter={e => {
-              if (!saving) e.currentTarget.style.background = 'rgba(0,0,0,0.7)'
-            }}
-            onMouseLeave={e => {
-              if (!saving) e.currentTarget.style.background = 'rgba(0,0,0,0.6)'
-            }}
+            style={{ ...primaryBtn, opacity: saving ? 0.6 : 1 }}
+            onMouseEnter={e => { if (!saving) e.currentTarget.style.background = 'rgba(0,0,0,0.7)' }}
+            onMouseLeave={e => { if (!saving) e.currentTarget.style.background = 'rgba(0,0,0,0.6)' }}
           >
-            <span>{saving ? 'Saving...' : tool ? 'Save Changes' : 'Add to Surfboard'}</span>
+            <span>{saving ? 'Saving...' : tool ? 'Save Changes' : 'Add'}</span>
           </button>
         </div>
       </motion.div>
     </motion.div>
   )
-}
-
-const inputStyle: React.CSSProperties = {
-  width: '100%',
-  background: '#f5f5f5',
-  border: 'none',
-  borderRadius: 8,
-  height: 30,
-  padding: '0 12px',
-  color: FG,
-  fontSize: 13,
-  fontFamily: 'inherit',
-  outline: 'none',
-}
-
-const cancelBtnStyle: React.CSSProperties = {
-  height: 30,
-  padding: '0 10px',
-  background: '#f5f5f5',
-  border: 'none',
-  borderRadius: 99,
-  color: SUBTLE,
-  fontSize: 13,
-  fontWeight: 500,
-  cursor: 'pointer',
-  fontFamily: 'inherit',
-  transition: 'all 0.15s'
-}
-
-const saveBtnStyle: React.CSSProperties = {
-  display: 'flex',
-  alignItems: 'center',
-  gap: 8,
-  height: 30,
-  padding: '0 10px',
-  background: 'rgba(0,0,0,0.6)',
-  color: '#fff',
-  border: 'none',
-  borderRadius: 99,
-  fontSize: 13,
-  fontWeight: 600,
-  cursor: 'pointer',
-  fontFamily: 'inherit',
-  transition: 'all 0.15s',
 }

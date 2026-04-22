@@ -4,9 +4,8 @@ import { useRef, useEffect, useState } from 'react'
 import { motion } from 'motion/react'
 import { Search } from 'lucide-react'
 import { Tool } from '@/lib/types'
-
-const FG = 'rgba(0,0,0,0.70)'
-const SUBTLE = 'rgba(0,0,0,0.50)'
+import { colors } from '@/lib/tokens'
+import { tagBadge, kbdBadge } from '@/lib/styles'
 
 interface SearchModalProps {
   tools: Tool[]
@@ -30,10 +29,7 @@ export function SearchModal({ tools, search, onSearchChange, onClose, onOpen }: 
 
   useEffect(() => {
     setTimeout(() => inputRef.current?.focus(), 60)
-
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose()
-    }
+    const handleKeyDown = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose() }
     window.addEventListener('keydown', handleKeyDown)
     setIsMobile(window.innerWidth < 768)
     return () => window.removeEventListener('keydown', handleKeyDown)
@@ -53,18 +49,11 @@ export function SearchModal({ tools, search, onSearchChange, onClose, onOpen }: 
         drag="y"
         dragConstraints={{ top: 0 }}
         dragElastic={0.2}
-        onDragEnd={(_, info) => {
-          if (info.offset.y > 100) onClose()
-        }}
+        onDragEnd={(_, info) => { if (info.offset.y > 100) onClose() }}
         initial={{ opacity: 0, scale: 0.98, y: 15 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.98, y: 300 }}
-        transition={{
-          type: 'spring',
-          damping: 30,
-          stiffness: 400,
-          mass: 0.8
-        }}
+        transition={{ type: 'spring', damping: 30, stiffness: 400, mass: 0.8 }}
         style={{ maxWidth: 640, overflow: 'hidden', display: 'flex', flexDirection: 'column' }}
         onClick={(e) => e.stopPropagation()}
       >
@@ -76,12 +65,11 @@ export function SearchModal({ tools, search, onSearchChange, onClose, onOpen }: 
             gap: 12,
             height: 48,
             padding: '0 16px',
-            background: 'none',
             borderTopLeftRadius: 12,
             borderTopRightRadius: 12,
           }}
         >
-          <Search size={16} strokeWidth={2.4} color={SUBTLE} />
+          <Search size={16} strokeWidth={2.4} color={colors.subtle} />
           <input
             ref={inputRef}
             type="text"
@@ -94,41 +82,21 @@ export function SearchModal({ tools, search, onSearchChange, onClose, onOpen }: 
               background: 'none',
               border: 'none',
               fontSize: 14,
-              color: FG,
+              color: colors.fg,
               fontFamily: 'inherit',
               outline: 'none',
             }}
           />
-          {!isMobile && (
-            <kbd
-              style={{
-                fontSize: 11,
-                fontWeight: 600,
-                color: SUBTLE,
-                background: '#EEEEEE',
-                border: '1px solid rgba(0,0,0,0.05)',
-                borderRadius: 4,
-                padding: '2px 6px',
-                fontFamily: 'inherit',
-                letterSpacing: '0.02em',
-              }}
-            >
-              ESC
-            </kbd>
-          )}
+          {!isMobile && <kbd style={kbdBadge}>ESC</kbd>}
         </div>
 
         {/* Results */}
-        <div className="no-scrollbar" style={{ flex: isMobile ? 1 : undefined, maxHeight: isMobile ? undefined : 320, overflowY: 'auto', paddingBottom: 10 }}>
+        <div
+          className="no-scrollbar"
+          style={{ flex: isMobile ? 1 : undefined, maxHeight: isMobile ? undefined : 320, overflowY: 'auto', paddingBottom: 10 }}
+        >
           {tools.length === 0 ? (
-            <p
-              style={{
-                padding: '20px 16px',
-                color: SUBTLE,
-                fontSize: 13,
-                textAlign: 'center',
-              }}
-            >
+            <p style={{ padding: '20px 16px', color: colors.subtle, fontSize: 13, textAlign: 'center' }}>
               {search ? `No results for "${search}"` : 'No tools found'}
             </p>
           ) : (
@@ -150,71 +118,28 @@ export function SearchModal({ tools, search, onSearchChange, onClose, onOpen }: 
                     cursor: 'pointer',
                     transition: 'background 0.1s',
                   }}
-                  onClick={() => {
-                    onOpen(tool)
-                    onClose()
-                  }}
-                  onMouseEnter={(e) => {
-                    ; (e.currentTarget as HTMLElement).style.background = '#EEEEEE'
-                  }}
-                  onMouseLeave={(e) => {
-                    ; (e.currentTarget as HTMLElement).style.background = 'transparent'
-                  }}
+                  onClick={() => { onOpen(tool); onClose() }}
+                  onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.background = colors.surfaceHover }}
+                  onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.background = 'transparent' }}
                 >
                   <img
-                    src={
-                      tool.favicon_url ||
-                      `https://www.google.com/s2/favicons?domain=${domain}&sz=64`
-                    }
+                    src={tool.favicon_url || `https://www.google.com/s2/favicons?domain=${domain}&sz=64`}
                     alt=""
                     style={{ width: 17, height: 17, borderRadius: 4 }}
-                    onError={(e) => {
-                      ; (e.target as HTMLImageElement).style.display = 'none'
-                    }}
+                    onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }}
                   />
                   <div style={{ flex: 1, minWidth: 0 }}>
-                    <div style={{ fontSize: 13, fontWeight: 500, color: FG }}>
-                      {tool.name}
-                    </div>
-                    <div
-                      style={{
-                        fontSize: 13,
-                        color: SUBTLE,
-                        whiteSpace: 'nowrap',
-                        overflow: 'hidden',
-                        textOverflow: 'ellipsis',
-                      }}
-                    >
+                    <div style={{ fontSize: 13, fontWeight: 500, color: colors.fg }}>{tool.name}</div>
+                    <div style={{ fontSize: 13, color: colors.subtle, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                       {domain}
                     </div>
                   </div>
                   <div style={{ display: 'flex', gap: 6, flexShrink: 0 }}>
                     {tool.tags?.slice(0, isMobile ? 1 : 2).map((tag) => (
-                      <span
-                        key={tag}
-                        style={{
-                          fontSize: 12,
-                          color: SUBTLE,
-                          background: '#f4f4f4',
-                          borderRadius: 4,
-                          padding: '2px 7px',
-                        }}
-                      >
-                        {tag}
-                      </span>
+                      <span key={tag} style={tagBadge}>{tag}</span>
                     ))}
                     {tool.tags && tool.tags.length > (isMobile ? 1 : 2) && (
-                      <span
-                        style={{
-                          fontSize: 12,
-                          color: SUBTLE,
-                          background: '#f4f4f4',
-                          borderRadius: 4,
-                          padding: '2px 7px',
-                        }}
-                      >
-                        +{tool.tags.length - (isMobile ? 1 : 2)}
-                      </span>
+                      <span style={tagBadge}>+{tool.tags.length - (isMobile ? 1 : 2)}</span>
                     )}
                   </div>
                 </a>

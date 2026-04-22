@@ -4,9 +4,8 @@ import { useState, useEffect } from 'react'
 import { motion, useMotionValue, animate } from 'motion/react'
 import { Pencil, Trash2 } from 'lucide-react'
 import { Tool } from '@/lib/types'
-
-const FG = 'rgba(0,0,0,0.70)'
-const SUBTLE = 'rgba(0,0,0,0.50)'
+import { colors } from '@/lib/tokens'
+import { iconBtn, iconBtnGlass, tagBadge } from '@/lib/styles'
 
 interface ToolCardProps {
   tool: Tool
@@ -132,7 +131,7 @@ export function ToolCard({ tool, index, onDelete, onEdit, onOpen, viewMode = 'gr
           <span
             style={{
               fontSize: 11,
-              color: 'rgba(0,0,0,0.25)',
+              color: colors.muted,
               fontVariantNumeric: 'tabular-nums',
               minWidth: 18,
               textAlign: 'right',
@@ -155,13 +154,12 @@ export function ToolCard({ tool, index, onDelete, onEdit, onOpen, viewMode = 'gr
 
           {/* Content */}
           <div style={{ flex: 1, overflow: 'hidden', minWidth: 0 }}>
-            {/* Name + Description — inline on desktop */}
             <div style={{ display: 'flex', alignItems: 'center', gap: 6, overflow: 'hidden' }}>
               <span
                 style={{
                   fontSize: 13,
                   fontWeight: 600,
-                  color: FG,
+                  color: colors.fg,
                   whiteSpace: 'nowrap',
                   flexShrink: 0,
                 }}
@@ -173,7 +171,7 @@ export function ToolCard({ tool, index, onDelete, onEdit, onOpen, viewMode = 'gr
                   className="list-row-desc"
                   style={{
                     fontSize: 11.5,
-                    color: SUBTLE,
+                    color: colors.subtle,
                     overflow: 'hidden',
                     textOverflow: 'ellipsis',
                     whiteSpace: 'nowrap',
@@ -184,20 +182,17 @@ export function ToolCard({ tool, index, onDelete, onEdit, onOpen, viewMode = 'gr
                 </span>
               )}
             </div>
-            {/* Description + Tags — only on mobile, stacked vertically */}
+            {/* Mobile: description + tags stacked */}
             <div className="list-row-mobile-sub" style={{ display: 'none', flexDirection: 'column', alignItems: 'flex-start', gap: 3, marginTop: 3 }}>
               {tool.description && (
-                <span style={{ fontSize: 11.5, color: SUBTLE, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '100%' }}>
+                <span style={{ fontSize: 11.5, color: colors.subtle, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '100%' }}>
                   {tool.description}
                 </span>
               )}
               {(tool.tags || []).length > 0 && (
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: 3 }}>
                   {(tool.tags || []).slice(0, 3).map((tag) => (
-                    <span
-                      key={tag}
-                      style={{ fontSize: 10, padding: '1px 6px', background: '#f2f2f2', borderRadius: 4, color: SUBTLE, whiteSpace: 'nowrap' }}
-                    >
+                    <span key={tag} style={{ ...tagBadge, fontSize: 10 }}>
                       {tag}
                     </span>
                   ))}
@@ -206,7 +201,7 @@ export function ToolCard({ tool, index, onDelete, onEdit, onOpen, viewMode = 'gr
             </div>
           </div>
 
-          {/* Tags → replaced by edit/delete on hover — hidden on mobile */}
+          {/* Tags → replaced by edit/delete on hover */}
           <div className="list-row-right" style={{ display: 'flex', flexShrink: 0, height: 25, alignItems: 'center' }}>
             {hovered ? (
               <motion.div
@@ -217,23 +212,15 @@ export function ToolCard({ tool, index, onDelete, onEdit, onOpen, viewMode = 'gr
                 style={{ display: 'flex', gap: 3 }}
               >
                 <button
-                  onClick={(e) => {
-                    e.preventDefault()
-                    e.stopPropagation()
-                    onEdit(tool)
-                  }}
-                  style={listActionBtnStyle}
+                  onClick={(e) => { e.preventDefault(); e.stopPropagation(); onEdit(tool) }}
+                  style={iconBtn}
                   title="Edit"
                 >
                   <Pencil size={12} strokeWidth={2.2} />
                 </button>
                 <button
-                  onClick={(e) => {
-                    e.preventDefault()
-                    e.stopPropagation()
-                    onDelete(tool)
-                  }}
-                  style={{ ...listActionBtnStyle, color: '#d44' }}
+                  onClick={(e) => { e.preventDefault(); e.stopPropagation(); onDelete(tool) }}
+                  style={{ ...iconBtn, color: colors.danger }}
                   title="Delete"
                 >
                   <Trash2 size={12} strokeWidth={2.2} />
@@ -242,20 +229,7 @@ export function ToolCard({ tool, index, onDelete, onEdit, onOpen, viewMode = 'gr
             ) : (
               <div style={{ display: 'flex', gap: 4 }}>
                 {(tool.tags || []).slice(0, 2).map((tag) => (
-                  <span
-                    key={tag}
-                    style={{
-                      fontSize: 10.5,
-                      fontWeight: 500,
-                      padding: '2px 7px',
-                      background: '#f2f2f2',
-                      borderRadius: 6,
-                      color: SUBTLE,
-                      whiteSpace: 'nowrap',
-                    }}
-                  >
-                    {tag}
-                  </span>
+                  <span key={tag} style={tagBadge}>{tag}</span>
                 ))}
               </div>
             )}
@@ -338,24 +312,12 @@ export function ToolCard({ tool, index, onDelete, onEdit, onOpen, viewMode = 'gr
               }}
             >
               <img
-                src={
-                  tool.favicon_url ||
-                  `https://www.google.com/s2/favicons?domain=${domain}&sz=64`
-                }
+                src={tool.favicon_url || `https://www.google.com/s2/favicons?domain=${domain}&sz=64`}
                 alt=""
                 style={{ width: 16, height: 16, borderRadius: 3 }}
-                onError={(e) => {
-                  ; (e.target as HTMLImageElement).style.display = 'none'
-                }}
+                onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }}
               />
-              <span
-                style={{
-                  fontSize: 11,
-                  color: FG,
-                  fontWeight: 600,
-                  letterSpacing: '0.01em',
-                }}
-              >
+              <span style={{ fontSize: 11, color: colors.fg, fontWeight: 600, letterSpacing: '0.01em' }}>
                 {domain}
               </span>
             </div>
@@ -364,22 +326,14 @@ export function ToolCard({ tool, index, onDelete, onEdit, onOpen, viewMode = 'gr
 
         {/* Info */}
         <div style={{ padding: '11px 13px 13px' }}>
-          <h3
-            style={{
-              fontSize: 13,
-              fontWeight: 600,
-              color: FG,
-              lineHeight: 1.35,
-              marginBottom: 2,
-            }}
-          >
+          <h3 style={{ fontSize: 13, fontWeight: 600, color: colors.fg, lineHeight: 1.35, marginBottom: 2 }}>
             {tool.name}
           </h3>
           {tool.description && (
             <p
               style={{
                 fontSize: 13,
-                color: SUBTLE,
+                color: colors.subtle,
                 lineHeight: 1.5,
                 marginBottom: 10,
                 display: '-webkit-box',
@@ -391,8 +345,7 @@ export function ToolCard({ tool, index, onDelete, onEdit, onOpen, viewMode = 'gr
               {tool.description}
             </p>
           )}
-
-          <p style={{ fontSize: 11, color: SUBTLE }}>Saved by {tool.saved_by}</p>
+          <p style={{ fontSize: 11, color: colors.subtle }}>Saved by {tool.saved_by}</p>
         </div>
       </a>
 
@@ -402,32 +355,18 @@ export function ToolCard({ tool, index, onDelete, onEdit, onOpen, viewMode = 'gr
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.12 }}
-          style={{
-            position: 'absolute',
-            top: 7,
-            right: 7,
-            display: 'flex',
-            gap: 3,
-          }}
+          style={{ position: 'absolute', top: 7, right: 7, display: 'flex', gap: 3 }}
         >
           <button
-            onClick={(e) => {
-              e.preventDefault()
-              e.stopPropagation()
-              onEdit(tool)
-            }}
-            style={actionBtnStyle}
+            onClick={(e) => { e.preventDefault(); e.stopPropagation(); onEdit(tool) }}
+            style={iconBtnGlass}
             title="Edit"
           >
             <Pencil size={12} strokeWidth={2.2} />
           </button>
           <button
-            onClick={(e) => {
-              e.preventDefault()
-              e.stopPropagation()
-              onDelete(tool)
-            }}
-            style={{ ...actionBtnStyle, color: '#d44' }}
+            onClick={(e) => { e.preventDefault(); e.stopPropagation(); onDelete(tool) }}
+            style={{ ...iconBtnGlass, color: colors.danger }}
             title="Delete"
           >
             <Trash2 size={12} strokeWidth={2.2} />
@@ -436,35 +375,6 @@ export function ToolCard({ tool, index, onDelete, onEdit, onOpen, viewMode = 'gr
       )}
     </motion.div>
   )
-}
-
-const actionBtnStyle: React.CSSProperties = {
-  width: 25,
-  height: 25,
-  borderRadius: 6,
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  background: 'rgba(255,255,255,0.9)',
-  backdropFilter: 'blur(6px)',
-  border: '1px solid rgba(0,0,0,0.05)',
-  color: SUBTLE,
-  cursor: 'pointer',
-  padding: 0,
-}
-
-const listActionBtnStyle: React.CSSProperties = {
-  width: 25,
-  height: 25,
-  borderRadius: 6,
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  background: 'rgba(0,0,0,0.06)',
-  border: 'none',
-  color: SUBTLE,
-  cursor: 'pointer',
-  padding: 0,
 }
 
 const swipeEditBtnStyle: React.CSSProperties = {
@@ -477,7 +387,7 @@ const swipeEditBtnStyle: React.CSSProperties = {
   alignItems: 'center',
   justifyContent: 'center',
   gap: 4,
-  color: FG,
+  color: colors.fg,
   cursor: 'pointer',
 }
 

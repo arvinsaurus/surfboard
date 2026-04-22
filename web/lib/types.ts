@@ -9,6 +9,7 @@ export interface Tool {
   times_opened: number
   created_at: string
   image_url?: string | null
+  section?: 'tools' | 'design' | null
 }
 
 export const PRESET_TAGS = [
@@ -25,4 +26,16 @@ export const PRESET_TAGS = [
   'App Inspo',
   'Bento & Illustrations',
   'Brand & Logos',
+] as const
+
+export const DESIGN_TAGS = [
+  'Isometric',
+  'Technical',
+  'Dither',
+  'Standard SaaS',
+  'People First',
+  'Brutalism',
+  'Scroll Animation',
+  'Playful',
+  'Narrow Layout',
 ] as const

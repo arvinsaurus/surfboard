@@ -1,4 +1,5 @@
 import { Action, ActionPanel, Form, showToast, Toast, useNavigation } from "@raycast/api";
+import { useState } from "react";
 import { supabase } from "./supabase";
 
 interface Tool {
@@ -7,9 +8,10 @@ interface Tool {
   name: string;
   description: string | null;
   tags: string[];
+  section?: string | null;
 }
 
-const TAGS = [
+const TOOL_TAGS = [
   "Backgrounds & Textures",
   "Icons",
   "Fonts & Typography",
@@ -25,12 +27,26 @@ const TAGS = [
   "Brand & Logos",
 ];
 
+const DESIGN_TAGS = [
+  "Isometric",
+  "Technical",
+  "Dither",
+  "Standard SaaS",
+  "People First",
+  "Brutalism",
+  "Scroll Animation",
+  "Playful",
+  "Narrow Layout",
+];
+
 export function EditTool({ tool, onEdit }: { tool: Tool; onEdit: () => void }) {
   const { pop } = useNavigation();
+  const [section, setSection] = useState<string>(tool.section || "tools");
 
   async function handleSubmit(values: {
     url: string;
     name: string;
+    section: string;
     tags: string[];
     customTags: string;
     description: string;
@@ -60,6 +76,7 @@ export function EditTool({ tool, onEdit }: { tool: Tool; onEdit: () => void }) {
           name: values.name,
           tags: allTags,
           description: values.description || null,
+          section: values.section || "tools",
         })
         .eq("id", tool.id);
 
@@ -81,6 +98,8 @@ export function EditTool({ tool, onEdit }: { tool: Tool; onEdit: () => void }) {
     }
   }
 
+  const activeTags = section === "design" ? DESIGN_TAGS : TOOL_TAGS
+
   return (
     <Form
       actions={
@@ -89,10 +108,19 @@ export function EditTool({ tool, onEdit }: { tool: Tool; onEdit: () => void }) {
         </ActionPanel>
       }
     >
+      <Form.Dropdown
+        id="section"
+        title="Section"
+        defaultValue={tool.section || "tools"}
+        onChange={(val) => setSection(val)}
+      >
+        <Form.Dropdown.Item value="tools" title="Tools" />
+        <Form.Dropdown.Item value="design" title="Design" />
+      </Form.Dropdown>
       <Form.TextField id="url" title="URL" defaultValue={tool.url} />
-      <Form.TextField id="name" title="Tool Name" defaultValue={tool.name} />
-      <Form.TagPicker id="tags" title="Tags" defaultValue={tool.tags.filter((t) => TAGS.includes(t))}>
-        {TAGS.map((tag) => (
+      <Form.TextField id="name" title="Name" defaultValue={tool.name} />
+      <Form.TagPicker id="tags" title="Tags" defaultValue={tool.tags.filter((t) => activeTags.includes(t))}>
+        {activeTags.map((tag) => (
           <Form.TagPicker.Item key={tag} value={tag} title={tag} />
         ))}
       </Form.TagPicker>
@@ -100,7 +128,7 @@ export function EditTool({ tool, onEdit }: { tool: Tool; onEdit: () => void }) {
         id="customTags"
         title="Custom Tags"
         placeholder="e.g. Gradients, Hero Sections"
-        defaultValue={tool.tags.filter((t) => !TAGS.includes(t)).join(", ")}
+        defaultValue={tool.tags.filter((t) => !TOOL_TAGS.includes(t) && !DESIGN_TAGS.includes(t)).join(", ")}
       />
       <Form.TextArea id="description" title="Quick Note" defaultValue={tool.description || ""} />
     </Form>

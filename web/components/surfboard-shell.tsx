@@ -4,7 +4,9 @@ import { useState, useEffect, useCallback, useRef } from 'react'
 import { motion, AnimatePresence } from 'motion/react'
 import { SlidersHorizontal, Search, Plus } from 'lucide-react'
 import { supabase } from '@/lib/supabase'
-import { Tool, PRESET_TAGS } from '@/lib/types'
+import { Tool, PRESET_TAGS, DESIGN_TAGS } from '@/lib/types'
+import { colors } from '@/lib/tokens'
+import { mobileBarBtn } from '@/lib/styles'
 import { Sidebar } from '@/components/sidebar'
 import { ToolCard } from '@/components/tool-card'
 import { SearchModal } from '@/components/search-modal'
@@ -17,6 +19,7 @@ export function SurfboardShell() {
   const [loading, setLoading] = useState(true)
   const [search, setSearch] = useState('')
   const [activeTag, setActiveTag] = useState<string | null>(null)
+  const [activeSection, setActiveSection] = useState<'tools' | 'design'>('tools')
   const [showAdd, setShowAdd] = useState(false)
   const [editTool, setEditTool] = useState<Tool | null>(null)
   const [deleteTool, setDeleteTool] = useState<Tool | null>(null)
@@ -74,16 +77,24 @@ export function SurfboardShell() {
     return () => window.removeEventListener('keydown', handler)
   }, [showAdd, editTool])
 
-  // Determine which tags are preset vs custom
-  const presetTagSet = new Set<string>(PRESET_TAGS)
+  // Filter tools by active section (null/missing section falls back to 'tools')
+  const sectionTools = tools.filter((t) =>
+    activeSection === 'tools'
+      ? !t.section || t.section === 'tools'
+      : t.section === activeSection,
+  )
+
+  // Determine which tags are preset for the active section
+  const activeTags = activeSection === 'design' ? DESIGN_TAGS : PRESET_TAGS
+  const presetTagSet = new Set<string>(activeTags)
 
   // Tag counts (only preset tags shown individually)
   const allPresetTags = Array.from(new Set(
-    tools.flatMap((t) => (t.tags || []).filter((tag) => presetTagSet.has(tag)))
+    sectionTools.flatMap((t) => (t.tags || []).filter((tag) => presetTagSet.has(tag)))
   )).sort()
 
   const tagCounts: Record<string, number> = {}
-  tools.forEach((t) =>
+  sectionTools.forEach((t) =>
     (t.tags || []).forEach((tag) => {
       if (presetTagSet.has(tag)) {
         tagCounts[tag] = (tagCounts[tag] || 0) + 1
@@ -92,13 +103,12 @@ export function SurfboardShell() {
   )
 
   // Count tools that have at least one custom (non-preset) tag
-  const othersTools = tools.filter((t) =>
+  const othersCount = sectionTools.filter((t) =>
     (t.tags || []).some((tag) => !presetTagSet.has(tag))
-  )
-  const othersCount = othersTools.length
+  ).length
 
   // Filtering
-  const filtered = tools.filter((t) => {
+  const filtered = sectionTools.filter((t) => {
     const q = search.toLowerCase().trim()
     const terms = q.split(/\s+/).filter(Boolean)
 
@@ -157,25 +167,27 @@ export function SurfboardShell() {
       <div className="mobile-bottom-bar">
         <button
           onClick={() => setMobileMenuOpen(true)}
-          style={{ ...mobileBarBtnStyle, width: 'auto', maxWidth: 160, padding: '0 14px', gap: 7, flexShrink: 0 }}
+          style={{ ...mobileBarBtn, width: 'auto', maxWidth: 160, padding: '0 14px', gap: 7, flexShrink: 0 }}
           aria-label="Open menu"
         >
           <SlidersHorizontal size={14} strokeWidth={2} />
           <span style={{ fontSize: 15, fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: 84 }}>
-            {activeTag === null ? 'All' : activeTag === '__others' ? 'Others' : activeTag}
+            {activeTag === null
+            ? (activeSection === 'design' ? 'Design' : 'All')
+            : activeTag === '__others' ? 'Others' : activeTag}
           </span>
           <span style={{ fontSize: 13, opacity: 0.7 }}>{filtered.length}</span>
         </button>
         <button
           onClick={() => setSearchOpen(true)}
-          style={{ ...mobileBarBtnStyle, flexShrink: 0 }}
+          style={{ ...mobileBarBtn, flexShrink: 0 }}
           aria-label="Search"
         >
           <Search size={18} strokeWidth={2.2} />
         </button>
         <button
           onClick={() => setShowAdd(true)}
-          style={{ ...mobileBarBtnStyle, flexShrink: 0 }}
+          style={{ ...mobileBarBtn, flexShrink: 0 }}
           aria-label="Add bookmark"
         >
           <Plus size={18} strokeWidth={2.2} />
@@ -185,7 +197,7 @@ export function SurfboardShell() {
       {/* ── Desktop Sidebar ── */}
       <div className="desktop-sidebar">
         <Sidebar
-          toolCount={tools.length}
+          toolCount={sectionTools.length}
           allTags={allPresetTags}
           tagCounts={tagCounts}
           activeTag={activeTag}
@@ -196,6 +208,8 @@ export function SurfboardShell() {
           viewMode={viewMode}
           onViewModeChange={setViewMode}
           showViewToggleInFooter={false}
+          activeSection={activeSection}
+          onSectionChange={(s) => { setActiveSection(s); setActiveTag(null) }}
         />
       </div>
 
@@ -217,7 +231,7 @@ export function SurfboardShell() {
           >
             <Sidebar
               isMobile
-              toolCount={tools.length}
+              toolCount={sectionTools.length}
               allTags={allPresetTags}
               tagCounts={tagCounts}
               activeTag={activeTag}
@@ -238,6 +252,8 @@ export function SurfboardShell() {
               viewMode={viewMode}
               onViewModeChange={setViewMode}
               showViewToggleInFooter={true}
+              activeSection={activeSection}
+              onSectionChange={(s) => { setActiveSection(s); setActiveTag(null) }}
             />
           </motion.div>
         )}
@@ -310,7 +326,7 @@ export function SurfboardShell() {
                   gap: 12,
                 }}
               >
-                <p style={{ fontSize: 13, color: SUBTLE }}>
+                <p style={{ fontSize: 13, color: colors.subtle }}>
                   Showing results for &ldquo;{search}&rdquo;
                 </p>
                 <button
@@ -320,7 +336,7 @@ export function SurfboardShell() {
                     border: 'none',
                     padding: 0,
                     fontSize: 13,
-                    color: SUBTLE,
+                    color: colors.subtle,
                     cursor: 'pointer',
                     fontFamily: 'inherit',
                     textDecoration: 'underline',
@@ -344,14 +360,14 @@ export function SurfboardShell() {
                   animation: 'spin 0.55s linear infinite',
                 }}
               />
-              <p style={{ color: 'rgba(0,0,0,0.50)', fontSize: 13, marginTop: 10 }}>
+              <p style={{ color: colors.subtle, fontSize: 13, marginTop: 10 }}>
                 Loading tools...
               </p>
             </div>
           ) : filtered.length === 0 ? (
             <div style={emptyStyle}>
               <p style={{ fontSize: 42, opacity: 0.1 }}>🏄</p>
-              <p style={{ color: 'rgba(0,0,0,0.50)', fontSize: 13, marginTop: 10 }}>
+              <p style={{ color: colors.subtle, fontSize: 13, marginTop: 10 }}>
                 No tools found
               </p>
               {(search || activeTag) && (
@@ -367,7 +383,7 @@ export function SurfboardShell() {
                     border: 'none',
                     padding: 0,
                     fontSize: 13,
-                    color: SUBTLE,
+                    color: colors.subtle,
                     cursor: 'pointer',
                     fontFamily: 'inherit',
                     textDecoration: 'underline',
@@ -421,6 +437,7 @@ export function SurfboardShell() {
         {(showAdd || editTool) && (
           <ToolFormModal
             tool={editTool}
+            section={editTool?.section ?? activeSection}
             onClose={() => {
               setShowAdd(false)
               setEditTool(null)
@@ -445,24 +462,6 @@ export function SurfboardShell() {
       </AnimatePresence>
     </div>
   )
-}
-
-const SUBTLE = 'rgba(0,0,0,0.50)'
-const FG = 'rgba(0,0,0,0.70)'
-
-const mobileBarBtnStyle: React.CSSProperties = {
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  width: 44,
-  height: 44,
-  borderRadius: 99,
-  background: 'rgba(161,161,161,0.8)',
-  backdropFilter: 'blur(12px)',
-  WebkitBackdropFilter: 'blur(12px)',
-  border: 'none',
-  cursor: 'pointer',
-  color: '#fff',
 }
 
 const emptyStyle: React.CSSProperties = {
