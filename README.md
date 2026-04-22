@@ -8,6 +8,30 @@ Ever found an incredible design tool, bookmarked it, and completely forgot it ex
 
 ---
 
+## ✨ What's New — April 2026
+
+### Design section
+Surfboard now has two sections — **Tools** and **Design**. Tools is everything you already know: resources, generators, libraries. Design is new — a dedicated space for visual references, aesthetic styles, and layout inspiration.
+
+When saving something to Design, you'll see a new tag set built around visual directions:
+- Isometric, Brutalism, Dither, Technical
+- Standard SaaS, People First, Playful, Narrow Layout
+- Scroll Animation, Mobile App
+
+Both the web app and Raycast extension support the new section. In Raycast, just pick the section when saving.
+
+### Web app updates (surf.morvalabs.com)
+- **Section toggle** — switch between Tools and Design with a single tap
+- **Grid / List view toggle** — switch layouts from the sidebar
+- **Mobile drawer** — section and view toggles now sit in the header row alongside the close button
+- Add to home screen on iOS now shows the Surfboard icon
+
+### Raycast updates
+- Section picker when saving or editing — choose Tools or Design
+- Tags update automatically based on which section you pick
+
+---
+
 ## Why Surfboard?
 
 | The Problem | Surfboard's Fix |
