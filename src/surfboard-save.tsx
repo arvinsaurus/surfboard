@@ -33,6 +33,7 @@ const DESIGN_TAGS = [
   "Scroll Animation",
   "Playful",
   "Narrow Layout",
+  "Mobile App",
 ];
 
 export default function SurfboardSave() {

@@ -38,4 +38,5 @@ export const DESIGN_TAGS = [
   'Scroll Animation',
   'Playful',
   'Narrow Layout',
+  'Mobile App',
 ] as const

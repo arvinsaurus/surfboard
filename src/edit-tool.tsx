@@ -37,6 +37,7 @@ const DESIGN_TAGS = [
   "Scroll Animation",
   "Playful",
   "Narrow Layout",
+  "Mobile App",
 ];
 
 export function EditTool({ tool, onEdit }: { tool: Tool; onEdit: () => void }) {
