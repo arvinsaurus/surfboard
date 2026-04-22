@@ -193,7 +193,7 @@ export function SurfboardShell() {
           <SlidersHorizontal size={14} strokeWidth={2} />
           <span style={{ fontSize: 15, fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: 84 }}>
             {activeTag === null
-            ? (activeSection === 'design' ? 'Design' : 'All')
+            ? (activeSection === 'design' ? 'Design' : 'Tools')
             : activeTag === '__others' ? 'Others' : activeTag}
           </span>
           <span style={{ fontSize: 13, opacity: 0.7 }}>{filtered.length}</span>
