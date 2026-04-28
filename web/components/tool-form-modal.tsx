@@ -210,7 +210,7 @@ export function ToolFormModal({ tool, section: sectionProp, onClose, onSaved }: 
             <input
               value={form.name}
               onChange={(e) => update('name', e.target.value)}
-              placeholder={section === 'design' ? 'Website name' : 'Tool name'}
+              placeholder={section === 'design' ? 'Design name' : 'Tool name'}
               className="form-input"
               style={formInput}
             />

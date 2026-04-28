@@ -39,4 +39,5 @@ export const DESIGN_TAGS = [
   'Playful',
   'Narrow Layout',
   'Mobile App',
+  'Studio',
 ] as const

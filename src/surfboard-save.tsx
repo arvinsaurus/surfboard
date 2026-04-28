@@ -34,6 +34,7 @@ const DESIGN_TAGS = [
   "Playful",
   "Narrow Layout",
   "Mobile App",
+  "Studio",
 ];
 
 export default function SurfboardSave() {
@@ -63,9 +64,9 @@ export default function SurfboardSave() {
       const presetTags = values.tags || [];
       const extraTags = values.customTags
         ? values.customTags
-            .split(",")
-            .map((t) => t.trim())
-            .filter(Boolean)
+          .split(",")
+          .map((t) => t.trim())
+          .filter(Boolean)
         : [];
       const allTags = [...presetTags, ...extraTags];
 
